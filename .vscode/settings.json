@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "system_error": "cpp",
+        "liblog.h": "c",
+        "math.h": "c",
+        "gl.h": "c",
+        "glu.h": "c",
+        "camera.h": "c",
+        "iterator": "c",
+        "voxel.h": "c",
+        "lib.h": "c"
+    }
+}
