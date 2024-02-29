@@ -9,6 +9,7 @@
         "iterator": "c",
         "voxel.h": "c",
         "lib.h": "c",
-        "cmath": "c"
+        "cmath": "c",
+        "raylib.h": "c"
     }
 }

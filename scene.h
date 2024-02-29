@@ -1,16 +1,10 @@
-#ifndef SCENE_H
-#define SCENE_H
+#ifndef __SCENE_H__
+#define __SCENE_H__
 
 #include <stdbool.h>
 #include <stdlib.h>
-#include <math.h>
-#include <SDL2/SDL.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
+#include <float.h>
 #include "lib.h"
-#include "liblog.h"
-#include "camera.h"
-#include "voxel.h"
 #include "raylib.h"
 
 // Define maximum number of voxels in the scene
@@ -38,18 +32,32 @@ void scene__init(scene_t *scene) {
     scene->colormap[8]=BLACK;
 }
 
-error_id scene__add_voxel(scene_t *scene, int x, int y, int z, unsigned int material) {
+
+int scene__voxel_at_position(const scene_t *scene, Vector3 position) {
+    for (int i = 0; i < scene->numCubes; i++) {
+        if (Vector3DistanceSqr(scene->voxels[i].position,position)<0.75) {
+            return 1; // Voxel exists
+        }
+    }
+    return 0; // Voxel does not exist
+}
+
+error_id scene__add_voxel(scene_t *scene, Vector3 position, unsigned int material) {
     if (scene->numCubes >= MAX_VOXELS) {
         return -1; // Error: Scene is full
     }
-    voxel_t newVoxel = {x, y, z, material};
-    scene->voxels[scene->numCubes++] = newVoxel;
+    if(!scene__voxel_at_position(scene,position)){
+        voxel_t newVoxel = {position.x, position.y, position.z, material};
+        scene->voxels[scene->numCubes++] = newVoxel;
+    }
     return 0; // Success
 }
 
-error_id scene__remove_voxel(scene_t *scene, int x, int y, int z) {
+error_id scene__remove_voxel(scene_t *scene, Vector3 position) {
     for (int i = 0; i < scene->numCubes; i++) {
-        if (scene->voxels[i].x == x && scene->voxels[i].y == y && scene->voxels[i].z == z) {
+        float dist = Vector3DistanceSqr(scene->voxels[i].position,position);
+        printf("voxel %d is at %3.2f\n",i,dist);
+        if ( dist<0.75) {
             // Move the last voxel to the current position and decrease count
             scene->voxels[i] = scene->voxels[--scene->numCubes];
             return 0; // Success
@@ -58,49 +66,32 @@ error_id scene__remove_voxel(scene_t *scene, int x, int y, int z) {
     return -1; // Error: Voxel not found
 }
 
-int scene__voxel_exists(const scene_t *scene, int x, int y, int z) {
-    for (int i = 0; i < scene->numCubes; i++) {
-        if (scene->voxels[i].x == x && scene->voxels[i].y == y && scene->voxels[i].z == z) {
-            return 1; // Voxel exists
-        }
-    }
-    return 0; // Voxel does not exist
+
+
+int scene__render_voxel(scene_t *scene,voxel_t* voxel) {
+    return 0; 
 }
 
-int scene__render0(scene_t *scene) {
+int scene__render(scene_t *scene) {
     // Simplified: Iterate through all voxels and render them
     for (int i = 0; i < scene->numCubes; i++) {
-        scene__render_voxel(scene,&(scene->voxels[i]));
+        DrawCube(scene->voxels[i].position, 1.0f, 1.0f, 1.0f, scene->colormap[scene->voxels[i].material_id % MAX_MAT_ID]);
+        DrawCubeWires(scene->voxels[i].position, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
     }
-    return 0; // Success
-}
-int scene__render_voxel(scene_t *scene,voxel_t* voxel) {
-        Vector3 pos = {voxel->x,voxel->y,voxel->z};
-        DrawCube(pos, 1.0f, 1.0f, 1.0f, scene->colormap[voxel->material_id % MAX_MAT_ID]);
-        DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
-    return 0; // Success
-}
-int scene__render(scene_t *scene, camera_t* camera) {
-    glEnable(GL_DEPTH_TEST);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // Simplified: Iterate through all voxels and render them
-    for (int i = 0; i < scene->numCubes; i++) {
-        voxel__render(&scene->voxels[i], camera);
-    }
-    return 0; // Success
+    return 0;
 }
 
 
 // Method to check if a cube exists in the scene
-intersection_result_t scene__intersects_ray(scene_t *scene,ray_t* ray) {
-    intersection_result_t result={false,(vector_t){0,0,0}};
+RayCollision scene__ray_intersect_point(scene_t *scene,Ray* ray) {
+    RayCollision result={false,FLT_MAX,(Vector3){0},(Vector3){0}};
     for (int i = 0; i < scene->numCubes; ++i) {
-        result = voxel__intersects_ray(&(scene->voxels[i]),ray);
-        if( result.intersects ) {
-            LOG_W("found intersection with voxel number %d/%d",i,scene->numCubes)
-            // TODO find the closes voxel
-            // use ray__distance_to_point
-            return result;
+        voxel_t cube=scene->voxels[i];
+        RayCollision r = GetRayCollisionBox(*ray,voxel__get_bounding_box(&cube));
+        if( r.hit ) {
+            if( r.distance < result.distance){
+                result=r;
+            }
         }
     }
     return result;
