@@ -75,8 +75,10 @@ int scene__render_voxel(scene_t *scene,voxel_t* voxel) {
 int scene__render(scene_t *scene) {
     // Simplified: Iterate through all voxels and render them
     for (int i = 0; i < scene->numCubes; i++) {
-        DrawCube(scene->voxels[i].position, 1.0f, 1.0f, 1.0f, scene->colormap[scene->voxels[i].material_id % MAX_MAT_ID]);
-        DrawCubeWires(scene->voxels[i].position, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
+        //Vector3 pos = Vector3Add(scene->voxels[i].position,(Vector3){-0.5f, -0.5f, -0.5f});
+        Vector3 pos = scene->voxels[i].position;
+        DrawCube(pos, 1.0f, 1.0f, 1.0f, scene->colormap[scene->voxels[i].material_id % MAX_MAT_ID]);
+        DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
     }
     return 0;
 }

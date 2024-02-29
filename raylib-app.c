@@ -4,6 +4,9 @@
 #include "voxel.h"
 #include "scene.h"
 
+// #define RLGL_IMPLEMENTATION
+// #include "rlgl.h" // Ensure this path is correct and that you're allowed to include this based on your Raylib version
+
 
     int screenWidth = 800;
     int screenHeight = 450;
@@ -44,6 +47,7 @@ int main(void) {
     float elevation = 0.709f; // Vertical angle
     float radius = 17.3f; // Distance from the target
     bool isOrbiting = false;
+    bool isPanning = false;
 
 
     char status[100];
@@ -67,9 +71,6 @@ int main(void) {
             mouse_pointer_3d0=(Vector3){1*round(collision.point.x/1),1*round(collision.point.y/1),1*round(collision.point.z/1)};
             mouse_pointer_3d=(Vector3){collision.point.x,collision.point.y,collision.point.z};
             pointer_source="voxel";
-            cursor.position.x=mouse_pointer_3d0.x;
-            cursor.position.y=mouse_pointer_3d0.y;
-            cursor.position.z=mouse_pointer_3d0.z;
         } else {
         // Check collision between ray and box
             collision = GetRayCollisionBox(ray,
@@ -78,10 +79,10 @@ int main(void) {
             mouse_pointer_3d0=(Vector3){1*round(collision.point.x/1),1*round(collision.point.y/1),1*round(collision.point.z/1)};
             mouse_pointer_3d=(Vector3){collision.point.x,collision.point.y,collision.point.z};
             pointer_source="plane";
+        }
             cursor.position.x=mouse_pointer_3d0.x;
             cursor.position.y=mouse_pointer_3d0.y;
             cursor.position.z=mouse_pointer_3d0.z;
-        }
         
     
             if(IsKeyPressed(KEY_LEFT_CONTROL)){
@@ -107,33 +108,40 @@ int main(void) {
         }
         Vector2 mouseDelta = Vector2Subtract(GetMousePosition(), lastMousePos);
         lastMousePos = GetMousePosition();
-        
-        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+
+        // Check for right mouse button pressed for orbiting
+        if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !IsKeyDown(KEY_LEFT_SHIFT)) {
             isOrbiting = true;
-            // camera.target=mouse_pointer_3d;
-        }
-        if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)) {
+            isPanning = false;
+        } else if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && IsKeyDown(KEY_LEFT_SHIFT)) {
+            // Check for right mouse button pressed with Shift for panning
+            isPanning = true;
             isOrbiting = false;
-        }
-        
-        if (isOrbiting) {
-            azimuth -= mouseDelta.x * 0.01f;
-            elevation += mouseDelta.y * 0.01f;
+        } else {
+            isOrbiting = isPanning = false;
         }
 
-        // Zoom in or out
-        double inc = GetMouseWheelMove() * 0.8f;
-        if(inc){
-            //camera.target=mouse_pointer_3d;
+        if (isOrbiting) {
+            azimuth += mouseDelta.x * 0.01f;
+            elevation -= mouseDelta.y * 0.01f;
+        } else if (isPanning) {
+            Vector3 right = Vector3Normalize(Vector3CrossProduct(Vector3Subtract(camera.position, camera.target), camera.up));
+            Vector3 up = Vector3Normalize(Vector3CrossProduct(right, Vector3Subtract(camera.position, camera.target)));
+            float panSpeed = 0.01f;
+            camera.target = Vector3Add(camera.target, Vector3Scale(right, mouseDelta.x * panSpeed));
+            camera.target = Vector3Add(camera.target, Vector3Scale(up, mouseDelta.y * panSpeed));
+            camera.position = Vector3Add(camera.position, Vector3Scale(right, mouseDelta.x * panSpeed));
+            camera.position = Vector3Add(camera.position, Vector3Scale(up, mouseDelta.y * panSpeed));
         }
-        radius -= inc; // Adjust the factor (0.8f here) to control zoom sensitivity
-        radius = Clamp(radius, 1.0f, 20000000.0f); // Clamp the radius to prevent it from going too low or too high
-        
-        
-        // Calculate camera position
-        camera.position.x = camera.target.x + radius * cosf(elevation) * sinf(azimuth);
-        camera.position.y = camera.target.y + radius * sinf(elevation);
-        camera.position.z = camera.target.z + radius * cosf(elevation) * cosf(azimuth);
+
+        radius -= GetMouseWheelMove() * 0.8f;
+        radius = Clamp(radius, 1.0f, 20.0f);
+
+        if (isOrbiting || !isPanning) { // Update position only if orbiting or not panning
+            camera.position.x = camera.target.x + radius * cosf(elevation) * sinf(azimuth);
+            camera.position.y = camera.target.y + radius * sinf(elevation);
+            camera.position.z = camera.target.z + radius * cosf(elevation) * cosf(azimuth);
+        }
 
         snprintf(status,100,"collision %s t(%3.2f %3.2f %3.2f) p(%3.2f %3.2f %3.2f)",pointer_source,collision.point.x,collision.point.y,collision.point.z,camera.position.x,camera.position.y,camera.position.z);
 
@@ -145,7 +153,12 @@ int main(void) {
         scene__render(&scene);
 
         DrawCubeWires(cursor.position, 1.0f, 1.0f, 1.0f, ctrl?Fade(RED, 0.5f):Fade(GREEN, 0.5f));
-        DrawGrid(10, 1.0f);
+        
+        // rlPushMatrix(); // Push the current matrix to the stack
+        // rlTranslatef(0.5f, 0.5f, 0.5f); // Translate the grid
+        DrawGrid(10, 1.0f); // Draw a grid
+        // rlPopMatrix(); // Pop the matrix from the stack to revert the translation
+    
 
         // Optionally, to cast a ray from the mouse:
         Ray ray = GetMouseRay(GetMousePosition(), camera);

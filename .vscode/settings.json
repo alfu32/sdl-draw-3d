@@ -10,6 +10,7 @@
         "voxel.h": "c",
         "lib.h": "c",
         "cmath": "c",
-        "raylib.h": "c"
+        "raylib.h": "c",
+        "rlgl.h": "c"
     }
 }
