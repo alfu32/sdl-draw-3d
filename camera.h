@@ -209,27 +209,50 @@ void camera__advance(camera_t* self, GLfloat distance) {
     self->target.x += direction.x * distance;
     self->target.z += direction.z * distance;
 }
+/// @brief The camera__get_ray function will calculate a ray from the camera position
+///         through a point on the screen. The screen coordinates (screen_x, screen_y) 
+///         should be normalized to the range [-1, 1], where (-1, -1) 
+///         is the bottom-left corner of the screen, and (1, 1) is the top-right corner.
+/// @param self camera_t*
+/// @param screen_x float normalized cursor x position
+/// @param screen_y float normalized cursor y position
+/// @return 
 ray_t camera__get_ray(camera_t* self, float screen_x, float screen_y) {
+    // Calculate normalized direction vector from the camera to its target
     vector_t direction = {
         self->target.x - self->eye.x,
         self->target.y - self->eye.y,
         self->target.z - self->eye.z
     };
-    // Assume a simple perspective projection
-    float aspectRatio = self->aspect;
-    float fov = tanf(self->fov * 0.5f * (M_PI / 180.0f));
-    direction.x += fov * aspectRatio * screen_x;
-    direction.y += fov * screen_y;
-    // Normalize direction
-    float magnitude = sqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
-    direction.x /= magnitude;
-    direction.y /= magnitude;
-    direction.z /= magnitude;
-    
-    ray_t ray = {
-        self->eye,
-        {self->eye.x + direction.x, self->eye.y + direction.y, self->eye.z + direction.z}
+    normalize(&direction);
+
+    // Calculate the right vector as cross product of direction and world up
+    vector_t worldUp = {0, 1, 0}; // Use the Y-axis as world up
+    vector_t right;
+    cross_product(&direction, &worldUp, &right);
+    normalize(&right);
+
+    // Recalculate the true up vector using the right and direction vectors
+    vector_t up;
+    cross_product(&right, &direction, &up);
+
+    // Account for FOV and aspect ratio to find the size of the plane at the target
+    float height = tan(self->fov / 2.0f) * 2.0f;
+    float width = self->aspect * height;
+
+    // Calculate offsets based on screen coordinates
+    vector_t rightOffset, upOffset;
+    scale_vector(&right, screen_x * width / 2.0f, &rightOffset);
+    scale_vector(&up, screen_y * height / 2.0f, &upOffset); // Negative to match screen coordinates
+
+    // Calculate final through point by adding offsets to target
+    vector_t through_point = {
+        self->target.x + rightOffset.x + upOffset.x,
+        self->target.y + rightOffset.y + upOffset.y,
+        self->target.z + rightOffset.z + upOffset.z
     };
+
+    ray_t ray = {self->eye, through_point};
     return ray;
 }
 

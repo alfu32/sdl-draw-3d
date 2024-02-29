@@ -40,10 +40,7 @@ error_id voxel__init(voxel_t *voxel, int x, int y, int z, unsigned int material_
     return 0;
 }
 
-void voxel__render(voxel_t* self, camera_t* camera) {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    camera__setup_projection(camera);
+void voxel__render0(voxel_t* self) {
     
     // Calculate cube size
     float size = 1.0f; // Assuming unit cube size for simplicity
@@ -100,86 +97,50 @@ void voxel__render(voxel_t* self, camera_t* camera) {
 
     glEnd();
 }
+void voxel__render(voxel_t* self, camera_t* camera) {
+    // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    camera__setup_projection(camera);
+    voxel__render0(self);
+}
 
 // Method to check if a voxel intersects with a ray
 intersection_result_t voxel__intersects_ray(voxel_t *voxel, ray_t *ray) {
     intersection_result_t result={false,(vector_t){voxel->x,voxel->y,voxel->z}};
-
-    // Calculate the minimum and maximum bounds of the voxel
-    int voxelMinX = voxel->x * 50;
-    int voxelMinY = voxel->y * 50;
-    int voxelMinZ = voxel->z * 50;
-    int voxelMaxX = voxelMinX + 50;
-    int voxelMaxY = voxelMinY + 50;
-    int voxelMaxZ = voxelMinZ + 50;
-
-    // Calculate the direction of the ray
-    int dirX = ray->through_point.x - ray->origin.x;
-    int dirY = ray->through_point.y - ray->origin.y;
-    int dirZ = ray->through_point.z - ray->origin.z;
-
-    // Calculate the origin of the ray relative to the voxel
-    int relOriginX = ray->origin.x * 50 - voxelMinX;
-    int relOriginY = ray->origin.y * 50 - voxelMinY;
-    int relOriginZ = ray->origin.z * 50 - voxelMinZ;
-
-    // Initialize t values for the ray intersections with the voxel faces
-    double tmin, tmax, tymin, tymax, tzmin, tzmax;
-
-    // Calculate t values for the x faces
-    double divX = 1.0 / dirX;
-    if (divX >= 0) {
-        tmin = (voxelMinX - relOriginX) * divX;
-        tmax = (voxelMaxX - relOriginX) * divX;
-    } else {
-        tmin = (voxelMaxX - relOriginX) * divX;
-        tmax = (voxelMinX - relOriginX) * divX;
-    }
-
-    // Calculate t values for the y faces
-    double divY = 1.0 / dirY;
-    if (divY >= 0) {
-        tymin = (voxelMinY - relOriginY) * divY;
-        tymax = (voxelMaxY - relOriginY) * divY;
-    } else {
-        tymin = (voxelMaxY - relOriginY) * divY;
-        tymax = (voxelMinY - relOriginY) * divY;
-    }
-
-    // Check if the ray misses the voxel
-    if ((tmin > tymax) || (tymin > tmax)) {
-        return result;
-    }
-    if (tymin > tmin) {
-        tmin = tymin;
-    }
-    if (tymax < tmax) {
-        tmax = tymax;
-    }
-
-    // Calculate t values for the z faces
-    double divZ = 1.0 / dirZ;
-    if (divZ >= 0) {
-        tzmin = (voxelMinZ - relOriginZ) * divZ;
-        tzmax = (voxelMaxZ - relOriginZ) * divZ;
-    } else {
-        tzmin = (voxelMaxZ - relOriginZ) * divZ;
-        tzmax = (voxelMinZ - relOriginZ) * divZ;
-    }
-
-    // Check if the ray misses the voxel
-    if ((tmin > tzmax) || (tzmin > tmax)) {
-        return result;
-    }
-    if (tzmin > tmin) {
-        tmin = tzmin;
-    }
-    if (tzmax < tmax) {
-        tmax = tzmax;
-    }
-
-    // Check if the ray intersects the voxel
-    result.intersects=true;
+    // Direction vector of the ray
+    vector_t ray_direction = {
+        ray->through_point.x - ray->origin.x,
+        ray->through_point.y - ray->origin.y,
+        ray->through_point.z - ray->origin.z
+    };
+    
+    // Normalize the direction
+    float dir_magnitude = sqrt(ray_direction.x * ray_direction.x + ray_direction.y * ray_direction.y + ray_direction.z * ray_direction.z);
+    ray_direction.x /= dir_magnitude;
+    ray_direction.y /= dir_magnitude;
+    ray_direction.z /= dir_magnitude;
+    
+    // Calculate the vector from the ray's origin to the voxel's anchor
+    vector_t to_voxel = {
+        voxel->x - ray->origin.x,
+        voxel->y - ray->origin.y,
+        voxel->z - ray->origin.z
+    };
+    
+    // Project this vector onto the ray's direction vector
+    float projection_length = to_voxel.x * ray_direction.x + to_voxel.y * ray_direction.y + to_voxel.z * ray_direction.z;
+    vector_t closest_point_on_ray = {
+        ray->origin.x + ray_direction.x * projection_length,
+        ray->origin.y + ray_direction.y * projection_length,
+        ray->origin.z + ray_direction.z * projection_length
+    };
+    
+    // Check if the closest point is within the voxel's bounds
+    float halfSize = 0.5; // Assuming the voxel is a unit cube for simplicity
+    result.intersects = closest_point_on_ray.x >= (voxel->x - halfSize) && closest_point_on_ray.x <= (voxel->x + halfSize) &&
+                      closest_point_on_ray.y >= (voxel->y - halfSize) && closest_point_on_ray.y <= (voxel->y + halfSize) &&
+                      closest_point_on_ray.z >= (voxel->z - halfSize) && closest_point_on_ray.z <= (voxel->z + halfSize);
+    
     return result;
 }
 // Method to free memory allocated for a voxel
