@@ -70,11 +70,14 @@ int scene__voxel_exists(const scene_t *scene, int x, int y, int z) {
 int scene__render0(scene_t *scene) {
     // Simplified: Iterate through all voxels and render them
     for (int i = 0; i < scene->numCubes; i++) {
-        voxel_t vox=scene->voxels[i];
-        Vector3 pos = {vox.x,vox.y,vox.z};
-        DrawCube(pos, 1.0f, 1.0f, 1.0f, scene->colormap[vox.material_id % MAX_MAT_ID]);
-        DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);
+        scene__render_voxel(scene,&(scene->voxels[i]));
     }
+    return 0; // Success
+}
+int scene__render_voxel(scene_t *scene,voxel_t* voxel) {
+        Vector3 pos = {voxel->x,voxel->y,voxel->z};
+        DrawCube(pos, 1.0f, 1.0f, 1.0f, scene->colormap[voxel->material_id % MAX_MAT_ID]);
+        DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
     return 0; // Success
 }
 int scene__render(scene_t *scene, camera_t* camera) {

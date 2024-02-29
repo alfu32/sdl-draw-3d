@@ -8,6 +8,7 @@
         "camera.h": "c",
         "iterator": "c",
         "voxel.h": "c",
-        "lib.h": "c"
+        "lib.h": "c",
+        "cmath": "c"
     }
 }
