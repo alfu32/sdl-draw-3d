@@ -122,7 +122,7 @@ int main(void) {
         }
 
         if (isOrbiting) {
-            azimuth += mouseDelta.x * 0.01f;
+            azimuth -= mouseDelta.x * 0.01f;
             elevation -= mouseDelta.y * 0.01f;
         } else if (isPanning) {
             Vector3 right = Vector3Normalize(Vector3CrossProduct(Vector3Subtract(camera.position, camera.target), camera.up));
@@ -135,7 +135,7 @@ int main(void) {
         }
 
         radius -= GetMouseWheelMove() * 0.8f;
-        radius = Clamp(radius, 1.0f, 20.0f);
+        radius = Clamp(radius, 1.0f, 200000000.0f);
 
         if (isOrbiting || !isPanning) { // Update position only if orbiting or not panning
             camera.position.x = camera.target.x + radius * cosf(elevation) * sinf(azimuth);
@@ -156,7 +156,7 @@ int main(void) {
         
         // rlPushMatrix(); // Push the current matrix to the stack
         // rlTranslatef(0.5f, 0.5f, 0.5f); // Translate the grid
-        DrawGrid(10, 1.0f); // Draw a grid
+        DrawGrid(33, 1.0f); // Draw a grid
         // rlPopMatrix(); // Pop the matrix from the stack to revert the translation
     
 
