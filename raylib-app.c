@@ -1,23 +1,156 @@
 #include <stdio.h>
-#include "raylib.h"
-#include "raymath.h"
+#include <raylib.h>
+
+#define RAYGUI_IMPLEMENTATION
+#include "raygui.h"
+
+#include <raymath.h>
 #include "voxel.h"
 #include "scene.h"
-
-// #define RLGL_IMPLEMENTATION
-// #include "rlgl.h" // Ensure this path is correct and that you're allowed to include this based on your Raylib version
+#include "lib.h"
 
 
-    int screenWidth = 800;
-    int screenHeight = 450;
+typedef stack struct orbit_s{
+    owned mut Vector2 lastMousePos;
+    owned mut float azimuth; // Horizontal angle
+    owned mut float elevation; // Vertical angle
+    owned mut float radius; // Distance from the target
+    owned mut bool isOrbiting;
+    owned mut bool isPanning;
+    borrowed Camera *camera;
+} orbit_t;
+
+static constructor(orbit)(Camera *camera){
+    return (orbit_t){
+        .lastMousePos = GetMousePosition(),
+        .azimuth = 0.709f,
+        .elevation = 0.709f,
+        .radius = 17.3f,
+        .isOrbiting = false,
+        .isPanning = false,
+        .camera = camera,
+    };
+}
+
+instance method(orbit_t) int orbit__control_camera(orbit_t* orbiter){
+    Vector2 mouseDelta = Vector2Subtract(GetMousePosition(), orbiter->lastMousePos);
+    orbiter->lastMousePos = GetMousePosition();
+
+    // Check for right mouse button pressed for orbiting
+    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !IsKeyDown(KEY_LEFT_SHIFT)) {
+        orbiter->isOrbiting = true;
+        orbiter->isPanning = false;
+    } else if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && IsKeyDown(KEY_LEFT_SHIFT)) {
+        // Check for right mouse button pressed with Shift for panning
+        orbiter->isPanning = true;
+        orbiter->isOrbiting = false;
+    } else {
+        orbiter->isOrbiting = orbiter->isPanning = false;
+    }
+
+    if (orbiter->isOrbiting) {
+        orbiter->azimuth -= mouseDelta.x * 0.01f;
+        orbiter->elevation -= mouseDelta.y * 0.01f;
+    } else if (orbiter->isPanning) {
+        Vector3 right = Vector3Normalize(Vector3CrossProduct(Vector3Subtract(orbiter->camera->position, orbiter->camera->target), orbiter->camera->up));
+        Vector3 up = Vector3Normalize(Vector3CrossProduct(right, Vector3Subtract(orbiter->camera->position, orbiter->camera->target)));
+        float panSpeed = 0.01f;
+        orbiter->camera->target = Vector3Add(orbiter->camera->target, Vector3Scale(right, mouseDelta.x * panSpeed));
+        orbiter->camera->target = Vector3Add(orbiter->camera->target, Vector3Scale(up, mouseDelta.y * panSpeed));
+        orbiter->camera->position = Vector3Add(orbiter->camera->position, Vector3Scale(right, mouseDelta.x * panSpeed));
+        orbiter->camera->position = Vector3Add(orbiter->camera->position, Vector3Scale(up, mouseDelta.y * panSpeed));
+    }
+
+    orbiter->radius -= GetMouseWheelMove() * 0.8f;
+    orbiter->radius = Clamp(orbiter->radius, 1.0f, 200000000.0f);
+
+    if (orbiter->isOrbiting || !orbiter->isPanning) { // Update position only if orbiting or not panning
+        orbiter->camera->position.x = orbiter->camera->target.x + orbiter->radius * cosf(orbiter->elevation) * sinf(orbiter->azimuth);
+        orbiter->camera->position.y = orbiter->camera->target.y + orbiter->radius * sinf(orbiter->elevation);
+        orbiter->camera->position.z = orbiter->camera->target.z + orbiter->radius * cosf(orbiter->elevation) * cosf(orbiter->azimuth);
+    }
+}
+
+typedef QUALIFIED(Vector3,5) q_Vector3_t;
+typedef struct control_keys_s { char ctrl,alt,shift,left_alt,right_alt,left_shift,right_shift,left_ctrl,right_ctrl; } control_keys_t;
+
+
+control_keys_t get_control_keys(){
+    control_keys_t r;
+    if(IsKeyPressed(KEY_LEFT_CONTROL)){r.ctrl=1;r.left_ctrl=1;}
+    if(IsKeyReleased(KEY_LEFT_CONTROL)){r.ctrl=0;r.left_ctrl=0;}
+    if(IsKeyPressed(KEY_RIGHT_CONTROL)){r.ctrl=1;r.right_ctrl=1;}
+    if(IsKeyReleased(KEY_RIGHT_CONTROL)){r.ctrl=0;r.right_ctrl=0;}
+    if(IsKeyPressed(KEY_LEFT_SHIFT)){r.shift=1;r.left_shift=1;}
+    if(IsKeyReleased(KEY_LEFT_SHIFT)){r.shift=0;r.left_shift=0;}
+    if(IsKeyPressed(KEY_RIGHT_SHIFT)){r.shift=1;r.right_shift=1;}
+    if(IsKeyReleased(KEY_RIGHT_SHIFT)){r.shift=0;r.right_shift=0;}
+    if(IsKeyPressed(KEY_LEFT_ALT)){r.alt=1;r.left_alt=1;}
+    if(IsKeyReleased(KEY_LEFT_ALT)){r.alt=0;r.left_alt=0;}
+    if(IsKeyPressed(KEY_RIGHT_ALT)){r.alt=1;r.right_alt=1;}
+    if(IsKeyReleased(KEY_RIGHT_ALT)){r.alt=0;r.right_alt=0;}
+    return r;
+} 
+q_Vector3_t compute_model_coordinates(Camera camera,scene_t* scene){
+    Ray ray = { 0 };                    // Picking line ray
+    RayCollision collision = { 0 };     // Ray collision hit info
+    int screenWidth = GetScreenWidth();
+    int screenHeight = GetScreenHeight();
+
+    ray = GetMouseRay(GetMousePosition(), camera);
+    Vector3 mouse_pointer_3d0;
+    Vector3 mouse_pointer_3d;
+    collision=scene__ray_intersect_point(scene,&ray);
+    q_Vector3_t result={mouse_pointer_3d,"none"};
+
+    if(collision.hit) {
+        mouse_pointer_3d0=(Vector3){1*round(collision.point.x/1),1*round(collision.point.y/1),1*round(collision.point.z/1)};
+        mouse_pointer_3d=(Vector3){collision.point.x,collision.point.y,collision.point.z};
+        result=(q_Vector3_t){mouse_pointer_3d,"voxel"};
+    } else {
+    // Check collision between ray and box
+        collision = GetRayCollisionBox(ray,
+                (BoundingBox){(Vector3){ -100.0f, -0.1f, -100.0f},
+                                (Vector3){ 100.0f, 0.0f, 100.0f }});
+        mouse_pointer_3d0=(Vector3){1*round(collision.point.x/1),1*round(collision.point.y/1),1*round(collision.point.z/1)};
+        mouse_pointer_3d=(Vector3){collision.point.x,collision.point.y,collision.point.z};
+        result=(q_Vector3_t){mouse_pointer_3d,"plane"};
+    }
+    return result;
+}
+typedef enum app_construction_mode_e{
+    APP_CONSTRUCTION_MODE_VOLUME=0x100,
+    APP_CONSTRUCTION_MODE_SOLID=0x101,
+} app_construction_mode_e;
+typedef struct mcedit_app_s {
+    app_construction_mode_e construction_mode;//=APP_CONSTRUCTION_MODE_VOLUME;
+    Color current_color;//=GREEN;
+    unsigned int current_color_index;//=GREEN;
+    Color colors[9];//={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK}
+    int screenWidth;
+    int screenHeight;
+} mcedit_app_t;
+
+
+static constructor(mcedit_app)(){
+    return (mcedit_app_t){
+        .construction_mode=APP_CONSTRUCTION_MODE_VOLUME,
+        .current_color=GREEN,
+        .current_color_index=4,
+        .colors={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK},
+        .screenWidth = 800,
+        .screenHeight = 450,
+    };
+}
+
 int main(void) {
     // Initialization
     //--------------------------------------------------------------------------------------
-
+    mcedit_app_t app=mcedit_app_init();
     // Set window to be resizable
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
-    InitWindow(screenWidth, screenHeight, "Raylib Voxel Scene");
+    InitWindow(app.screenWidth, app.screenHeight, "Raylib Voxel Scene");
 
     // Define the camera to look into our 3d world
     Camera3D camera = { 0 };
@@ -37,113 +170,48 @@ int main(void) {
     scene__init(&scene);
 
     // Example: Add a voxel to the scene
-    scene__add_voxel(&scene, (Vector3){0.0f, 0.0f, 0.0f}, 1);
+    scene__add_voxel(&scene, (Vector3){0.0f, 0.0f, 0.0f}, RED,1);
     voxel_t cursor={20,30,20,3};
 
     // SetCameraMode(camera, CAMERA_FREE); // Let Raylib handle camera controls
     
-    Vector2 lastMousePos = GetMousePosition();
-    float azimuth = 0.709f; // Horizontal angle
-    float elevation = 0.709f; // Vertical angle
-    float radius = 17.3f; // Distance from the target
-    bool isOrbiting = false;
-    bool isPanning = false;
+    orbit_t orbiter=orbit_init(&camera);
 
 
-    char status[100];
-    Ray ray = { 0 };                    // Picking line ray
-    RayCollision collision = { 0 };     // Ray collision hit info
-    char *pointer_source="";
-    int ctrl=0;
-    int btn_left_active=0;
+    mut char status[100];
+    mut int ctrl,left_ctrl;
     while (!WindowShouldClose()) {
         UpdateCamera(&camera, CAMERA_PERSPECTIVE );// Update camera position/movement
                 // Get current window dimensions
-        int screenWidth = GetScreenWidth();
-        int screenHeight = GetScreenHeight();
+        app.screenWidth = GetScreenWidth();
+        app.screenHeight = GetScreenHeight();
 
-        ray = GetMouseRay(GetMousePosition(), camera);
-        Vector3 mouse_pointer_3d0;
-        Vector3 mouse_pointer_3d;
-        collision=scene__ray_intersect_point(&scene,&ray);
+        q_Vector3_t q_model_point=compute_model_coordinates(camera,&scene);
 
-        if(collision.hit) {
-            mouse_pointer_3d0=(Vector3){1*round(collision.point.x/1),1*round(collision.point.y/1),1*round(collision.point.z/1)};
-            mouse_pointer_3d=(Vector3){collision.point.x,collision.point.y,collision.point.z};
-            pointer_source="voxel";
-        } else {
-        // Check collision between ray and box
-            collision = GetRayCollisionBox(ray,
-                    (BoundingBox){(Vector3){ -100.0f, -0.1f, -100.0f},
-                                    (Vector3){ 100.0f, 0.0f, 100.0f }});
-            mouse_pointer_3d0=(Vector3){1*round(collision.point.x/1),1*round(collision.point.y/1),1*round(collision.point.z/1)};
-            mouse_pointer_3d=(Vector3){collision.point.x,collision.point.y,collision.point.z};
-            pointer_source="plane";
-        }
-            cursor.position.x=mouse_pointer_3d0.x;
-            cursor.position.y=mouse_pointer_3d0.y;
-            cursor.position.z=mouse_pointer_3d0.z;
+        Vector3 model_point_int=(Vector3){1*round(q_model_point.value.x/1),1*round(q_model_point.value.y/1),1*round(q_model_point.value.z/1)};
+
+        cursor.position.x=model_point_int.x;
+        cursor.position.y=model_point_int.y;
+        cursor.position.z=model_point_int.z;
         
     
-            if(IsKeyPressed(KEY_LEFT_CONTROL)){
-                ctrl=1;
-            }
-            if(IsKeyReleased(KEY_LEFT_CONTROL)){
-                ctrl=0;
-            }
-            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                btn_left_active=1;
-            }
-            if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
-                btn_left_active=0;
-            }
-        if (IsKeyPressed('Z')) camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
+    if(IsKeyPressed(KEY_LEFT_CONTROL)){ctrl=1;}
+    if(IsKeyReleased(KEY_LEFT_CONTROL)){ctrl=0;}
+    if(IsKeyPressed(KEY_RIGHT_CONTROL)){ctrl=1;}
+    if(IsKeyReleased(KEY_RIGHT_CONTROL)){ctrl=0;}
+        if (IsKeyPressed('Z')) orbiter=orbit_init(&camera);
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
             if(ctrl){
-                scene__remove_voxel(&scene,mouse_pointer_3d);
+                scene__remove_voxel(&scene,model_point_int);
             }else{
-                scene__add_voxel(&scene,cursor.position,4);
+                scene__add_voxel(&scene,model_point_int,app.current_color,app.current_color_index);
             }
             printf("left click\n");
         }
-        Vector2 mouseDelta = Vector2Subtract(GetMousePosition(), lastMousePos);
-        lastMousePos = GetMousePosition();
+        
+        orbit__control_camera(&orbiter);
 
-        // Check for right mouse button pressed for orbiting
-        if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !IsKeyDown(KEY_LEFT_SHIFT)) {
-            isOrbiting = true;
-            isPanning = false;
-        } else if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && IsKeyDown(KEY_LEFT_SHIFT)) {
-            // Check for right mouse button pressed with Shift for panning
-            isPanning = true;
-            isOrbiting = false;
-        } else {
-            isOrbiting = isPanning = false;
-        }
-
-        if (isOrbiting) {
-            azimuth -= mouseDelta.x * 0.01f;
-            elevation -= mouseDelta.y * 0.01f;
-        } else if (isPanning) {
-            Vector3 right = Vector3Normalize(Vector3CrossProduct(Vector3Subtract(camera.position, camera.target), camera.up));
-            Vector3 up = Vector3Normalize(Vector3CrossProduct(right, Vector3Subtract(camera.position, camera.target)));
-            float panSpeed = 0.01f;
-            camera.target = Vector3Add(camera.target, Vector3Scale(right, mouseDelta.x * panSpeed));
-            camera.target = Vector3Add(camera.target, Vector3Scale(up, mouseDelta.y * panSpeed));
-            camera.position = Vector3Add(camera.position, Vector3Scale(right, mouseDelta.x * panSpeed));
-            camera.position = Vector3Add(camera.position, Vector3Scale(up, mouseDelta.y * panSpeed));
-        }
-
-        radius -= GetMouseWheelMove() * 0.8f;
-        radius = Clamp(radius, 1.0f, 200000000.0f);
-
-        if (isOrbiting || !isPanning) { // Update position only if orbiting or not panning
-            camera.position.x = camera.target.x + radius * cosf(elevation) * sinf(azimuth);
-            camera.position.y = camera.target.y + radius * sinf(elevation);
-            camera.position.z = camera.target.z + radius * cosf(elevation) * cosf(azimuth);
-        }
-
-        snprintf(status,100,"collision %s t(%3.2f %3.2f %3.2f) p(%3.2f %3.2f %3.2f)",pointer_source,collision.point.x,collision.point.y,collision.point.z,camera.position.x,camera.position.y,camera.position.z);
+        snprintf(status,100,"collision %s p(%3.2f %3.2f %3.2f)",q_model_point.qualifier,camera.position.x,camera.position.y,camera.position.z);
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
@@ -166,6 +234,41 @@ int main(void) {
 
         EndMode3D();
         DrawFPS(10, 10);
+        int crt=10;
+        
+        if (GuiButton((Rectangle){ crt, 10, 50, 30 }, "White")) {
+            app.current_color = WHITE;
+        }
+        if (GuiButton((Rectangle){ crt=crt+60, 10, 50, 30 }, "Red")) {
+            app.current_color = RED;
+        }
+        if (GuiButton((Rectangle){ crt=crt+60, 10, 50, 30 }, "Orange")) {
+            app.current_color = ORANGE;
+        }
+        if (GuiButton((Rectangle){ crt=crt+60, 10, 50, 30 }, "Yellow")) {
+            app.current_color = YELLOW;
+        }
+        if (GuiButton((Rectangle){ crt=crt+60, 10, 50, 30 }, "Green")) {
+            app.current_color = GREEN;
+        }
+        if (GuiButton((Rectangle){ crt=crt+60, 10, 50, 30 }, "Blue")) {
+            app.current_color = BLUE;
+        }
+        if (GuiButton((Rectangle){ crt=crt+60, 10, 50, 30 }, "Pink")) {
+            app.current_color = PINK;
+        }
+        if (GuiButton((Rectangle){ crt=crt+60, 10, 50, 30 }, "Black")) {
+            app.current_color = BLACK;
+        }
+        
+        
+        crt=10;
+        if (GuiButton((Rectangle){ app.screenWidth-60, crt, 50, 30 }, "Volume")) {
+            app.construction_mode = APP_CONSTRUCTION_MODE_VOLUME;
+        }
+        if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+60, 50, 30 }, "Slab")) {
+            app.construction_mode = APP_CONSTRUCTION_MODE_SOLID;
+        }
 
 
         //// DrawRectangle( 10, 30, 320, 93, Fade(SKYBLUE, 0.5f));
@@ -177,8 +280,8 @@ int main(void) {
         //// DrawText("- Z to zoom to (0, 0, 0)"     , 40, 100, 10, DARKGRAY);
 
 
-        DrawRectangle( 0, screenHeight-20, screenWidth, 20, Fade(DARKGRAY, 0.5f));
-        DrawText(status     , 5, screenHeight-15, 10, Fade(BLACK, 0.5f));
+        DrawRectangle( 0, app.screenWidth-20, app.screenWidth, 20, Fade(DARKGRAY, 0.5f));
+        DrawText(status     , 5, app.screenHeight-15, 10, Fade(BLACK, 0.5f));
 
         EndDrawing();
     }

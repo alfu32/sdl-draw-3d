@@ -11,6 +11,14 @@
         "lib.h": "c",
         "cmath": "c",
         "raylib.h": "c",
-        "rlgl.h": "c"
+        "rlgl.h": "c",
+        "array": "c",
+        "compare": "c",
+        "functional": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "scene.h": "c",
+        "random": "c"
     }
 }

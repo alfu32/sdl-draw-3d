@@ -42,12 +42,12 @@ int scene__voxel_at_position(const scene_t *scene, Vector3 position) {
     return 0; // Voxel does not exist
 }
 
-error_id scene__add_voxel(scene_t *scene, Vector3 position, unsigned int material) {
+error_id scene__add_voxel(scene_t *scene, Vector3 position, Color material,unsigned int mat_id) {
     if (scene->numCubes >= MAX_VOXELS) {
         return -1; // Error: Scene is full
     }
     if(!scene__voxel_at_position(scene,position)){
-        voxel_t newVoxel = {position.x, position.y, position.z, material};
+        voxel_t newVoxel = {position.x, position.y, position.z, mat_id,material};
         scene->voxels[scene->numCubes++] = newVoxel;
     }
     return 0; // Success
@@ -76,9 +76,10 @@ int scene__render(scene_t *scene) {
     // Simplified: Iterate through all voxels and render them
     for (int i = 0; i < scene->numCubes; i++) {
         //Vector3 pos = Vector3Add(scene->voxels[i].position,(Vector3){-0.5f, -0.5f, -0.5f});
-        Vector3 pos = scene->voxels[i].position;
-        DrawCube(pos, 1.0f, 1.0f, 1.0f, scene->colormap[scene->voxels[i].material_id % MAX_MAT_ID]);
-        DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
+        voxel_t vox = scene->voxels[i];
+        // DrawCube(pos, 1.0f, 1.0f, 1.0f, scene->colormap[vox.material_id % MAX_MAT_ID]);
+        DrawCube(vox.position, 1.0f, 1.0f, 1.0f, vox.material_color);
+        DrawCubeWires(vox.position, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
     }
     return 0;
 }
