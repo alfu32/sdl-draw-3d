@@ -10,6 +10,12 @@ else
 curl "https://raw.githubusercontent.com/raysan5/raygui/master/src/raygui.h" -O raygui.h
 fi
 
+if [ -f nuklear.h ];then
+echo "nuklear.h exists"
+else
+curl "https://raw.githubusercontent.com/Immediate-Mode-UI/Nuklear/master/nuklear.h" -O nuklear.h
+fi
+
 if [ -f raylib-nuklear.h ];then
 echo "raylib-nuklear.h exists"
 else
