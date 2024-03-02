@@ -8,6 +8,7 @@
 #include "voxel.h"
 #include "scene.h"
 #include "lib.h"
+#include "rmodels-extras.h"
 
 
 typedef stack struct orbit_s{
@@ -122,11 +123,15 @@ typedef enum app_construction_mode_e{
     APP_CONSTRUCTION_MODE_VOLUME=0x100,
     APP_CONSTRUCTION_MODE_SOLID=0x101,
 } app_construction_mode_e;
+
 typedef struct mcedit_app_s {
     app_construction_mode_e construction_mode;//=APP_CONSTRUCTION_MODE_VOLUME;
+
     Color current_color;//=GREEN;
     unsigned int current_color_index;//=GREEN;
     Color colors[9];//={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK}
+    const char* color_names[9];//={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK}
+
     int screenWidth;
     int screenHeight;
 } mcedit_app_t;
@@ -135,14 +140,16 @@ typedef struct mcedit_app_s {
 static constructor(mcedit_app)(){
     return (mcedit_app_t){
         .construction_mode=APP_CONSTRUCTION_MODE_VOLUME,
+
         .current_color=GREEN,
         .current_color_index=4,
         .colors={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK},
+        .color_names={"WHITE","RED","ORANGE","YELLOW","GREEN","BLUE","MAGENTA","PINK","BLACK"},
+
         .screenWidth = 800,
         .screenHeight = 450,
     };
 }
-
 int main(void) {
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -195,12 +202,34 @@ int main(void) {
         cursor.position.z=model_point_int.z;
         
     
-    if(IsKeyPressed(KEY_LEFT_CONTROL)){ctrl=1;}
-    if(IsKeyReleased(KEY_LEFT_CONTROL)){ctrl=0;}
-    if(IsKeyPressed(KEY_RIGHT_CONTROL)){ctrl=1;}
-    if(IsKeyReleased(KEY_RIGHT_CONTROL)){ctrl=0;}
+        if(IsKeyPressed(KEY_LEFT_CONTROL)){ctrl=1;}
+        if(IsKeyReleased(KEY_LEFT_CONTROL)){ctrl=0;}
+        if(IsKeyPressed(KEY_RIGHT_CONTROL)){ctrl=1;}
+        if(IsKeyReleased(KEY_RIGHT_CONTROL)){ctrl=0;}
+
+
         if (IsKeyPressed('Z')) orbiter=orbit_init(&camera);
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+        
+        
+        orbit__control_camera(&orbiter);
+
+        snprintf(status,100,"collision %s p(%3.2f %3.2f %3.2f)",q_model_collision.qualifier,camera.position.x,camera.position.y,camera.position.z);
+
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+
+        for(int ci=0;ci<9;ci++){
+            Rectangle button_rect=(Rectangle){ 10, 10+ci*50, 50, 30 };
+            if (GuiButton(button_rect, app.color_names[ci]) && GetMousePosition().x<60) {
+                app.current_color = app.colors[ci];
+                app.current_color_index = ci;
+            }
+            if(app.current_color_index == ci){
+                DrawRectangleRoundedLines(button_rect,.05,4,8,(Color){0,255,255,255});
+            }
+        }
+        
+        if (GetMousePosition().x>50 && GetMousePosition().x<(app.screenWidth-60) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
             if(ctrl){
                 scene__remove_voxel(&scene,model_point_int);
             }else{
@@ -209,83 +238,52 @@ int main(void) {
             printf("left click\n");
         }
         
-        orbit__control_camera(&orbiter);
-
-        snprintf(status,100,"collision %s p(%3.2f %3.2f %3.2f)",q_model_collision.qualifier,camera.position.x,camera.position.y,camera.position.z);
-
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-        BeginMode3D(camera);
-
-        // Render the scene
-        scene__render(&scene);
-
-        DrawCubeWires(cursor.position, 1.0f, 1.0f, 1.0f, ctrl?Fade(RED, 0.5f):Fade(GREEN, 0.5f));
-        
-        // rlPushMatrix(); // Push the current matrix to the stack
-        // rlTranslatef(0.5f, 0.5f, 0.5f); // Translate the grid
-        DrawGrid(33, 1.0f); // Draw a grid
-        // rlPopMatrix(); // Pop the matrix from the stack to revert the translation
-    
-
-        // Optionally, to cast a ray from the mouse:
-        Ray ray = GetMouseRay(GetMousePosition(), camera);
-        // You can then use Raylib functions to check for intersections, etc.
-
-        DrawLine3D(
-            q_model_collision.value.point,
-            Vector3Add(
-                q_model_collision.value.point,
-                (Vector3){
-                    q_model_collision.value.normal.x*1,
-                    q_model_collision.value.normal.y*1,
-                    q_model_collision.value.normal.z*1,
-                }
-            ),
-            (Color){
-                    q_model_collision.value.normal.x*255,
-                    q_model_collision.value.normal.y*255,
-                    q_model_collision.value.normal.z*255,
-                    255,
-            });
-        DrawSphereEx(q_model_collision.value.point,.1f,3,5,BLUE);
-        EndMode3D();
-        DrawFPS(10, 10);
         int crt=10;
-        
-        if (GuiButton((Rectangle){ crt, 10, 50, 30 }, "White")) {
-            app.current_color = WHITE;
-        }
-        if (GuiButton((Rectangle){ crt=crt+60, 10, 50, 30 }, "Red")) {
-            app.current_color = RED;
-        }
-        if (GuiButton((Rectangle){ crt=crt+60, 10, 50, 30 }, "Orange")) {
-            app.current_color = ORANGE;
-        }
-        if (GuiButton((Rectangle){ crt=crt+60, 10, 50, 30 }, "Yellow")) {
-            app.current_color = YELLOW;
-        }
-        if (GuiButton((Rectangle){ crt=crt+60, 10, 50, 30 }, "Green")) {
-            app.current_color = GREEN;
-        }
-        if (GuiButton((Rectangle){ crt=crt+60, 10, 50, 30 }, "Blue")) {
-            app.current_color = BLUE;
-        }
-        if (GuiButton((Rectangle){ crt=crt+60, 10, 50, 30 }, "Pink")) {
-            app.current_color = PINK;
-        }
-        if (GuiButton((Rectangle){ crt=crt+60, 10, 50, 30 }, "Black")) {
-            app.current_color = BLACK;
-        }
-        
-        
-        crt=10;
         if (GuiButton((Rectangle){ app.screenWidth-60, crt, 50, 30 }, "Volume")) {
             app.construction_mode = APP_CONSTRUCTION_MODE_VOLUME;
         }
         if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+60, 50, 30 }, "Slab")) {
             app.construction_mode = APP_CONSTRUCTION_MODE_SOLID;
         }
+
+        BeginMode3D(camera);
+
+            // Render the scene
+            scene__render(&scene);
+
+            DrawCubeWires(cursor.position, 1.0f, 1.0f, 1.0f, ctrl?Fade(RED, 0.5f):Fade(GREEN, 0.5f));
+            
+            // rlPushMatrix(); // Push the current matrix to the stack
+            // rlTranslatef(0.5f, 0.5f, 0.5f); // Translate the grid
+            DrawGridAt((Vector3){0.0f,-0.5f,0.0f},33, 1.0f); // Draw a grid
+            // rlPopMatrix(); // Pop the matrix from the stack to revert the translation
+        
+
+            // Optionally, to cast a ray from the mouse:
+            Ray ray = GetMouseRay(GetMousePosition(), camera);
+            // You can then use Raylib functions to check for intersections, etc.
+            if(GetMousePosition().x>50 && GetMousePosition().x<(app.screenWidth-60)){
+                DrawLine3D(
+                    q_model_collision.value.point,
+                    Vector3Add(
+                        q_model_collision.value.point,
+                        (Vector3){
+                            q_model_collision.value.normal.x*1,
+                            q_model_collision.value.normal.y*1,
+                            q_model_collision.value.normal.z*1,
+                        }
+                    ),
+                    (Color){
+                            q_model_collision.value.normal.x*255,
+                            q_model_collision.value.normal.y*255,
+                            q_model_collision.value.normal.z*255,
+                            255,
+                    });
+                DrawSphereEx(q_model_collision.value.point,.1f,3,5,BLUE);
+            }
+        EndMode3D();
+
+        DrawFPS(10, 10);
 
 
         //// DrawRectangle( 10, 30, 320, 93, Fade(SKYBLUE, 0.5f));
