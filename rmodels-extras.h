@@ -14,17 +14,17 @@ void DrawGridAt(Vector3 base,int slices, float spacing)
         {
             if (i == 0)
             {
-                rlColor3f(0.0f, 0.5f, 0.5f);
-                rlColor3f(0.0f, 0.5f, 0.5f);
-                rlColor3f(0.0f, 0.5f, 0.5f);
-                rlColor3f(0.5f, 0.5f, 0.5f);
+                rlColor3f(0.65f, 0.65f, 0.65f);
+                rlColor3f(0.65f, 0.65f, 0.65f);
+                rlColor3f(0.65f, 0.65f, 0.65f);
+                rlColor3f(0.65f, 0.65f, 0.65f);
             }
             else
             {
-                rlColor3f(0.75f, 0.75f, 0.75f);
-                rlColor3f(0.75f, 0.75f, 0.75f);
-                rlColor3f(0.75f, 0.75f, 0.75f);
-                rlColor3f(0.75f, 0.75f, 0.75f);
+                rlColor3f(0.40f, 0.40f, 0.40f);
+                rlColor3f(0.40f, 0.40f, 0.40f);
+                rlColor3f(0.40f, 0.40f, 0.40f);
+                rlColor3f(0.40f, 0.40f, 0.40f);
             }
 
             rlVertex3f(base.x+(float)i*spacing, base.y+0.0f, base.z+(float)-halfSlices*spacing);
