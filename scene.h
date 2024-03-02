@@ -86,14 +86,14 @@ int scene__render(scene_t *scene) {
 
 
 // Method to check if a cube exists in the scene
-RayCollision scene__ray_intersect_point(scene_t *scene,Ray* ray) {
-    RayCollision result={false,FLT_MAX,(Vector3){0},(Vector3){0}};
+collision_t scene__ray_intersect_point(scene_t *scene,Ray* ray) {
+    collision_t result={false,FLT_MAX,kMAX_POINT,kZERO_POINT,kVOXEL_NONE,__UINT32_MAX__,"none"};
     for (int i = 0; i < scene->numCubes; ++i) {
         voxel_t cube=scene->voxels[i];
-        RayCollision r = GetRayCollisionBox(*ray,voxel__get_bounding_box(&cube));
-        if( r.hit ) {
-            if( r.distance < result.distance){
-                result=r;
+        RayCollision collision = GetRayCollisionBox(*ray,voxel__get_bounding_box(&cube));
+        if( collision.hit ) {
+            if( collision.distance < result.distance){
+                result=(collision_t){collision.hit,collision.distance,collision.point,collision.normal,cube,i,"voxel"};;
             }
         }
     }

@@ -14,9 +14,9 @@ void DrawGridAt(Vector3 base,int slices, float spacing)
         {
             if (i == 0)
             {
-                rlColor3f(0.5f, 0.5f, 0.5f);
-                rlColor3f(0.5f, 0.5f, 0.5f);
-                rlColor3f(0.5f, 0.5f, 0.5f);
+                rlColor3f(0.0f, 0.5f, 0.5f);
+                rlColor3f(0.0f, 0.5f, 0.5f);
+                rlColor3f(0.0f, 0.5f, 0.5f);
                 rlColor3f(0.5f, 0.5f, 0.5f);
             }
             else

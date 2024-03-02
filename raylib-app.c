@@ -72,7 +72,6 @@ instance method(orbit_t) int orbit__control_camera(orbit_t* orbiter){
     }
 }
 
-typedef QUALIFIED(RayCollision,5) q_RayCollision_t;
 typedef struct control_keys_s { char ctrl,alt,shift,left_alt,right_alt,left_shift,right_shift,left_ctrl,right_ctrl; } control_keys_t;
 
 
@@ -91,31 +90,23 @@ control_keys_t get_control_keys(){
     if(IsKeyPressed(KEY_RIGHT_ALT)){r.alt=1;r.right_alt=1;}
     if(IsKeyReleased(KEY_RIGHT_ALT)){r.alt=0;r.right_alt=0;}
     return r;
-} 
-q_RayCollision_t compute_model_coordinates(Camera camera,scene_t* scene){
+}
+
+
+collision_t scene__get_intersections(Camera camera,scene_t* scene){
     Ray ray = { 0 };                    // Picking line ray
-    RayCollision collision = { 0 };     // Ray collision hit info
     int screenWidth = GetScreenWidth();
     int screenHeight = GetScreenHeight();
 
     ray = GetMouseRay(GetMousePosition(), camera);
-    Vector3 mouse_pointer_3d0;
-    Vector3 mouse_pointer_3d;
-    collision=scene__ray_intersect_point(scene,&ray);
-    q_RayCollision_t result={(RayCollision){},"none"};
+    collision_t result=scene__ray_intersect_point(scene,&ray);
 
-    if(collision.hit) {
-        mouse_pointer_3d0=(Vector3){1*round(collision.point.x/1),1*round(collision.point.y/1),1*round(collision.point.z/1)};
-        mouse_pointer_3d=(Vector3){collision.point.x,collision.point.y,collision.point.z};
-        result=(q_RayCollision_t){collision,"voxel"};
-    } else {
-    // Check collision between ray and box
-        collision = GetRayCollisionBox(ray,
+    if(!result.hit) {
+        // Check collision between ray and box
+        RayCollision collision = GetRayCollisionBox(ray,
                 (BoundingBox){(Vector3){ -100.0f, -0.1f, -100.0f},
                                 (Vector3){ 100.0f, 0.0f, 100.0f }});
-        mouse_pointer_3d0=(Vector3){1*round(collision.point.x/1),1*round(collision.point.y/1),1*round(collision.point.z/1)};
-        mouse_pointer_3d=(Vector3){collision.point.x,collision.point.y,collision.point.z};
-        result=(q_RayCollision_t){collision,"plane"};
+        result=(collision_t){collision.hit,collision.distance,collision.point,collision.normal,kVOXEL_NONE,-1,"plane"};
     }
     return result;
 }
@@ -193,9 +184,9 @@ int main(void) {
         app.screenWidth = GetScreenWidth();
         app.screenHeight = GetScreenHeight();
 
-        q_RayCollision_t q_model_collision=compute_model_coordinates(camera,&scene);
+        collision_t q_model_collision=scene__get_intersections(camera,&scene);
 
-        Vector3 model_point_int=(Vector3){1*round(q_model_collision.value.point.x/1),1*round(q_model_collision.value.point.y/1),1*round(q_model_collision.value.point.z/1)};
+        Vector3 model_point_int=(Vector3){1*round(q_model_collision.point.x/1),1*round(q_model_collision.point.y/1),1*round(q_model_collision.point.z/1)};
 
         cursor.position.x=model_point_int.x;
         cursor.position.y=model_point_int.y;
@@ -216,7 +207,8 @@ int main(void) {
         snprintf(status,100,"collision %s p(%3.2f %3.2f %3.2f)",q_model_collision.qualifier,camera.position.x,camera.position.y,camera.position.z);
 
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        // ClearBackground(RAYWHITE);
+        ClearBackground(GRAY);
 
         for(int ci=0;ci<9;ci++){
             Rectangle button_rect=(Rectangle){ 10, 10+ci*50, 50, 30 };
@@ -264,22 +256,22 @@ int main(void) {
             // You can then use Raylib functions to check for intersections, etc.
             if(GetMousePosition().x>50 && GetMousePosition().x<(app.screenWidth-60)){
                 DrawLine3D(
-                    q_model_collision.value.point,
+                    q_model_collision.point,
                     Vector3Add(
-                        q_model_collision.value.point,
+                        q_model_collision.point,
                         (Vector3){
-                            q_model_collision.value.normal.x*1,
-                            q_model_collision.value.normal.y*1,
-                            q_model_collision.value.normal.z*1,
+                            q_model_collision.normal.x*1,
+                            q_model_collision.normal.y*1,
+                            q_model_collision.normal.z*1,
                         }
                     ),
                     (Color){
-                            q_model_collision.value.normal.x*255,
-                            q_model_collision.value.normal.y*255,
-                            q_model_collision.value.normal.z*255,
+                            q_model_collision.normal.x*255,
+                            q_model_collision.normal.y*255,
+                            q_model_collision.normal.z*255,
                             255,
                     });
-                DrawSphereEx(q_model_collision.value.point,.1f,3,5,BLUE);
+                DrawSphereEx(q_model_collision.point,.1f,3,5,BLUE);
             }
         EndMode3D();
 
