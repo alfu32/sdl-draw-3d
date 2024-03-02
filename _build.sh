@@ -22,6 +22,7 @@ echo "raylib-nuklear.h exists"
 else
 curl "https://raw.githubusercontent.com/RobLoach/raylib-nuklear/master/include/raylib-nuklear.h" -O raylib-nuklear.h
 fi
+echo "zig cc -o $appname.xe $appname.c $flags $zig_flags $*"
 zig cc -o $appname.xe $appname.c $flags $zig_flags -I/usr/include/SDL2 $*
 #zig cc -o $appname.xe $appname.c $flags $zig_flags -I/usr/include/SDL2 $* -target aarch64-linux-gnu
 #zig cc -o $appname.xe $appname.c $flags $zig_flags -I/usr/include/SDL2 $* -target x86_64-linux-gnu

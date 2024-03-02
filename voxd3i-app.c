@@ -198,6 +198,7 @@ int main(void) {
 
     mut char status[100];
     mut int ctrl,left_ctrl;
+    mut char show_help=0;
     while (!WindowShouldClose()) {
         UpdateCamera(&camera, CAMERA_PERSPECTIVE );// Update camera position/movement
                 // Get current window dimensions
@@ -315,15 +316,6 @@ int main(void) {
         /// DrawFPS(10, 10);
 
 
-        //// DrawRectangle( 10, 30, 320, 93, Fade(SKYBLUE, 0.5f));
-        //// DrawRectangleLines( 10, 30, 320, 93, BLUE);
-        //// 
-        //// DrawText("Free camera default controls:", 20, 40, 10, BLACK);
-        //// DrawText("- Mouse Wheel to Zoom in-out" , 40, 60, 10, DARKGRAY);
-        //// DrawText("- Mouse Wheel Pressed to Orbit" , 40, 80, 10, DARKGRAY);
-        //// DrawText("- Z to zoom to (0, 0, 0)"     , 40, 100, 10, DARKGRAY);
-
-
         for(int ci=0;ci<9;ci++){
             Rectangle button_rect=(Rectangle){ 10, 10+ci*45, 40, 40 };
             
@@ -358,16 +350,38 @@ int main(void) {
         }
         
         int crt=10;
-        if (GuiButton((Rectangle){ app.screenWidth-60, crt, 50, 30 }, "Solid")) {
-            app.construction_mode = APP_CONSTRUCTION_MODE_SOLID;
+        if (GuiButton((Rectangle){ app.screenWidth-60, crt, 50, 30 }, "Close")) {
+            
         }
-        if (GuiButton((Rectangle){ app.screenWidth-60, crt, 50, 30 }, "Volume")) {
+        if (GuiButton((Rectangle){ app.screenWidth-60, crt+=50, 50, 30 }, "Help")) {
+            show_help=!show_help;
+        }
+        if (GuiButton((Rectangle){ app.screenWidth-60, crt=crt+50, 50, 30 }, "Volume")) {
             app.construction_mode = APP_CONSTRUCTION_MODE_VOLUME;
         }
-        if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+60, 50, 30 }, "Plate")) {
+        if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+50, 50, 30 }, "Solid")) {
+            app.construction_mode = APP_CONSTRUCTION_MODE_SOLID;
+        }
+        if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+50, 50, 30 }, "Plate")) {
             app.construction_mode = APP_CONSTRUCTION_MODE_SOLID;
         }
 
+        if(show_help){
+                int row=app.screenHeight/2-80;
+                int left=app.screenWidth/2-160;
+                DrawRectangle( 10, row, 320, 160, Fade(SKYBLUE, 0.5f));
+                DrawRectangleLines( 10, row, 320, 160, BLUE);
+                if (GuiButton((Rectangle){ 310,row, 20, 20 }, "X")) {
+                    show_help=0;
+                }
+                DrawText("Free camera default controls:", 15, row+=10, 10, BLACK);
+                DrawText("- Mouse Wheel to Zoom in-out" , 15, row+=20, 10, DARKGRAY);
+                DrawText("- Ctrl-Left Click Pressed to Orbit" , 15, row+=20, 10, DARKGRAY);
+                DrawText("- Shift-Left Click Pressed to Pan" , 15, row+=20, 10, DARKGRAY);
+                DrawText("- Left Click to Add Voxels" , 15, row+=20, 10, DARKGRAY);
+                DrawText("- Right Click to Remove Voxels" , 15, row+=20, 10, DARKGRAY);
+                DrawText("- Z to zoom to (0, 0, 0)"     , 15, row+=20, 10, DARKGRAY);
+        }
         DrawRectangle( 0, app.screenWidth-20, app.screenWidth, 20, Fade(DARKGRAY, 0.5f));
         DrawText(status     , 5, app.screenHeight-15, 10, Fade(BLACK, 0.5f));
 
@@ -375,7 +389,7 @@ int main(void) {
     }
 
     CloseWindow();
-    scene__save_model(&scene,"temp.vxde");
+    /// scene__save_model(&scene,"temp.vxde");
 
     return 0;
 }
