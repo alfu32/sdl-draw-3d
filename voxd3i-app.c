@@ -72,6 +72,7 @@ instance method(orbit_t) int orbit__control_camera(orbit_t* orbiter){
         orbiter->camera->position.y = orbiter->camera->target.y + orbiter->radius * sinf(orbiter->elevation);
         orbiter->camera->position.z = orbiter->camera->target.z + orbiter->radius * cosf(orbiter->elevation) * cosf(orbiter->azimuth);
     }
+    return 0;
 }
 
 typedef struct control_keys_s { char ctrl,alt,shift,left_alt,right_alt,left_shift,right_shift,left_ctrl,right_ctrl; } control_keys_t;
@@ -182,6 +183,8 @@ int main(void) {
 
     scene_t scene;
     scene__init(&scene);
+
+    scene__load_model(&scene,"temp.vxde");
 
     // Example: Add a voxel to the scene
     scene__add_voxel(&scene, (Vector3){0.0f, 0.0f, 0.0f}, RED,1);
@@ -372,6 +375,7 @@ int main(void) {
     }
 
     CloseWindow();
+    scene__save_model(&scene,"temp.vxde");
 
     return 0;
 }

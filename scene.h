@@ -14,13 +14,13 @@
 // Structure to represent the scene
 typedef struct {
     voxel_t voxels[MAX_VOXELS];
-    int numCubes;
+    int numVoxels;
     Color colormap[MAX_MAT_ID];
 } scene_t;
 
 
 void scene__init(scene_t *scene) {
-    scene->numCubes = 0;
+    scene->numVoxels = 0;
     scene->colormap[0]=WHITE;
     scene->colormap[1]=RED;
     scene->colormap[2]=ORANGE;
@@ -34,7 +34,7 @@ void scene__init(scene_t *scene) {
 
 
 int scene__voxel_at_position(const scene_t *scene, Vector3 position) {
-    for (int i = 0; i < scene->numCubes; i++) {
+    for (int i = 0; i < scene->numVoxels; i++) {
         if (Vector3DistanceSqr(scene->voxels[i].position,position)<0.75) {
             return 1; // Voxel exists
         }
@@ -43,23 +43,23 @@ int scene__voxel_at_position(const scene_t *scene, Vector3 position) {
 }
 
 error_id scene__add_voxel(scene_t *scene, Vector3 position, Color material,unsigned int mat_id) {
-    if (scene->numCubes >= MAX_VOXELS) {
+    if (scene->numVoxels >= MAX_VOXELS) {
         return -1; // Error: Scene is full
     }
     if(!scene__voxel_at_position(scene,position)){
         voxel_t newVoxel = {position.x, position.y, position.z, mat_id,material};
-        scene->voxels[scene->numCubes++] = newVoxel;
+        scene->voxels[scene->numVoxels++] = newVoxel;
     }
     return 0; // Success
 }
 
 error_id scene__remove_voxel(scene_t *scene, Vector3 position) {
-    for (int i = 0; i < scene->numCubes; i++) {
+    for (int i = 0; i < scene->numVoxels; i++) {
         float dist = Vector3DistanceSqr(scene->voxels[i].position,position);
         printf("voxel %d is at %3.2f\n",i,dist);
         if ( dist<0.75) {
             // Move the last voxel to the current position and decrease count
-            scene->voxels[i] = scene->voxels[--scene->numCubes];
+            scene->voxels[i] = scene->voxels[--scene->numVoxels];
             return 0; // Success
         }
     }
@@ -74,7 +74,7 @@ int scene__render_voxel(scene_t *scene,voxel_t* voxel) {
 
 int scene__render(scene_t *scene) {
     // Simplified: Iterate through all voxels and render them
-    for (int i = 0; i < scene->numCubes; i++) {
+    for (int i = 0; i < scene->numVoxels; i++) {
         //Vector3 pos = Vector3Add(scene->voxels[i].position,(Vector3){-0.5f, -0.5f, -0.5f});
         voxel_t vox = scene->voxels[i];
         // DrawCube(pos, 1.0f, 1.0f, 1.0f, scene->colormap[vox.material_id % MAX_MAT_ID]);
@@ -87,8 +87,8 @@ int scene__render(scene_t *scene) {
 
 // Method to check if a cube exists in the scene
 collision_t scene__ray_intersect_point(scene_t *scene,Ray* ray) {
-    collision_t result={false,FLT_MAX,kMAX_POINT,kZERO_POINT,kVOXEL_NONE,__UINT32_MAX__,"none"};
-    for (int i = 0; i < scene->numCubes; ++i) {
+    collision_t result={false,FLT_MAX,kMAX_POINT,kZERO_POINT,kVOXEL_NONE,0xFFFFFFFF,"none"};
+    for (int i = 0; i < scene->numVoxels; ++i) {
         voxel_t cube=scene->voxels[i];
         RayCollision collision = GetRayCollisionBox(*ray,voxel__get_bounding_box(&cube));
         if( collision.hit ) {
@@ -99,5 +99,46 @@ collision_t scene__ray_intersect_point(scene_t *scene,Ray* ray) {
     }
     return result;
 }
+
+void scene__save_model(scene_t* scene, const char* filename) {
+    FILE* file = fopen(filename, "wb"); // Open the file for writing in binary mode
+    if (file == NULL) {
+        printf("Error opening file for writing.\n");
+        return;
+    }
+
+    // Write the number of voxels first
+    fwrite(&scene->numVoxels, sizeof(int), 1, file);
+
+    // Write the voxels array
+    fwrite(scene->voxels, sizeof(voxel_t), scene->numVoxels, file);
+
+    fclose(file); // Close the file
+}
+
+void scene__load_model(scene_t* scene, const char* filename) {
+    FILE* file = fopen(filename, "rb"); // Open the file for reading in binary mode
+    if (file == NULL) {
+        printf("Error opening file for reading.\n");
+        return;
+    }
+
+    // Read the number of voxels first
+    fread(&scene->numVoxels, sizeof(int), 1, file);
+
+    // Ensure we do not exceed the array limit
+    if (scene->numVoxels > sizeof(scene->voxels) / sizeof(voxel_t)) {
+        printf("File contains more voxels than can be loaded.\n");
+        fclose(file);
+        return;
+    }
+
+    // Read the voxels array
+    fread(scene->voxels, sizeof(voxel_t), scene->numVoxels, file);
+
+    fclose(file); // Close the file
+}
+
+
 
 #endif
