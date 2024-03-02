@@ -21,7 +21,7 @@ typedef struct collision_s {
     Vector3 point;          // Point of the nearest hit
     Vector3 normal;         // Surface normal of hit
     voxel_t voxel;
-    unsigned int voxel_index;
+    int voxel_index;
     char qualifier[5];
 } collision_t;
 

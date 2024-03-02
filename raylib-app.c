@@ -38,10 +38,10 @@ instance method(orbit_t) int orbit__control_camera(orbit_t* orbiter){
     orbiter->lastMousePos = GetMousePosition();
 
     // Check for right mouse button pressed for orbiting
-    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !IsKeyDown(KEY_LEFT_SHIFT)) {
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && IsKeyDown(KEY_LEFT_CONTROL)) {
         orbiter->isOrbiting = true;
         orbiter->isPanning = false;
-    } else if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && IsKeyDown(KEY_LEFT_SHIFT)) {
+    } else if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && IsKeyDown(KEY_LEFT_SHIFT)) {
         // Check for right mouse button pressed with Shift for panning
         orbiter->isPanning = true;
         orbiter->isOrbiting = false;
@@ -141,6 +141,13 @@ static constructor(mcedit_app)(){
         .screenHeight = 450,
     };
 }
+Vector3 Vector3Floor(Vector3 v){
+    return (Vector3){
+        floor(v.x),
+        floor(v.y),
+        floor(v.z),
+    };
+}
 int main(void) {
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -170,6 +177,7 @@ int main(void) {
     // Example: Add a voxel to the scene
     scene__add_voxel(&scene, (Vector3){0.0f, 0.0f, 0.0f}, RED,1);
     voxel_t cursor={20,30,20,3};
+    voxel_t cursor2={20,30,20,2};
 
     // SetCameraMode(camera, CAMERA_FREE); // Let Raylib handle camera controls
     
@@ -186,8 +194,12 @@ int main(void) {
 
         collision_t mouse_model=scene__get_intersections(camera,&scene);
 
-        Vector3 model_point_int=(Vector3){1*round(mouse_model.point.x/1),1*round(mouse_model.point.y/1),1*round(mouse_model.point.z/1)};
+        Vector3 model_point_int=Vector3Floor(mouse_model.point);
+        Vector3 model_point_next_int=Vector3Add(model_point_int,(Vector3){0,1,0});
         if(mouse_model.voxel_index>=0){
+            printf("\r on voxel %d                             ",mouse_model.voxel_index);
+            model_point_int=mouse_model.voxel.position;
+            model_point_next_int=Vector3Add(mouse_model.voxel.position,mouse_model.normal);
             if(mouse_model.normal.x==1){
                 if(mouse_model.point.x<mouse_model.voxel.position.x){
                     /// on left face
@@ -214,10 +226,22 @@ int main(void) {
                     printf("\ron front face of %d                            ",mouse_model.voxel_index);
                 }
             }
+        }else {
+            printf(
+                "\r on ground plane %d (%2.3f %2.3f %2.3f) -> (%2.3f %2.3f %2.3f)",
+                mouse_model.voxel_index,
+                mouse_model.point.x,mouse_model.point.y,mouse_model.point.z,
+                model_point_int.x,model_point_int.y,model_point_int.z
+            );
+            model_point_next_int=model_point_int;
+
         }
         cursor.position.x=model_point_int.x;
         cursor.position.y=model_point_int.y;
         cursor.position.z=model_point_int.z;
+        cursor2.position.x=model_point_next_int.x;
+        cursor2.position.y=model_point_next_int.y;
+        cursor2.position.z=model_point_next_int.z;
         
     
         if(IsKeyPressed(KEY_LEFT_CONTROL)){ctrl=1;}
@@ -242,7 +266,8 @@ int main(void) {
             // Render the scene
             scene__render(&scene);
 
-            DrawCubeWires(cursor.position, 1.0f, 1.0f, 1.0f, ctrl?Fade(RED, 0.5f):Fade(GREEN, 0.5f));
+            DrawCubeWires(model_point_int, 1.0f, 1.0f, 1.0f, Fade(RED, 0.5f));
+            DrawCubeWires(model_point_next_int, 1.0f, 1.0f, 1.0f, Fade(GREEN, 0.5f));
             
             // rlPushMatrix(); // Push the current matrix to the stack
             // rlTranslatef(0.5f, 0.5f, 0.5f); // Translate the grid
@@ -300,20 +325,33 @@ int main(void) {
             }
         }
         
-        if (GetMousePosition().x>50 && GetMousePosition().x<(app.screenWidth-60) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-            if(ctrl){
-                scene__remove_voxel(&scene,model_point_int);
-            }else{
-                scene__add_voxel(&scene,model_point_int,app.current_color,app.current_color_index);
-            }
-            printf("left click\n");
+        if (
+            GetMousePosition().x>50 && 
+            GetMousePosition().x<(app.screenWidth-60) && 
+            IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) &&
+            !IsKeyDown(KEY_LEFT_CONTROL) &&
+            !IsKeyDown(KEY_LEFT_SHIFT)
+        ){
+            scene__remove_voxel(&scene,model_point_int);
+        }
+        if (
+            GetMousePosition().x>50 && 
+            GetMousePosition().x<(app.screenWidth-60) && 
+            IsMouseButtonPressed(MOUSE_BUTTON_LEFT) &&
+            !IsKeyDown(KEY_LEFT_CONTROL) &&
+            !IsKeyDown(KEY_LEFT_SHIFT)
+        ){
+            scene__add_voxel(&scene,model_point_next_int,app.current_color,app.current_color_index);
         }
         
         int crt=10;
+        if (GuiButton((Rectangle){ app.screenWidth-60, crt, 50, 30 }, "Solid")) {
+            app.construction_mode = APP_CONSTRUCTION_MODE_SOLID;
+        }
         if (GuiButton((Rectangle){ app.screenWidth-60, crt, 50, 30 }, "Volume")) {
             app.construction_mode = APP_CONSTRUCTION_MODE_VOLUME;
         }
-        if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+60, 50, 30 }, "Slab")) {
+        if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+60, 50, 30 }, "Plate")) {
             app.construction_mode = APP_CONSTRUCTION_MODE_SOLID;
         }
 
