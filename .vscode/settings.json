@@ -19,6 +19,7 @@
         "type_traits": "c",
         "utility": "c",
         "scene.h": "c",
-        "random": "c"
+        "random": "c",
+        "raygui.h": "c"
     }
 }

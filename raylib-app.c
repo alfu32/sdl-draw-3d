@@ -4,6 +4,8 @@
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 
+#include "raylib-nuklear.h"
+
 #include <raymath.h>
 #include "voxel.h"
 #include "scene.h"
