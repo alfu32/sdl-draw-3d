@@ -184,10 +184,37 @@ int main(void) {
         app.screenWidth = GetScreenWidth();
         app.screenHeight = GetScreenHeight();
 
-        collision_t q_model_collision=scene__get_intersections(camera,&scene);
+        collision_t mouse_model=scene__get_intersections(camera,&scene);
 
-        Vector3 model_point_int=(Vector3){1*round(q_model_collision.point.x/1),1*round(q_model_collision.point.y/1),1*round(q_model_collision.point.z/1)};
+        Vector3 model_point_int=(Vector3){1*round(mouse_model.point.x/1),1*round(mouse_model.point.y/1),1*round(mouse_model.point.z/1)};
+        if(mouse_model.voxel_index>=0){
+            if(mouse_model.normal.x==1){
+                if(mouse_model.point.x<mouse_model.voxel.position.x){
+                    /// on left face
+                    printf("\ron left face of %d                             ",mouse_model.voxel_index);
+                } else if(mouse_model.point.x>mouse_model.voxel.position.x){
+                    /// on right face
+                    printf("\ron right face of %d                            ",mouse_model.voxel_index);
+                }
+            } else if(mouse_model.normal.y==1){
+                if(mouse_model.point.y<mouse_model.voxel.position.y){
+                    /// on bottom face
+                    printf("\ron bottom face of %d                           ",mouse_model.voxel_index);
+                } else if(mouse_model.point.y>mouse_model.voxel.position.y){
+                    /// on top face
+                    printf("\ron top face of %d                              ",mouse_model.voxel_index);
+                }
 
+            } else if(mouse_model.normal.z==1){
+                if(mouse_model.point.z<mouse_model.voxel.position.z){
+                    /// on back face
+                    printf("\ron back face of %d                             ",mouse_model.voxel_index);
+                } else if(mouse_model.point.z>mouse_model.voxel.position.z){
+                    /// on front face
+                    printf("\ron front face of %d                            ",mouse_model.voxel_index);
+                }
+            }
+        }
         cursor.position.x=model_point_int.x;
         cursor.position.y=model_point_int.y;
         cursor.position.z=model_point_int.z;
@@ -204,39 +231,11 @@ int main(void) {
         
         orbit__control_camera(&orbiter);
 
-        snprintf(status,100,"collision %s p(%3.2f %3.2f %3.2f)",q_model_collision.qualifier,camera.position.x,camera.position.y,camera.position.z);
+        snprintf(status,100,"collision %s p(%3.2f %3.2f %3.2f)",mouse_model.qualifier,camera.position.x,camera.position.y,camera.position.z);
 
         BeginDrawing();
         // ClearBackground(RAYWHITE);
         ClearBackground(GRAY);
-
-        for(int ci=0;ci<9;ci++){
-            Rectangle button_rect=(Rectangle){ 10, 10+ci*50, 50, 30 };
-            if (GuiButton(button_rect, app.color_names[ci]) && GetMousePosition().x<60) {
-                app.current_color = app.colors[ci];
-                app.current_color_index = ci;
-            }
-            if(app.current_color_index == ci){
-                DrawRectangleRoundedLines(button_rect,.05,4,8,(Color){0,255,255,255});
-            }
-        }
-        
-        if (GetMousePosition().x>50 && GetMousePosition().x<(app.screenWidth-60) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-            if(ctrl){
-                scene__remove_voxel(&scene,model_point_int);
-            }else{
-                scene__add_voxel(&scene,model_point_int,app.current_color,app.current_color_index);
-            }
-            printf("left click\n");
-        }
-        
-        int crt=10;
-        if (GuiButton((Rectangle){ app.screenWidth-60, crt, 50, 30 }, "Volume")) {
-            app.construction_mode = APP_CONSTRUCTION_MODE_VOLUME;
-        }
-        if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+60, 50, 30 }, "Slab")) {
-            app.construction_mode = APP_CONSTRUCTION_MODE_SOLID;
-        }
 
         BeginMode3D(camera);
 
@@ -256,26 +255,26 @@ int main(void) {
             // You can then use Raylib functions to check for intersections, etc.
             if(GetMousePosition().x>50 && GetMousePosition().x<(app.screenWidth-60)){
                 DrawLine3D(
-                    q_model_collision.point,
+                    mouse_model.point,
                     Vector3Add(
-                        q_model_collision.point,
+                        mouse_model.point,
                         (Vector3){
-                            q_model_collision.normal.x*1,
-                            q_model_collision.normal.y*1,
-                            q_model_collision.normal.z*1,
+                            mouse_model.normal.x*1,
+                            mouse_model.normal.y*1,
+                            mouse_model.normal.z*1,
                         }
                     ),
                     (Color){
-                            q_model_collision.normal.x*255,
-                            q_model_collision.normal.y*255,
-                            q_model_collision.normal.z*255,
+                            mouse_model.normal.x*255,
+                            mouse_model.normal.y*255,
+                            mouse_model.normal.z*255,
                             255,
                     });
-                DrawSphereEx(q_model_collision.point,.1f,3,5,BLUE);
+                DrawSphereEx(mouse_model.point,.1f,3,5,BLUE);
             }
         EndMode3D();
 
-        DrawFPS(10, 10);
+        /// DrawFPS(10, 10);
 
 
         //// DrawRectangle( 10, 30, 320, 93, Fade(SKYBLUE, 0.5f));
@@ -286,6 +285,37 @@ int main(void) {
         //// DrawText("- Mouse Wheel Pressed to Orbit" , 40, 80, 10, DARKGRAY);
         //// DrawText("- Z to zoom to (0, 0, 0)"     , 40, 100, 10, DARKGRAY);
 
+
+        for(int ci=0;ci<9;ci++){
+            Rectangle button_rect=(Rectangle){ 10, 10+ci*45, 40, 40 };
+            
+            if(app.current_color_index == ci){
+                DrawRectangleRoundedLines(button_rect,.05,4,2,app.colors[ci]);
+            } else {
+                DrawRectangleRoundedLines(button_rect,.05,4,2,Fade(app.colors[ci],0.25f));
+            }
+            if (GuiButton(button_rect, app.color_names[ci]) && GetMousePosition().x<60) {
+                app.current_color = app.colors[ci];
+                app.current_color_index = ci;
+            }
+        }
+        
+        if (GetMousePosition().x>50 && GetMousePosition().x<(app.screenWidth-60) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+            if(ctrl){
+                scene__remove_voxel(&scene,model_point_int);
+            }else{
+                scene__add_voxel(&scene,model_point_int,app.current_color,app.current_color_index);
+            }
+            printf("left click\n");
+        }
+        
+        int crt=10;
+        if (GuiButton((Rectangle){ app.screenWidth-60, crt, 50, 30 }, "Volume")) {
+            app.construction_mode = APP_CONSTRUCTION_MODE_VOLUME;
+        }
+        if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+60, 50, 30 }, "Slab")) {
+            app.construction_mode = APP_CONSTRUCTION_MODE_SOLID;
+        }
 
         DrawRectangle( 0, app.screenWidth-20, app.screenWidth, 20, Fade(DARKGRAY, 0.5f));
         DrawText(status     , 5, app.screenHeight-15, 10, Fade(BLACK, 0.5f));
