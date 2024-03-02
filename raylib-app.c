@@ -148,6 +148,13 @@ Vector3 Vector3Floor(Vector3 v){
         floor(v.z),
     };
 }
+Vector3 Vector3Round(Vector3 v){
+    return (Vector3){
+        round(v.x),
+        round(v.y),
+        round(v.z),
+    };
+}
 int main(void) {
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -233,7 +240,8 @@ int main(void) {
                 mouse_model.point.x,mouse_model.point.y,mouse_model.point.z,
                 model_point_int.x,model_point_int.y,model_point_int.z
             );
-            model_point_next_int=model_point_int;
+            model_point_next_int=Vector3Round(mouse_model.point);//Vector3Add(Vector3Round(mouse_model.point),(Vector3){1,0,1});
+            model_point_int=model_point_next_int;
 
         }
         cursor.position.x=model_point_int.x;
