@@ -144,5 +144,23 @@ collision_t scene__ray_intersect_point(scene_t *scene,Ray* ray) {
 }
 
 
+collision_t scene__get_intersections(Camera camera,scene_t* scene){
+    Ray ray = { 0 };                    // Picking line ray
+    int screenWidth = GetScreenWidth();
+    int screenHeight = GetScreenHeight();
+
+    ray = GetMouseRay(GetMousePosition(), camera);
+    collision_t result=scene__ray_intersect_point(scene,&ray);
+
+    if(!result.hit) {
+        // Check collision between ray and box
+        RayCollision collision = GetRayCollisionBox(ray,
+                (BoundingBox){(Vector3){ -100.0f, -0.1f, -100.0f},
+                                (Vector3){ 100.0f, 0.0f, 100.0f }});
+        result=(collision_t){collision.hit,collision.distance,collision.point,collision.normal,kVOXEL_NONE,-1,"plane"};
+    }
+    return result;
+}
+
 
 #endif
