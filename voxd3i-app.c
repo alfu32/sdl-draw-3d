@@ -210,42 +210,42 @@ int main(void) {
         Vector3 model_point_int=Vector3Floor(mouse_model.point);
         Vector3 model_point_next_int=Vector3Add(model_point_int,(Vector3){0,1,0});
         if(mouse_model.voxel_index>=0){
-            printf("\r on voxel %d                             ",mouse_model.voxel_index);
+            /// printf("\r on voxel %d                             ",mouse_model.voxel_index);
             model_point_int=mouse_model.voxel.position;
             model_point_next_int=Vector3Add(mouse_model.voxel.position,mouse_model.normal);
             if(mouse_model.normal.x==1){
                 if(mouse_model.point.x<mouse_model.voxel.position.x){
                     /// on left face
-                    printf("\ron left face of %d                             ",mouse_model.voxel_index);
+                    /// printf("\ron left face of %d                             ",mouse_model.voxel_index);
                 } else if(mouse_model.point.x>mouse_model.voxel.position.x){
                     /// on right face
-                    printf("\ron right face of %d                            ",mouse_model.voxel_index);
+                    /// printf("\ron right face of %d                            ",mouse_model.voxel_index);
                 }
             } else if(mouse_model.normal.y==1){
                 if(mouse_model.point.y<mouse_model.voxel.position.y){
                     /// on bottom face
-                    printf("\ron bottom face of %d                           ",mouse_model.voxel_index);
+                    /// printf("\ron bottom face of %d                           ",mouse_model.voxel_index);
                 } else if(mouse_model.point.y>mouse_model.voxel.position.y){
                     /// on top face
-                    printf("\ron top face of %d                              ",mouse_model.voxel_index);
+                    /// printf("\ron top face of %d                              ",mouse_model.voxel_index);
                 }
 
             } else if(mouse_model.normal.z==1){
                 if(mouse_model.point.z<mouse_model.voxel.position.z){
                     /// on back face
-                    printf("\ron back face of %d                             ",mouse_model.voxel_index);
+                    /// printf("\ron back face of %d                             ",mouse_model.voxel_index);
                 } else if(mouse_model.point.z>mouse_model.voxel.position.z){
                     /// on front face
-                    printf("\ron front face of %d                            ",mouse_model.voxel_index);
+                    /// printf("\ron front face of %d                            ",mouse_model.voxel_index);
                 }
             }
         }else {
-            printf(
+            /*printf(
                 "\r on ground plane %d (%2.3f %2.3f %2.3f) -> (%2.3f %2.3f %2.3f)",
                 mouse_model.voxel_index,
                 mouse_model.point.x,mouse_model.point.y,mouse_model.point.z,
                 model_point_int.x,model_point_int.y,model_point_int.z
-            );
+            );*/
             model_point_next_int=Vector3Round(mouse_model.point);//Vector3Add(Vector3Round(mouse_model.point),(Vector3){1,0,1});
             model_point_int=model_point_next_int;
 

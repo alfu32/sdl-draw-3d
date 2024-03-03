@@ -37,7 +37,7 @@ void scene__init(scene_t *scene) {
 void scene__save_model(scene_t* scene, const char* filename) {
     FILE* file = fopen(filename, "wb"); // Open the file for writing in binary mode
     if (file == NULL) {
-        printf("Error opening file for writing.\n");
+        // printf("Error opening file for writing.\n");
         return;
     }
 
@@ -53,7 +53,7 @@ void scene__save_model(scene_t* scene, const char* filename) {
 void scene__load_model(scene_t* scene, const char* filename) {
     FILE* file = fopen(filename, "rb"); // Open the file for reading in binary mode
     if (file == NULL) {
-        printf("Error opening file for reading.\n");
+        // printf("Error opening file for reading.\n");
         return;
     }
 
@@ -62,7 +62,7 @@ void scene__load_model(scene_t* scene, const char* filename) {
 
     // Ensure we do not exceed the array limit
     if (scene->numVoxels > sizeof(scene->voxels) / sizeof(voxel_t)) {
-        printf("File contains more voxels than can be loaded.\n");
+        // printf("File contains more voxels than can be loaded.\n");
         fclose(file);
         return;
     }
@@ -98,7 +98,7 @@ error_id scene__add_voxel(scene_t *scene, Vector3 position, Color material,unsig
 error_id scene__remove_voxel(scene_t *scene, Vector3 position) {
     for (int i = 0; i < scene->numVoxels; i++) {
         float dist = Vector3DistanceSqr(scene->voxels[i].position,position);
-        printf("voxel %d is at %3.2f\n",i,dist);
+        // printf("voxel %d is at %3.2f\n",i,dist);
         if ( dist<0.75) {
             // Move the last voxel to the current position and decrease count
             scene->voxels[i] = scene->voxels[--scene->numVoxels];
