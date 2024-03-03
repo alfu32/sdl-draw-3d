@@ -201,14 +201,18 @@ int ext_RoundButton(Vector2 pos,float radius,Color color){
     }
 }
 
-void voxel_tool_acquire(scene_t* scene,Vector3* inputs,size_t num_inputs){}
-void voxel_tool_finish(scene_t* scene,Vector3* inputs,size_t num_inputs){}
+void voxel_tool_acquire(scene_t* scene,Vector3* inputs,size_t num_inputs,size_t total_inputs){
+    printf("got point number [%lu/%lu]",num_inputs,total_inputs);
+}
+void voxel_tool_finish(scene_t* scene,Vector3* inputs,size_t num_inputs,size_t total_inputs){
+    printf("got last point [%lu/%lu]",num_inputs,total_inputs);
+}
 
 int main(void) {
     // Initialization
     //--------------------------------------------------------------------------------------
     multistep_tool_t voxel_tool;
-    multistep_tool__init(&voxel_tool,1,voxel_tool_acquire,voxel_tool_finish);
+    multistep_tool__init(&voxel_tool,3,voxel_tool_acquire,voxel_tool_finish);
     // Set window to be resizable
 
 
@@ -312,7 +316,7 @@ int main(void) {
         
         orbit__control_camera(&orbiter);
 
-        snprintf(status,100,"buffer %40s  voxels %d/%d temp file %s",app.buffer,scene.numVoxels,MAX_VOXELS,scene.temp_filename);
+        snprintf(status,100,"construction mode : %d, buffer %40s  voxels %d/%d temp file %s",app.construction_mode,app.buffer,scene.numVoxels,MAX_VOXELS,scene.temp_filename);
 
         BeginDrawing();
         // ClearBackground(RAYWHITE);
@@ -362,10 +366,22 @@ int main(void) {
         /// DrawFPS(10, 10);
         switch(app.construction_mode){
             case APP_CONSTRUCTION_MODE_PLATE:
+                if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                    printf("tool %d",APP_CONSTRUCTION_MODE_PLATE);
+                    multistep_tool__receive_point(&voxel_tool,model_point_int,&scene);
+                }
             break;
             case APP_CONSTRUCTION_MODE_SHELL:
+                if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                    printf("tool %d",APP_CONSTRUCTION_MODE_SHELL);
+                    multistep_tool__receive_point(&voxel_tool,model_point_int,&scene);
+                }
             break;
             case APP_CONSTRUCTION_MODE_VOLUME:
+                if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                    printf("tool %d",APP_CONSTRUCTION_MODE_VOLUME);
+                    multistep_tool__receive_point(&voxel_tool,model_point_int,&scene);
+                }
             break;
             case APP_CONSTRUCTION_MODE_VOXEL:
                 if (
@@ -462,7 +478,7 @@ int main(void) {
 
         EndDrawing();
     }
-
+    multistep_tool__deinit(&voxel_tool);
     CloseWindow();
     /// scene__save_model(&scene,"temp.vxde");
 

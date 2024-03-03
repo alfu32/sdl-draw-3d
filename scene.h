@@ -23,7 +23,7 @@ typedef struct {
     const char* temp_filename;
 } scene_t;
 
-typedef void (*mutate_scene_fn)(scene_t* scene,Vector3* inputs,size_t num_inputs);
+typedef void (*mutate_scene_fn)(scene_t* scene,Vector3* inputs,size_t num_inputs,size_t total_inputs);
 
 void scene__init(scene_t *scene,char is_persisted) {
     scene->is_persisted=is_persisted;
