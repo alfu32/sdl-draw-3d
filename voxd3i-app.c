@@ -48,8 +48,21 @@ typedef struct voxd3i_edit_app_s {
     Color colors[9];//={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK}
     const char* color_names[9];//={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK}
 
+    CameraProjection current_camera_projection;
+    unsigned int current_camera_projection_index;
+    CameraProjection camera_projections[2];
+    const char* camera_projection_names[2];
+
+    CameraMode current_camera_mode;
+    unsigned int current_camera_mode_index;
+    CameraMode camera_modes[5];
+    const char* camera_mode_names[5];
+
     int screenWidth;
     int screenHeight;
+
+    scene_t guides;
+    scene_t construction_hints;
 
 } voxd3i_edit_app_t;
 
@@ -61,6 +74,11 @@ voxd3i_edit_app_t voxd3i_edit_app__setup(Camera3D* camera){
     camera->up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
     camera->fovy = 45.0f;                                // Camera field-of-view Y
     camera->projection = CAMERA_PERSPECTIVE;             // Camera projection type
+    scene_t guides;
+    scene__init(&guides,0);           // Camera projection type
+    scene_t construction_hints;
+    scene__init(&construction_hints,0);
+
     return (voxd3i_edit_app_t){
         .construction_mode=APP_CONSTRUCTION_MODE_VOXEL,
 
@@ -69,8 +87,22 @@ voxd3i_edit_app_t voxd3i_edit_app__setup(Camera3D* camera){
         .colors={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK},
         .color_names={"WHITE","RED","ORANGE","YELLOW","GREEN","BLUE","MAGENTA","PINK","BLACK"},
 
+
+        .current_camera_projection=CAMERA_PERSPECTIVE,
+        .current_camera_projection_index=0,
+        .camera_projections={CAMERA_PERSPECTIVE,CAMERA_ORTHOGRAPHIC},
+        .camera_projection_names={"PERSPECTIVE","ORTHOGRAPHIC"},
+
+        .current_camera_mode=CAMERA_FREE,
+        .current_camera_mode_index=0,
+        .camera_modes={CAMERA_FREE,CAMERA_ORBITAL,CAMERA_FIRST_PERSON,CAMERA_THIRD_PERSON},
+        .camera_mode_names={"FREE","ORBITAL","FIRST_PERSON","ORBITAL","THIRD_PERSON"},
+
         .screenWidth = 800,
         .screenHeight = 450,
+
+        .guides=guides,
+        .construction_hints=construction_hints,
     };
 }
 
@@ -91,11 +123,12 @@ int main(void) {
     // DisableCursor();                    // Limit cursor to relative movement inside the window
 
     SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
+    SetExitKey(KEY_Q); // Use KEY_NULL or 0 to disable
 
     Camera3D camera;
     scene_t scene;
     voxd3i_edit_app_t app=voxd3i_edit_app__setup(&camera);
-    scene__init(&scene);
+    scene__init(&scene,1);
 
     scene__load_model(&scene,"temp.vxde");
 
@@ -116,11 +149,15 @@ int main(void) {
     mut char status[100];
     mut int ctrl,left_ctrl;
     mut char show_help=0;
-    while (!WindowShouldClose()) {
-        UpdateCamera(&camera, CAMERA_PERSPECTIVE );// Update camera position/movement
+    char window_should_close=0;
+    while (!(WindowShouldClose() || window_should_close)) {
+        UpdateCamera(&camera, app.current_camera_projection );// Update camera position/movement
         voxd3i_edit_app__update(&app);
 
         collision_t mouse_model=scene__get_intersections(camera,&scene);
+        if(!mouse_model.hit) {
+            mouse_model=scene__get_intersections(camera,&app.guides);
+        }
 
         Vector3 model_point_int=Vector3Floor(mouse_model.point);
         Vector3 model_point_next_int=Vector3Add(model_point_int,(Vector3){0,1,0});
@@ -143,6 +180,22 @@ int main(void) {
         if(IsKeyReleased(KEY_RIGHT_CONTROL)){ctrl=0;}
 
 
+        if(IsKeyPressed(KEY_G)){
+            scene__add_voxel(&app.guides,model_point_int,RED,0);
+            for(int i=1;i<10;i++){
+                scene__add_voxel(&app.guides,(Vector3){model_point_int.x+(float)i,model_point_int.y,model_point_int.z},RED,0);
+                scene__add_voxel(&app.guides,(Vector3){model_point_int.x-(float)i,model_point_int.y,model_point_int.z},Fade(RED,0.5f),0);
+                scene__add_voxel(&app.guides,(Vector3){model_point_int.x,model_point_int.y+(float)i,model_point_int.z},GREEN,0);
+                scene__add_voxel(&app.guides,(Vector3){model_point_int.x,model_point_int.y-(float)i,model_point_int.z},Fade(GREEN,0.5f),0);
+                scene__add_voxel(&app.guides,(Vector3){model_point_int.x,model_point_int.y,model_point_int.z+(float)i},BLUE,0);
+                scene__add_voxel(&app.guides,(Vector3){model_point_int.x,model_point_int.y,model_point_int.z-(float)i},Fade(BLUE,0.5f),0);
+            }
+        }
+        if(IsKeyPressed(KEY_SPACE)){
+            scene__clear(&app.guides);
+        }
+
+
         if (IsKeyPressed('Z')) orbiter=orbit_init(&camera);
         
         
@@ -158,7 +211,9 @@ int main(void) {
         BeginMode3D(camera);
 
             // Render the scene
-            scene__render(&scene);
+            scene__render(&scene,0);
+            scene__render(&app.guides,1);
+            scene__render(&app.construction_hints,2);
 
             DrawCubeWires(model_point_int, 1.0f, 1.0f, 1.0f, Fade(RED, 0.5f));
             DrawCubeWires(model_point_next_int, 1.0f, 1.0f, 1.0f, Fade(GREEN, 0.5f));
@@ -241,19 +296,34 @@ int main(void) {
 
         int crt=25;
         if (GuiButton((Rectangle){ app.screenWidth-60, crt, 50, 30 }, "Close")) {
-            
+            window_should_close=1;
         }
         if (GuiButton((Rectangle){ app.screenWidth-60, crt+=50, 50, 30 }, "Help")) {
             show_help=!show_help;
         }
+        if(app.construction_mode==APP_CONSTRUCTION_MODE_VOLUME) {
+            DrawRectangleLinesEx((Rectangle){app.screenWidth-60-2, crt+90-2, 50+4, 30+4},2,PINK);
+        }
         if (GuiButton((Rectangle){ app.screenWidth-60, crt=crt+90, 50, 30 }, "Volume")) {
             app.construction_mode = APP_CONSTRUCTION_MODE_VOLUME;
+        }
+
+        if(app.construction_mode==APP_CONSTRUCTION_MODE_SHELL) {
+            DrawRectangleLinesEx((Rectangle){app.screenWidth-60-2, crt+50-2, 50+4, 30+4},2,PINK);
         }
         if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+50, 50, 30 }, "SHELL")) {
             app.construction_mode = APP_CONSTRUCTION_MODE_SHELL;
         }
+
+        if(app.construction_mode==APP_CONSTRUCTION_MODE_PLATE) {
+            DrawRectangleLinesEx((Rectangle){app.screenWidth-60-2, crt+50-2, 50+4, 30+4},2,PINK);
+        }
         if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+50, 50, 30 }, "Plate")) {
             app.construction_mode = APP_CONSTRUCTION_MODE_PLATE;
+        }
+
+        if(app.construction_mode==APP_CONSTRUCTION_MODE_VOXEL) {
+            DrawRectangleLinesEx((Rectangle){app.screenWidth-60-2, crt+50-2, 50+4, 30+4},2,PINK);
         }
         if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+50, 50, 30 }, "Voxel")) {
             app.construction_mode = APP_CONSTRUCTION_MODE_VOXEL;

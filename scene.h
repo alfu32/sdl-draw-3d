@@ -16,11 +16,13 @@ typedef struct {
     voxel_t voxels[MAX_VOXELS];
     int numVoxels;
     Color colormap[MAX_MAT_ID];
+    char is_persisted;
     const char* temp_filename;
 } scene_t;
 
 
-void scene__init(scene_t *scene) {
+void scene__init(scene_t *scene,char is_persisted) {
+    scene->is_persisted=is_persisted;
     scene->temp_filename="temp.vxde";
     scene->numVoxels = 0;
     scene->colormap[0]=WHITE;
@@ -91,7 +93,7 @@ error_id scene__add_voxel(scene_t *scene, Vector3 position, Color material,unsig
         voxel_t newVoxel = {position.x, position.y, position.z, mat_id,material};
         scene->voxels[scene->numVoxels++] = newVoxel;
     }
-    scene__save_model(scene,scene->temp_filename);
+    if(scene->is_persisted){scene__save_model(scene,scene->temp_filename);}
     return 0; // Success
 }
 
@@ -105,8 +107,13 @@ error_id scene__remove_voxel(scene_t *scene, Vector3 position) {
             return 0; // Success
         }
     }
-    scene__save_model(scene,scene->temp_filename);
+    if(scene->is_persisted){scene__save_model(scene,scene->temp_filename);}
     return -1; // Error: Voxel not found
+}
+
+int scene__clear(scene_t* self){
+    self->numVoxels=0;
+    return 0;
 }
 
 
@@ -115,14 +122,24 @@ int scene__render_voxel(scene_t *scene,voxel_t* voxel) {
     return 0; 
 }
 
-int scene__render(scene_t *scene) {
+int scene__render(scene_t *scene,int type) {
     // Simplified: Iterate through all voxels and render them
     for (int i = 0; i < scene->numVoxels; i++) {
         //Vector3 pos = Vector3Add(scene->voxels[i].position,(Vector3){-0.5f, -0.5f, -0.5f});
         voxel_t vox = scene->voxels[i];
         // DrawCube(pos, 1.0f, 1.0f, 1.0f, scene->colormap[vox.material_id % MAX_MAT_ID]);
-        DrawCube(vox.position, 1.0f, 1.0f, 1.0f, vox.material_color);
-        DrawCubeWires(vox.position, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
+        switch(type){
+            case 0:
+                DrawCube(vox.position, 1.0f, 1.0f, 1.0f, vox.material_color);
+                DrawCubeWires(vox.position, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
+                break;
+            case 1:
+                DrawSphere(vox.position, 0.1f, vox.material_color);
+                break;
+            case 2:
+                DrawCubeWires(vox.position, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
+                break;
+        }
     }
     return 0;
 }
@@ -157,7 +174,7 @@ collision_t scene__get_intersections(Camera camera,scene_t* scene){
         RayCollision collision = GetRayCollisionBox(ray,
                 (BoundingBox){(Vector3){ -100.0f, -0.1f, -100.0f},
                                 (Vector3){ 100.0f, 0.0f, 100.0f }});
-        result=(collision_t){collision.hit,collision.distance,collision.point,collision.normal,kVOXEL_NONE,-1,"plane"};
+        result=(collision_t){false,collision.distance,collision.point,collision.normal,kVOXEL_NONE,-1,"plane"};
     }
     return result;
 }
