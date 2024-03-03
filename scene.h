@@ -12,6 +12,8 @@
 #define MAX_VOXELS 10000
 #define MAX_MAT_ID 10000
 
+
+
 // Structure to represent the scene
 typedef struct {
     voxel_t voxels[MAX_VOXELS];
@@ -21,6 +23,7 @@ typedef struct {
     const char* temp_filename;
 } scene_t;
 
+typedef void (*mutate_scene_fn)(scene_t* scene,Vector3* inputs,size_t num_inputs);
 
 void scene__init(scene_t *scene,char is_persisted) {
     scene->is_persisted=is_persisted;

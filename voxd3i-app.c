@@ -13,6 +13,7 @@
 #include "orbit-control.h"
 #include "rmodels-extras.h"
 #include "rmath-extras.h"
+#include "multistep-tool.h"
 
 
 typedef struct control_keys_s { char ctrl,alt,shift,left_alt,right_alt,left_shift,right_shift,left_ctrl,right_ctrl; } control_keys_t;
@@ -199,9 +200,15 @@ int ext_RoundButton(Vector2 pos,float radius,Color color){
         return 0;
     }
 }
+
+void voxel_tool_acquire(scene_t* scene,Vector3* inputs,size_t num_inputs){}
+void voxel_tool_finish(scene_t* scene,Vector3* inputs,size_t num_inputs){}
+
 int main(void) {
     // Initialization
     //--------------------------------------------------------------------------------------
+    multistep_tool_t voxel_tool;
+    multistep_tool__init(&voxel_tool,1,voxel_tool_acquire,voxel_tool_finish);
     // Set window to be resizable
 
 
