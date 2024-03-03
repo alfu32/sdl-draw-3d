@@ -13,6 +13,12 @@ typedef struct voxel_s {
     Color material_color; // Material ID for future use
 } voxel_t;
 
+typedef enum collision_hit_ {
+    COLLISION_HIT_NONE=0x110,
+    COLLISION_HIT_VOXEL,
+    COLLISION_HIT_PLANE,
+    COLLISION_HIT_GUIDE,
+} collision_hit_e;
 
 typedef struct collision_s {
     
@@ -22,7 +28,8 @@ typedef struct collision_s {
     Vector3 normal;         // Surface normal of hit
     voxel_t voxel;
     int voxel_index;
-    char qualifier[5];
+    collision_hit_e collision_hit;
+    
 } collision_t;
 
 const Vector3 kMAX_POINT={FLT_MAX,FLT_MAX,FLT_MAX,};

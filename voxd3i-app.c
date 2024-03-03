@@ -45,8 +45,8 @@ typedef struct voxd3i_edit_app_s {
 
     Color current_color;//=GREEN;
     unsigned int current_color_index;//=GREEN;
-    Color colors[9];//={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK}
-    const char* color_names[9];//={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK}
+    Color colors[360];//={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK}
+    //const char* color_names[9];//={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK}
 
     CameraProjection current_camera_projection;
     unsigned int current_camera_projection_index;
@@ -64,8 +64,17 @@ typedef struct voxd3i_edit_app_s {
     scene_t guides;
     scene_t construction_hints;
 
+    char buffer[1000];
+
 } voxd3i_edit_app_t;
 
+// #define PI 3.14159265358979323846
+
+void fillColorCircle(Color colors[360]) {
+    for (int i = 0; i < 360; i++) {
+        colors[i]=ColorFromHSV(i,1.0f,1.0f);
+    }
+}
 
 voxd3i_edit_app_t voxd3i_edit_app__setup(Camera3D* camera){
     // Define the camera to look into our 3d world
@@ -79,13 +88,11 @@ voxd3i_edit_app_t voxd3i_edit_app__setup(Camera3D* camera){
     scene_t construction_hints;
     scene__init(&construction_hints,0);
 
-    return (voxd3i_edit_app_t){
+    voxd3i_edit_app_t app = {
         .construction_mode=APP_CONSTRUCTION_MODE_VOXEL,
 
-        .current_color=GREEN,
-        .current_color_index=4,
-        .colors={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK},
-        .color_names={"WHITE","RED","ORANGE","YELLOW","GREEN","BLUE","MAGENTA","PINK","BLACK"},
+        //.colors={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK},
+        //.color_names={"WHITE","RED","ORANGE","YELLOW","GREEN","BLUE","MAGENTA","PINK","BLACK"},
 
 
         .current_camera_projection=CAMERA_PERSPECTIVE,
@@ -104,6 +111,11 @@ voxd3i_edit_app_t voxd3i_edit_app__setup(Camera3D* camera){
         .guides=guides,
         .construction_hints=construction_hints,
     };
+    fillColorCircle(app.colors);
+
+    app.current_color=app.colors[4];
+    app.current_color_index=4;
+    return app;
 }
 
 int voxd3i_edit_app__update(voxd3i_edit_app_t* app){
@@ -112,8 +124,81 @@ int voxd3i_edit_app__update(voxd3i_edit_app_t* app){
     app->screenHeight = GetScreenHeight();
     return 0;
 }
-
-
+unsigned int voxd3i_edit_app__InputMathExpr(voxd3i_edit_app_t* app) {
+    int keypressed;
+    char b0[999]="";
+    int l;
+    switch(keypressed=GetKeyPressed()){
+        case KEY_ZERO:
+        case KEY_ONE:
+        case KEY_TWO:
+        case KEY_THREE:
+        case KEY_FOUR:
+        case KEY_FIVE:
+        case KEY_SIX:
+        case KEY_SEVEN:
+        case KEY_EIGHT:
+        case KEY_NINE:
+            strcpy(b0,app->buffer);
+            snprintf(app->buffer,1000,"%s%d",b0,(keypressed-48));
+            b0[0]='\0';
+            return 25;
+        break;
+        case KEY_KP_0:
+        case KEY_KP_1:
+        case KEY_KP_2:
+        case KEY_KP_3:
+        case KEY_KP_4:
+        case KEY_KP_5:
+        case KEY_KP_6:
+        case KEY_KP_7:
+        case KEY_KP_8:
+        case KEY_KP_9:
+            strcpy(b0,app->buffer);
+            snprintf(app->buffer,1000,"%s%d",b0,(keypressed-320));
+            return 25;
+        case KEY_COMMA:
+        case KEY_SEMICOLON:
+        case KEY_X:
+        case KEY_SLASH:
+        case KEY_EQUAL:
+        case KEY_MINUS:
+        case KEY_KP_ADD:
+            strcpy(b0,app->buffer);
+            if(keypressed == KEY_EQUAL || keypressed == KEY_KP_ADD){
+                snprintf(app->buffer,1000,"%s%c",b0,keypressed);
+            }else{
+                snprintf(app->buffer,1000,"%s%c",b0,keypressed);
+            }
+            return 25;
+        case KEY_BACKSPACE:
+            l=strlen(app->buffer);
+            if(l>0){
+                app->buffer[l-1] = '\0';
+                return 25;
+            }
+        break;
+        case KEY_ENTER:
+            app->buffer[0] = '\0';
+            return 25;
+        default:
+            // printf("pressed : [%d,%c]\n",keypressed,keypressed);
+            // WaitTime(1.125);
+            return 0;
+    }
+    return 0;
+}
+int ext_RoundButton(Vector2 pos,float radius,Color color){
+    Vector2 mp = GetMousePosition();
+    if(Vector2Distance(pos,mp)<=radius){
+        DrawCircle(pos.x,pos.y,radius,ColorBrightness(color,0.55f));
+        return IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+    } else {
+        DrawCircle(pos.x,pos.y,radius,color);
+        DrawCircleLines(pos.x,pos.y,radius,color);
+        return 0;
+    }
+}
 int main(void) {
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -150,29 +235,48 @@ int main(void) {
     mut int ctrl,left_ctrl;
     mut char show_help=0;
     char window_should_close=0;
-    while (!(WindowShouldClose() || window_should_close)) {
+    for (;!(WindowShouldClose() || window_should_close);) {
+        start:
+
         UpdateCamera(&camera, app.current_camera_projection );// Update camera position/movement
         voxd3i_edit_app__update(&app);
 
         collision_t mouse_model=scene__get_intersections(camera,&scene);
-        if(!mouse_model.hit) {
+        if(mouse_model.collision_hit == COLLISION_HIT_PLANE || mouse_model.collision_hit == COLLISION_HIT_NONE) {
             mouse_model=scene__get_intersections(camera,&app.guides);
+
+            if(mouse_model.collision_hit == COLLISION_HIT_VOXEL) {
+                mouse_model.collision_hit=COLLISION_HIT_GUIDE;
+            }
         }
 
         Vector3 model_point_int=Vector3Floor(mouse_model.point);
         Vector3 model_point_next_int=Vector3Add(model_point_int,(Vector3){0,1,0});
-        if(mouse_model.voxel_index>=0){
-            /// printf("\r on voxel %d                             ",mouse_model.voxel_index);
-            model_point_int=mouse_model.voxel.position;
-            model_point_next_int=Vector3Add(mouse_model.voxel.position,mouse_model.normal);
-        }else {
-            model_point_next_int=Vector3Round(mouse_model.point);//Vector3Add(Vector3Round(mouse_model.point),(Vector3){1,0,1});
-            model_point_int=model_point_next_int;
-
+        switch(mouse_model.collision_hit){
+            case COLLISION_HIT_NONE:
+                model_point_next_int=Vector3Round(mouse_model.point);//Vector3Add(Vector3Round(mouse_model.point),(Vector3){1,0,1});
+                model_point_int=model_point_next_int;
+                break;
+            case COLLISION_HIT_VOXEL:
+                model_point_int=mouse_model.voxel.position;
+                model_point_next_int=Vector3Add(mouse_model.voxel.position,mouse_model.normal);
+                break;
+            case COLLISION_HIT_PLANE:
+                model_point_next_int=Vector3Round(mouse_model.point);//Vector3Add(Vector3Round(mouse_model.point),(Vector3){1,0,1});
+                model_point_int=model_point_next_int;
+                break;
+            case COLLISION_HIT_GUIDE:
+                model_point_next_int=Vector3Round(mouse_model.point);//Vector3Add(Vector3Round(mouse_model.point),(Vector3){1,0,1});
+                model_point_int=model_point_next_int;
+                break;
         }
         cursor.position=model_point_int;
         cursor2.position=model_point_next_int;
-        
+        int keyboard_wait_time;
+        if( abs(keyboard_wait_time=voxd3i_edit_app__InputMathExpr(&app))  ){
+            WaitTime(((float)keyboard_wait_time)/1000.0f);
+            continue;
+        }
     
         if(IsKeyPressed(KEY_LEFT_CONTROL)){ctrl=1;}
         if(IsKeyReleased(KEY_LEFT_CONTROL)){ctrl=0;}
@@ -201,7 +305,7 @@ int main(void) {
         
         orbit__control_camera(&orbiter);
 
-        snprintf(status,100,"voxels %d/%d temp file %s",scene.numVoxels,MAX_VOXELS,scene.temp_filename);
+        snprintf(status,100,"buffer %40s  voxels %d/%d temp file %s",app.buffer,scene.numVoxels,MAX_VOXELS,scene.temp_filename);
 
         BeginDrawing();
         // ClearBackground(RAYWHITE);
@@ -258,7 +362,7 @@ int main(void) {
             break;
             case APP_CONSTRUCTION_MODE_VOXEL:
                 if (
-                    GetMousePosition().x>50 && 
+                    GetMousePosition().x>130 && 
                     GetMousePosition().x<(app.screenWidth-100) && 
                     IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) &&
                     !IsKeyDown(KEY_LEFT_CONTROL) &&
@@ -267,7 +371,7 @@ int main(void) {
                     scene__remove_voxel(&scene,model_point_int);
                 }
                 if (
-                    GetMousePosition().x>50 && 
+                    GetMousePosition().x>130 && 
                     GetMousePosition().x<(app.screenWidth-100) && 
                     IsMouseButtonPressed(MOUSE_BUTTON_LEFT) &&
                     !IsKeyDown(KEY_LEFT_CONTROL) &&
@@ -280,17 +384,18 @@ int main(void) {
         
 
 
-        for(int ci=0;ci<9;ci++){
-            Rectangle button_rect=(Rectangle){ 10, 25+ci*45, 40, 40 };
-            
-            if(app.current_color_index == ci){
-                DrawRectangleRoundedLines(button_rect,.05,4,2,app.colors[ci]);
-            } else {
-                DrawRectangleRoundedLines(button_rect,.05,4,2,Fade(app.colors[ci],0.25f));
-            }
-            if (GuiButton(button_rect, app.color_names[ci]) && GetMousePosition().x<60) {
-                app.current_color = app.colors[ci];
-                app.current_color_index = ci;
+        for(int ci=0;ci<24;ci+=1){
+            for(int lum=-1;lum<2;lum+=1){
+                Vector2 pos = {60+lum*40, 40+ci*35};
+                Color cl=ColorBrightness(app.colors[ci*15],((float)lum*5.0f)/10.0f);
+                if(app.current_color_index == ci*10 + lum+1){
+                    DrawCircle(pos.x,pos.y,20,WHITE);
+                }
+                if (ext_RoundButton(pos,15,cl) && GetMousePosition().x<130) {
+                    app.current_color = cl;
+                    app.current_color_index = ci*10 + lum+1;
+                    // goto start;
+                }
             }
         }
 

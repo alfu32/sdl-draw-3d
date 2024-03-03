@@ -6,6 +6,7 @@
 #include <float.h>
 #include "lib.h"
 #include "raylib.h"
+//#include "raylib/examples/https://raw.githubusercontent.com/raysan5/raylib/master/examples/shaders/rlights.h"
 
 // Define maximum number of voxels in the scene
 #define MAX_VOXELS 10000
@@ -147,13 +148,13 @@ int scene__render(scene_t *scene,int type) {
 
 // Method to check if a cube exists in the scene
 collision_t scene__ray_intersect_point(scene_t *scene,Ray* ray) {
-    collision_t result={false,FLT_MAX,kMAX_POINT,kZERO_POINT,kVOXEL_NONE,0xFFFFFFFF,"none"};
+    collision_t result={false,FLT_MAX,kMAX_POINT,kZERO_POINT,kVOXEL_NONE,0xFFFFFFFF,COLLISION_HIT_NONE};
     for (int i = 0; i < scene->numVoxels; ++i) {
         voxel_t cube=scene->voxels[i];
         RayCollision collision = GetRayCollisionBox(*ray,voxel__get_bounding_box(&cube));
         if( collision.hit ) {
             if( collision.distance < result.distance){
-                result=(collision_t){collision.hit,collision.distance,collision.point,collision.normal,cube,i,"voxel"};;
+                result=(collision_t){collision.hit,collision.distance,collision.point,collision.normal,cube,i,COLLISION_HIT_VOXEL};;
             }
         }
     }
@@ -174,7 +175,7 @@ collision_t scene__get_intersections(Camera camera,scene_t* scene){
         RayCollision collision = GetRayCollisionBox(ray,
                 (BoundingBox){(Vector3){ -100.0f, -0.1f, -100.0f},
                                 (Vector3){ 100.0f, 0.0f, 100.0f }});
-        result=(collision_t){false,collision.distance,collision.point,collision.normal,kVOXEL_NONE,-1,"plane"};
+        result=(collision_t){false,collision.distance,collision.point,collision.normal,kVOXEL_NONE,-1,COLLISION_HIT_PLANE};
     }
     return result;
 }
