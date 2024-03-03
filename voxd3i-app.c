@@ -204,7 +204,7 @@ int main(void) {
             case APP_CONSTRUCTION_MODE_VOXEL:
                 if (
                     GetMousePosition().x>50 && 
-                    GetMousePosition().x<(app.screenWidth-60) && 
+                    GetMousePosition().x<(app.screenWidth-100) && 
                     IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) &&
                     !IsKeyDown(KEY_LEFT_CONTROL) &&
                     !IsKeyDown(KEY_LEFT_SHIFT)
@@ -213,7 +213,7 @@ int main(void) {
                 }
                 if (
                     GetMousePosition().x>50 && 
-                    GetMousePosition().x<(app.screenWidth-60) && 
+                    GetMousePosition().x<(app.screenWidth-100) && 
                     IsMouseButtonPressed(MOUSE_BUTTON_LEFT) &&
                     !IsKeyDown(KEY_LEFT_CONTROL) &&
                     !IsKeyDown(KEY_LEFT_SHIFT)
