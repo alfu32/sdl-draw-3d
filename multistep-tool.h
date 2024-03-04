@@ -38,14 +38,14 @@ int multistep_tool__init(multistep_tool_t* tool,int num_inputs,mutate_scene_fn o
     return 0;
 }
 
-int multistep_tool__receive_point(multistep_tool_t* tool,Vector3 point,scene_t* scene){
+int multistep_tool__receive_point(multistep_tool_t* tool,Vector3 point,scene_t* scene,scene_t* hints){
     tool->inputs[tool->last_input_index++] = point;
-    if((tool->last_input_index+1) == tool->num_inputs) {
+    if((tool->last_input_index) == tool->num_inputs) {
         //finalize and reset
-        tool->on_finish(scene,tool->inputs,tool->last_input_index,tool->num_inputs);
+        tool->on_finish(scene,tool->inputs,tool->last_input_index,tool->num_inputs,hints);
         tool->last_input_index=0;
     }else {
-        tool->on_point_aquired(scene,tool->inputs,tool->last_input_index,tool->num_inputs);
+        tool->on_point_aquired(scene,tool->inputs,tool->last_input_index,tool->num_inputs,hints);
     }
     return 0;
 

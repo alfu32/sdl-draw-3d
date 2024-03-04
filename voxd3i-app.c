@@ -201,18 +201,69 @@ int ext_RoundButton(Vector2 pos,float radius,Color color){
     }
 }
 
-void voxel_tool_acquire(scene_t* scene,Vector3* inputs,size_t num_inputs,size_t total_inputs){
-    printf("got point number [%lu/%lu]",num_inputs,total_inputs);
+int min(int a,int b){
+    return a<b?a:b;
 }
-void voxel_tool_finish(scene_t* scene,Vector3* inputs,size_t num_inputs,size_t total_inputs){
-    printf("got last point [%lu/%lu]",num_inputs,total_inputs);
+int max(int a,int b){
+    return a<b?b:a;
+}
+
+void voxel_tool_acquire(scene_t* scene,Vector3* inputs,size_t num_inputs,size_t total_inputs,scene_t* hints){
+    printf("voxel tool : got point number [%lu/%lu]\n",num_inputs,total_inputs);
+}
+void voxel_tool_finish(scene_t* scene,Vector3* inputs,size_t num_inputs,size_t total_inputs,scene_t* hints){
+    printf("voxel tool : got last point [%lu/%lu]\n",num_inputs,total_inputs);
+}
+
+void shell_tool_acquire(scene_t* scene,Vector3* inputs,size_t num_inputs,size_t total_inputs,scene_t* hints){
+    printf("shell tool : got point number [%lu/%lu]\n",num_inputs,total_inputs);
+}
+void shell_tool_finish(scene_t* scene,Vector3* inputs,size_t num_inputs,size_t total_inputs,scene_t* hints){
+    printf("shell tool : got last point [%lu/%lu]\n",num_inputs,total_inputs);
+}
+void plate_tool_acquire(scene_t* scene,Vector3* inputs,size_t num_inputs,size_t total_inputs,scene_t* hints){
+    printf("plate tool : got point number [%lu/%lu]\n",num_inputs,total_inputs);
+}
+void plate_tool_finish(scene_t* scene,Vector3* inputs,size_t num_inputs,size_t total_inputs,scene_t* hints){
+    printf("plate tool : got last point [%lu/%lu]\n",num_inputs,total_inputs);
+}
+void volume_tool_acquire(scene_t* scene,Vector3* inputs,size_t num_inputs,size_t total_inputs,scene_t* hints){
+    printf("volume tool : got point number [%lu/%lu]\n",num_inputs,total_inputs);
+    if(num_inputs==1){
+        scene__add_voxel(hints,inputs[0],(Color){255,30,30,120},1);
+    } else if(num_inputs==2){
+    }
+}
+void volume_tool_finish(scene_t* scene,Vector3* inputs,size_t num_inputs,size_t total_inputs,scene_t* hints){
+
+    float x0=min(inputs[0].x,inputs[1].x);
+    float y0=min(inputs[0].y,inputs[1].y);
+    float z0=min(inputs[0].z,inputs[1].z);
+    float x1=max(inputs[0].x,inputs[1].x);
+    float y1=max(inputs[0].y,inputs[1].y);
+    float z1=max(inputs[0].z,inputs[1].z);
+    printf("volume tool : got last point [%lu/%lu] %2.2f,%2.2f,%2.2f -> %2.2f,%2.2f,%2.2f = \n",num_inputs,total_inputs, x0,y0,z0, x1,y1,z1);
+        for(int x=x0;x<=x1;x+=1){
+            for(int y=y0;y<=y1;y+=1){
+                for(int z=z0;z<=z1;z+=1){
+                    printf("scene_add_voxel %d,%d,%d\n",x,y,z);
+                    scene__add_voxel(scene,(Vector3){x,y,z},(Color){255,255,255,255},2);
+                }
+            }
+        }
 }
 
 int main(void) {
     // Initialization
     //--------------------------------------------------------------------------------------
     multistep_tool_t voxel_tool;
-    multistep_tool__init(&voxel_tool,3,voxel_tool_acquire,voxel_tool_finish);
+    multistep_tool__init(&voxel_tool,1,voxel_tool_acquire,voxel_tool_finish);
+    multistep_tool_t shell_tool;
+    multistep_tool__init(&shell_tool,3,shell_tool_acquire,shell_tool_finish);
+    multistep_tool_t plate_tool;
+    multistep_tool__init(&plate_tool,3,plate_tool_acquire,plate_tool_finish);
+    multistep_tool_t volume_tool;
+    multistep_tool__init(&volume_tool,2,volume_tool_acquire,volume_tool_finish);
     // Set window to be resizable
 
 
@@ -363,27 +414,34 @@ int main(void) {
             }
         EndMode3D();
 
+
+
+
         /// DrawFPS(10, 10);
         switch(app.construction_mode){
             case APP_CONSTRUCTION_MODE_PLATE:
                 if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                    printf("tool %d",APP_CONSTRUCTION_MODE_PLATE);
-                    multistep_tool__receive_point(&voxel_tool,model_point_int,&scene);
+                    printf("tool %d\n",APP_CONSTRUCTION_MODE_PLATE);
+                    multistep_tool__receive_point(&plate_tool,model_point_int,&scene,&app.construction_hints);
                 }
             break;
             case APP_CONSTRUCTION_MODE_SHELL:
                 if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                    printf("tool %d",APP_CONSTRUCTION_MODE_SHELL);
-                    multistep_tool__receive_point(&voxel_tool,model_point_int,&scene);
+                    printf("tool %d\n",APP_CONSTRUCTION_MODE_SHELL);
+                    multistep_tool__receive_point(&shell_tool,model_point_int,&scene,&app.construction_hints);
                 }
             break;
             case APP_CONSTRUCTION_MODE_VOLUME:
                 if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                    printf("tool %d",APP_CONSTRUCTION_MODE_VOLUME);
-                    multistep_tool__receive_point(&voxel_tool,model_point_int,&scene);
+                    printf("tool %d\n",APP_CONSTRUCTION_MODE_VOLUME);
+                    multistep_tool__receive_point(&volume_tool,model_point_int,&scene,&app.construction_hints);
                 }
             break;
             case APP_CONSTRUCTION_MODE_VOXEL:
+                if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                    printf("tool %d\n",APP_CONSTRUCTION_MODE_VOLUME);
+                    multistep_tool__receive_point(&voxel_tool,model_point_int,&scene,&app.construction_hints);
+                }
                 if (
                     GetMousePosition().x>130 && 
                     GetMousePosition().x<(app.screenWidth-100) && 
