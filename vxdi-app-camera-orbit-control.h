@@ -1,9 +1,9 @@
-#ifndef __ORBIT_CONTROL_H__
-#define __ORBIT_CONTROL_H__
+#ifndef __VXDI_APP_CAMERA_ORBIT_CONTROL_H__
+#define __VXDI_APP_CAMERA_ORBIT_CONTROL_H__
 
 #include <raylib.h>
 #include <raymath.h>
-#include "lib.h"
+#include "vxdi-lib-general.h"
 
 
 typedef stack struct orbit_s{
@@ -31,6 +31,7 @@ orbit_t orbit_init(Camera *camera){
 int orbit__control_camera(orbit_t* orbiter){
     Vector2 mouseDelta = Vector2Subtract(GetMousePosition(), orbiter->lastMousePos);
     orbiter->lastMousePos = GetMousePosition();
+    float current_camera_dist = Vector3Length(Vector3Subtract(orbiter->camera->position,orbiter->camera->target));
 
     // Check for right mouse button pressed for orbiting
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && IsKeyDown(KEY_LEFT_CONTROL)) {
@@ -45,9 +46,9 @@ int orbit__control_camera(orbit_t* orbiter){
     }
 
     if (orbiter->isOrbiting) {
-        orbiter->azimuth -= mouseDelta.x * 0.002f;
-        if(fabsf(orbiter->elevation + mouseDelta.y * 0.002f) < 1.57){
-            orbiter->elevation += mouseDelta.y * 0.002f;
+        orbiter->azimuth -= mouseDelta.x * 0.003f;
+        if(fabsf(orbiter->elevation + mouseDelta.y * 0.003f) < 1.57){
+            orbiter->elevation += mouseDelta.y * 0.003f;
         }
     } else if (orbiter->isPanning) {
         Vector3 right = Vector3Normalize(Vector3CrossProduct(Vector3Subtract(orbiter->camera->position, orbiter->camera->target), orbiter->camera->up));
@@ -59,7 +60,7 @@ int orbit__control_camera(orbit_t* orbiter){
         orbiter->camera->position = Vector3Add(orbiter->camera->position, Vector3Scale(up, mouseDelta.y * panSpeed));
     }
 
-    orbiter->radius -= GetMouseWheelMove() * 0.8f;
+    orbiter->radius -= GetMouseWheelMove() * current_camera_dist *0.08f;
     orbiter->radius = Clamp(orbiter->radius, 1.0f, 200000000.0f);
 
     if (orbiter->isOrbiting || !orbiter->isPanning) { // Update position only if orbiting or not panning

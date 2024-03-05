@@ -1,11 +1,11 @@
-#ifndef __SCENE_H__
-#define __SCENE_H__
+#ifndef __VXDI_APP_SCENE_H__
+#define __VXDI_APP_SCENE_H__
 
 #include <stdbool.h>
 #include <stdlib.h>
 #include <float.h>
-#include "lib.h"
-#include "raylib.h"
+#include <raylib.h>
+#include "vxdi-lib-general.h"
 //#include "raylib/examples/https://raw.githubusercontent.com/raysan5/raylib/master/examples/shaders/rlights.h"
 
 // Define maximum number of voxels in the scene
@@ -22,8 +22,6 @@ typedef struct {
     char is_persisted;
     const char* temp_filename;
 } scene_t;
-
-typedef void (*mutate_scene_fn)(scene_t* scene,Vector3* inputs,size_t num_inputs,size_t total_inputs,scene_t* hints);
 
 void scene__init(scene_t *scene,char is_persisted) {
     scene->is_persisted=is_persisted;

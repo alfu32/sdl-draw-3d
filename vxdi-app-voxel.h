@@ -1,7 +1,8 @@
 
-#ifndef VOXEL_H
-#define VOXEL_H
+#ifndef __VXDI_APP_VOXEL_H__
+#define __VXDI_APP_VOXEL_H__
 #include <float.h>
+#include <raylib.h>
 #define VOXEL_SIZE 1.0f
 #define VOXEL_SIZE_2 0.5f
 

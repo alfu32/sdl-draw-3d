@@ -1,6 +1,6 @@
 
-#ifndef LIB_H
-#define LIB_H
+#ifndef __VXDI_LIB_GENERAL_H__
+#define __VXDI_LIB_GENERAL_H__
 
     typedef char BOOL;
     #define true 1

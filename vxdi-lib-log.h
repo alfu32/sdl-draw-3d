@@ -1,5 +1,5 @@
-#ifndef LIBLOG_H  // Include guard to prevent double inclusion
-#define LIBLOG_H
+#ifndef __VXDI_LIB_LOG_H__  // Include guard to prevent double inclusion
+#define __VXDI_LIB_LOG_H__
 
 // Include standard headers or other necessary headers here
 #include <stdio.h>
