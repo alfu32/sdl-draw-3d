@@ -74,25 +74,12 @@ void volume_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scen
     if(tool->num_inputs==1){
         scene__add_voxel(&(app->construction_hints),tool->inputs[0],app->current_color,app->current_color_index);
     } else if(tool->num_inputs==2){
+        rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index);
     }
 }
 void volume_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-
-    float x0=min(tool->inputs[0].x,tool->inputs[1].x);
-    float y0=min(tool->inputs[0].y,tool->inputs[1].y);
-    float z0=min(tool->inputs[0].z,tool->inputs[1].z);
-    float x1=max(tool->inputs[0].x,tool->inputs[1].x);
-    float y1=max(tool->inputs[0].y,tool->inputs[1].y);
-    float z1=max(tool->inputs[0].z,tool->inputs[1].z);
-    printf("volume tool : got last point [%lu/%lu] %2.2f,%2.2f,%2.2f -> %2.2f,%2.2f,%2.2f = \n",tool->last_input_index,tool->num_inputs, x0,y0,z0, x1,y1,z1);
-        for(int x=x0;x<=x1;x+=1){
-            for(int y=y0;y<=y1;y+=1){
-                for(int z=z0;z<=z1;z+=1){
-                    printf("scene_add_voxel %d,%d,%d\n",x,y,z);
-                    scene__add_voxel(scene,(Vector3){x,y,z},(Color){255,255,255,255},2);
-                }
-            }
-        }
+    printf("volume tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index);
 }
 
 int main(void) {

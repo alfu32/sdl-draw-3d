@@ -8,33 +8,73 @@
 #include "vxdi-rl-math-extras.h"
 
 // Function to rasterize a line between two 3D points
-/*Point3D*/int rasterizeLine(Vector3 p1, Vector3 p2, scene_t* scene, Color material, unsigned int mat_id) {
+/*Point3D*/int rasterizeLine(Vector3 a, Vector3 b, scene_t* scene, Color material, unsigned int material_id) {
     // Calculate the differences between points
-    float dx = p2.x - p1.x;
-    float dy = p2.y - p1.y;
-    float dz = p2.z - p1.z;
+    float dx = b.x - a.x;
+    float dy = b.y - a.y;
+    float dz = b.z - a.z;
+    Vector3 ab=(Vector3){dx,dy,dz};
 
-    // Determine the number of points needed based on the longest axis
-    int length = max(max(abs((int)dx), abs((int)dy)), abs((int)dz));
-    int numPoints = length + 1;
+    int cx0=min(a.x,b.x);
+    int cy0=min(a.y,b.y);
+    int cz0=min(a.z,b.z);
+    int cx1=max(a.x,b.x);
+    int cy1=max(a.y,b.y);
+    int cz1=max(a.z,b.z);
+    for(int x=cx0;x<=cx1;x++){
+        for(int y=cy0;y<=cy1;y++){
+            for(int z=cz0;z<=cz1;z++){
+                Vector3 p=(Vector3){x,y,z};
 
-    // Bresenham's line algorithm
-    float stepX = dx / length;
-    float stepY = dy / length;
-    float stepZ = dz / length;
+                // Calculate vector from a to p
+                Vector3 ap = {p.x - a.x, p.y - a.y, p.z - a.z};
 
-    float x = p1.x;
-    float y = p1.y;
-    float z = p1.z;
+                // Calculate dot product of ab and ap
+                float dotABAP = ab.x * ap.x + ab.y * ap.y + ab.z * ap.z;
 
-    for (int i = 0; i < numPoints; i++) {
-        
-        x += stepX;
-        y += stepY;
-        z += stepZ;
-        scene__add_voxel(scene,(Vector3){x,y,z},material,mat_id);
+                // Calculate dot product of ab with itself
+                float dotABAB = ab.x * ab.x + ab.y * ab.y + ab.z * ab.z;
+
+                // Calculate t value (projection factor)
+                float t = dotABAP / dotABAB;
+
+                // Calculate the point on the line
+                Vector3 p0;
+                p0.x = a.x + t * ab.x;
+                p0.y = a.y + t * ab.y;
+                p0.z = a.z + t * ab.z;
+                if(Vector3Distance(p0,p)<=0.867f){
+                    scene__add_voxel(scene,p,material,material_id);
+                }
+            }
+        }
     }
 
+    return 0;
+}
+
+// Function to rasterize a rectangular plate given three points
+Vector3* rasterizeSolidCube(Vector3 a, Vector3 b, scene_t* scene, Color material, unsigned int material_id) {
+    // Calculate the differences between points
+    float dx = b.x - a.x;
+    float dy = b.y - a.y;
+    float dz = b.z - a.z;
+    Vector3 ab=(Vector3){dx,dy,dz};
+
+    int cx0=min(a.x,b.x);
+    int cy0=min(a.y,b.y);
+    int cz0=min(a.z,b.z);
+    int cx1=max(a.x,b.x);
+    int cy1=max(a.y,b.y);
+    int cz1=max(a.z,b.z);
+    for(int x=cx0;x<=cx1;x++){
+        for(int y=cy0;y<=cy1;y++){
+            for(int z=cz0;z<=cz1;z++){
+                Vector3 p=(Vector3){x,y,z};
+                scene__add_voxel(scene,p,material,material_id);
+            }
+        }
+    }
     return 0;
 }
 

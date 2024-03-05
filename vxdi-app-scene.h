@@ -139,7 +139,8 @@ int scene__render(scene_t *scene,int type) {
                 DrawSphere(vox.position, 0.1f, vox.material_color);
                 break;
             case 2:
-                DrawCubeWires(vox.position, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
+                DrawCube(vox.position, 1.0f, 1.0f, 1.0f, Fade(vox.material_color,0.5f));
+                DrawCubeWires(vox.position, 1.0f, 1.0f, 1.0f, DARKGRAY);
                 break;
         }
     }

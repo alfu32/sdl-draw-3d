@@ -20,18 +20,6 @@ typedef struct vxdi_multistep_tool_s {
     Vector3* inputs;
 } vxdi_multistep_tool_t;
 
-typedef struct three_step_tool_s {
-    vxdi_multistep_tool__mutate_vxdi_app_editor_fn on_point_aquired;
-    vxdi_multistep_tool__mutate_vxdi_app_editor_fn on_finish;
-    Vector3 inputs[3];
-} three_step_tool_t;
-
-typedef struct two_step_tool_s {
-    vxdi_multistep_tool__mutate_vxdi_app_editor_fn on_point_aquired;
-    vxdi_multistep_tool__mutate_vxdi_app_editor_fn on_finish;
-    Vector3 inputs[2];
-} two_step_tool_t;
-
 int multistep_tool__init(vxdi_multistep_tool_t* tool,int num_inputs,vxdi_multistep_tool__mutate_vxdi_app_editor_fn on_point_aquired_fn,vxdi_multistep_tool__mutate_vxdi_app_editor_fn on_finish_fn){
     tool->num_inputs=num_inputs;
     tool->last_input_index=0;
