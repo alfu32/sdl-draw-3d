@@ -133,7 +133,6 @@ int main(void) {
     char is_mouse_position_changed = 1;
     unsigned char dbg_move_number=0;
     for (;!(WindowShouldClose() || window_should_close);) {
-        start:
         
         current_mouse_position=GetMousePosition();
         if(Vector2Length(Vector2Subtract(current_mouse_position,previous_mouse_position)) > 5) {
@@ -268,72 +267,72 @@ int main(void) {
                 multistep_tool__reset(&voxel_tool);
             }
             /// DrawFPS(10, 10);
-            switch(app.construction_mode){
-                case APP_CONSTRUCTION_MODE_LINE:
-                    if(IsKeyDown(KEY_SPACE)){}
-                    if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                        printf("LINE tool click %d\n",APP_CONSTRUCTION_MODE_LINE);
-                        multistep_tool__receive_point(&line_tool,&app,&scene,model_point_int);
-                    } else if(is_mouse_position_changed){
-                        printf("LINE tool move[%d] %d\n",dbg_move_number,APP_CONSTRUCTION_MODE_LINE);
-                        multistep_tool__receive_moving_point(&line_tool,&app,model_point_int);
-                    }
-                break;
-                case APP_CONSTRUCTION_MODE_PLATE:
-                    if(IsKeyDown(KEY_SPACE)){}
-                    if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                        printf("PLATE tool click %d\n",APP_CONSTRUCTION_MODE_PLATE);
-                        multistep_tool__receive_point(&plate_tool,&app,&scene,model_point_int);
-                    } else if(is_mouse_position_changed){
-                        printf("PLATE tool move[%d] %d\n",dbg_move_number,APP_CONSTRUCTION_MODE_PLATE);
-                        multistep_tool__receive_moving_point(&plate_tool,&app,model_point_int);
-                    }
-                break;
-                case APP_CONSTRUCTION_MODE_SHELL:
-                    if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                        printf("SHELL tool click %d\n",APP_CONSTRUCTION_MODE_SHELL);
-                        multistep_tool__receive_point(&shell_tool,&app,&scene,model_point_int);
-                    } else if(is_mouse_position_changed){
-                        printf("SHELL tool move[%d] %d\n",dbg_move_number,APP_CONSTRUCTION_MODE_SHELL);
-                        multistep_tool__receive_moving_point(&shell_tool,&app,model_point_int);
-                    }
-                break;
-                case APP_CONSTRUCTION_MODE_VOLUME:
-                    if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                        printf("VOLUME tool click %d\n",APP_CONSTRUCTION_MODE_VOLUME);
-                        multistep_tool__receive_point(&volume_tool,&app,&scene,model_point_int);
-                    } else if(is_mouse_position_changed){
-                        printf("VOLUME tool move[%d] %d\n",dbg_move_number,APP_CONSTRUCTION_MODE_VOLUME);
-                        multistep_tool__receive_moving_point(&volume_tool,&app,model_point_int);
-                    }
-                break;
-                case APP_CONSTRUCTION_MODE_VOXEL:
-                    if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                        printf("VOLUME tool click %d\n",APP_CONSTRUCTION_MODE_VOLUME);
-                        multistep_tool__receive_point(&voxel_tool,&app,&scene,model_point_int);
-                    } else if(is_mouse_position_changed){
-                        printf("VOLUME tool move[%d] %d\n",dbg_move_number,APP_CONSTRUCTION_MODE_VOLUME);
-                        multistep_tool__receive_moving_point(&voxel_tool,&app,model_point_int);
-                    }
-                    if (
-                        current_mouse_position.x>130 && 
-                        current_mouse_position.x<(app.screenWidth-100) && 
-                        IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) &&
-                        !IsKeyDown(KEY_LEFT_CONTROL) &&
-                        !IsKeyDown(KEY_LEFT_SHIFT)
-                    ){
-                        scene__remove_voxel(&scene,model_point_int);
-                    }
-                    if (
-                        current_mouse_position.x>130 && 
-                        current_mouse_position.x<(app.screenWidth-100) && 
-                        IsMouseButtonPressed(MOUSE_BUTTON_LEFT) &&
-                        !IsKeyDown(KEY_LEFT_CONTROL) &&
-                        !IsKeyDown(KEY_LEFT_SHIFT)
-                    ){
-                        scene__add_voxel(&scene,model_point_next_int,app.current_color,app.current_color_index);
-                    }
-                break;
+
+            if (
+                current_mouse_position.x>130 && 
+                current_mouse_position.x<(app.screenWidth-100) && 
+                (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || is_mouse_position_changed) &&
+                !IsKeyDown(KEY_LEFT_CONTROL) &&
+                !IsKeyDown(KEY_LEFT_SHIFT)
+            ){
+                switch(app.construction_mode){
+                    case APP_CONSTRUCTION_MODE_LINE:
+                        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                            printf("LINE tool click %d\n",APP_CONSTRUCTION_MODE_LINE);
+                            multistep_tool__receive_point(&line_tool,&app,&scene,model_point_int);
+                        } else if(is_mouse_position_changed){
+                            printf("LINE tool move[%d] %d\n",dbg_move_number,APP_CONSTRUCTION_MODE_LINE);
+                            multistep_tool__receive_moving_point(&line_tool,&app,model_point_int);
+                        }
+                    break;
+                    case APP_CONSTRUCTION_MODE_PLATE:
+                        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                            printf("PLATE tool click %d\n",APP_CONSTRUCTION_MODE_PLATE);
+                            multistep_tool__receive_point(&plate_tool,&app,&scene,model_point_int);
+                        } else if(is_mouse_position_changed){
+                            printf("PLATE tool move[%d] %d\n",dbg_move_number,APP_CONSTRUCTION_MODE_PLATE);
+                            multistep_tool__receive_moving_point(&plate_tool,&app,model_point_int);
+                        }
+                    break;
+                    case APP_CONSTRUCTION_MODE_SHELL:
+                        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                            printf("SHELL tool click %d\n",APP_CONSTRUCTION_MODE_SHELL);
+                            multistep_tool__receive_point(&shell_tool,&app,&scene,model_point_int);
+                        } else if(is_mouse_position_changed){
+                            printf("SHELL tool move[%d] %d\n",dbg_move_number,APP_CONSTRUCTION_MODE_SHELL);
+                            multistep_tool__receive_moving_point(&shell_tool,&app,model_point_int);
+                        }
+                    break;
+                    case APP_CONSTRUCTION_MODE_VOLUME:
+                        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                            printf("VOLUME tool click %d\n",APP_CONSTRUCTION_MODE_VOLUME);
+                            multistep_tool__receive_point(&volume_tool,&app,&scene,model_point_int);
+                        } else if(is_mouse_position_changed){
+                            printf("VOLUME tool move[%d] %d\n",dbg_move_number,APP_CONSTRUCTION_MODE_VOLUME);
+                            multistep_tool__receive_moving_point(&volume_tool,&app,model_point_int);
+                        }
+                    break;
+                    case APP_CONSTRUCTION_MODE_VOXEL:
+                        if (
+                            current_mouse_position.x>130 && 
+                            current_mouse_position.x<(app.screenWidth-100) && 
+                            IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) &&
+                            !IsKeyDown(KEY_LEFT_CONTROL) &&
+                            !IsKeyDown(KEY_LEFT_SHIFT)
+                        ){
+                            scene__remove_voxel(&scene,model_point_int);
+                        }
+                        if (
+                            current_mouse_position.x>130 && 
+                            current_mouse_position.x<(app.screenWidth-100) && 
+                            IsMouseButtonPressed(MOUSE_BUTTON_LEFT) &&
+                            !IsKeyDown(KEY_LEFT_CONTROL) &&
+                            !IsKeyDown(KEY_LEFT_SHIFT)
+                        ){
+                            scene__add_voxel(&scene,model_point_next_int,app.current_color,app.current_color_index);
+                        }
+                    break;
+                }
             }
             
 
