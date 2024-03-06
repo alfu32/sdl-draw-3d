@@ -77,7 +77,28 @@ Vector3* rasterizeSolidCube(Vector3 a, Vector3 b, scene_t* scene, Color material
     }
     return 0;
 }
+Vector3* rasterizeHollowCube(Vector3 a, Vector3 b, scene_t* scene, Color material, unsigned int material_id) {
+    // Calculate the differences between points
+    float dx = b.x - a.x;
+    float dy = b.y - a.y;
+    float dz = b.z - a.z;
+    Vector3 ab=(Vector3){dx,dy,dz};
 
+    int cx0=min(a.x,b.x);
+    int cy0=min(a.y,b.y);
+    int cz0=min(a.z,b.z);
+    int cx1=max(a.x,b.x);
+    int cy1=max(a.y,b.y);
+    int cz1=max(a.z,b.z);
+    rasterizeSolidCube((Vector3){a.x,a.y,a.z},(Vector3){b.x,a.y,b.z},scene,material,material_id);
+    rasterizeSolidCube((Vector3){a.x,b.y,a.z},(Vector3){b.x,b.y,b.z},scene,material,material_id);
+    rasterizeSolidCube((Vector3){a.x,a.y,b.z},(Vector3){b.x,a.y,b.z},scene,material,material_id);
+    rasterizeSolidCube((Vector3){a.x,b.y,b.z},(Vector3){b.x,b.y,b.z},scene,material,material_id);
+    rasterizeSolidCube((Vector3){a.x,a.y,a.z},(Vector3){b.x,b.y,a.z},scene,material,material_id);
+    rasterizeSolidCube((Vector3){a.x,a.y,b.z},(Vector3){b.x,b.y,b.z},scene,material,material_id);
+    
+    return 0;
+}
 //////////////    // Function to rasterize a rectangular plate given three points
 //////////////    /*Point3D*/Vector3* rasterizeRectangle(Vector3 a, Vector3 b, Vector3 c, int* numPoints) {
 //////////////        // Rasterize lines between the points to form the rectangle

@@ -43,6 +43,8 @@ int multistep_tool__receive_point(vxdi_multistep_tool_t* tool,vxdi_app_editor_t*
         //finalize and reset
         tool->on_finish(tool,app,scene,point);
         tool->last_input_index=0;
+        app->construction_mode=APP_CONSTRUCTION_MODE_VOXEL;
+        scene__clear(&app->construction_hints);
     }
     return 0;
 }

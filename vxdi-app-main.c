@@ -47,9 +47,15 @@ void voxel_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_
 
 void shell_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("shell tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    if(tool->num_inputs==1){
+        scene__add_voxel(&(app->construction_hints),tool->inputs[0],app->current_color,app->current_color_index);
+    } else if(tool->num_inputs==2){
+        rasterizeHollowCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index);
+    }
 }
 void shell_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("shell tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    rasterizeHollowCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index);
 }
 void line_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("line tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
@@ -88,7 +94,7 @@ int main(void) {
     vxdi_multistep_tool_t voxel_tool;
     multistep_tool__init(&voxel_tool,1,voxel_tool_acquire,voxel_tool_finish);
     vxdi_multistep_tool_t shell_tool;
-    multistep_tool__init(&shell_tool,3,shell_tool_acquire,shell_tool_finish);
+    multistep_tool__init(&shell_tool,2,shell_tool_acquire,shell_tool_finish);
     vxdi_multistep_tool_t plate_tool;
     multistep_tool__init(&plate_tool,3,plate_tool_acquire,plate_tool_finish);
     vxdi_multistep_tool_t line_tool;

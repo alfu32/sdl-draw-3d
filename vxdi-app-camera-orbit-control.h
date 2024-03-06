@@ -53,7 +53,7 @@ int orbit__control_camera(orbit_t* orbiter){
     } else if (orbiter->isPanning) {
         Vector3 right = Vector3Normalize(Vector3CrossProduct(Vector3Subtract(orbiter->camera->position, orbiter->camera->target), orbiter->camera->up));
         Vector3 up = Vector3Normalize(Vector3CrossProduct(right, Vector3Subtract(orbiter->camera->position, orbiter->camera->target)));
-        float panSpeed = 0.01f;
+        float panSpeed = current_camera_dist*0.00075f;
         orbiter->camera->target = Vector3Add(orbiter->camera->target, Vector3Scale(right, mouseDelta.x * panSpeed));
         orbiter->camera->target = Vector3Add(orbiter->camera->target, Vector3Scale(up, mouseDelta.y * panSpeed));
         orbiter->camera->position = Vector3Add(orbiter->camera->position, Vector3Scale(right, mouseDelta.x * panSpeed));
