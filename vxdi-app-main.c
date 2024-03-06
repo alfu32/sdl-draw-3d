@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <raylib.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #define RAYGUI_IMPLEMENTATION
 #include "external/raygui.h"
@@ -100,6 +102,69 @@ void volume_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene
     rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index);
 }
 
+Image SDL_SurfaceToRaylibImage(SDL_Surface* surface) {
+    Image image = {0};
+
+    if (surface == NULL) {
+        return image; // Return an empty image structure if the input surface is NULL
+    }
+
+    // Ensure the surface is locked before accessing the pixels
+    if (!SDL_MUSTLOCK(surface) || SDL_LockSurface(surface) == 0) {
+        // Initialize a Raylib Image with the surface's dimensions and pixel data
+        // Note: We assume the pixel format is SDL_PIXELFORMAT_RGBA32 (Raylib's default)
+        image.data = malloc(surface->w * surface->h * 4); // Allocate memory for pixels (4 bytes per pixel for RGBA)
+        image.width = surface->w;
+        image.height = surface->h;
+        image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8; // This matches SDL_PIXELFORMAT_RGBA32
+        image.mipmaps = 1; // Default to 1 mip level
+
+        // Copy pixel data from the SDL_Surface to the Raylib Image
+        memcpy(image.data, surface->pixels, surface->w * surface->h * 4);
+
+        // Unlock the surface if it was locked
+        if (SDL_MUSTLOCK(surface)) {
+            SDL_UnlockSurface(surface);
+        }
+    }
+
+    return image;
+}
+
+Texture2D load_texture(const char* filename){
+
+
+        SDL_Surface* surface = IMG_Load(filename);
+        printf(" image loaded \n");
+        Texture2D texture ; // Convert Image to Texture2D
+
+    if (surface == NULL) {
+        printf(" surface was null \n");
+        return texture; // Return an empty image structure if the input surface is NULL
+    }
+        printf(" surface was not null \n");
+
+    Image image = {0};
+    // Ensure the surface is locked before accessing the pixels
+    // Initialize a Raylib Image with the surface's dimensions and pixel data
+    // Note: We assume the pixel format is SDL_PIXELFORMAT_RGBA32 (Raylib's default)
+    image.data = malloc(surface->w * surface->h * 4); // Allocate memory for pixels (4 bytes per pixel for RGBA)
+    image.width = surface->w;
+    image.height = surface->h;
+    image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8; // This matches SDL_PIXELFORMAT_RGBA32
+    image.mipmaps = 1; // Default to 1 mip level
+    printf(" image initialized \n");
+
+    // Copy pixel data from the SDL_Surface to the Raylib Image
+    memcpy(image.data, surface->pixels, surface->w * surface->h * 4);
+    printf(" memory copied \n");
+    texture = LoadTextureFromImage(image); // Convert Image to Texture2D
+    printf(" texture image loaded \n");
+    SDL_FreeSurface(surface);
+    UnloadImage(image);
+    return texture;
+}
+
 int main(void) {
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -152,7 +217,16 @@ int main(void) {
     Vector2 previous_mouse_position=current_mouse_position;
     char is_mouse_position_changed = 1;
     unsigned char dbg_move_number=0;
+
+
+
+    printf(" loading buttons texture \n");
+    Texture2D buttons_tex=load_texture("buttons.svg");
+    printf(" got buttons texture \n");
+
     for (;!(WindowShouldClose() || window_should_close);) {
+
+        DrawTextureRec(buttons_tex, (Rectangle){0,0,64,512}, (Vector2){app.screenWidth-64,0}, WHITE); 
         
         current_mouse_position=GetMousePosition();
         if(Vector2Length(Vector2Subtract(current_mouse_position,previous_mouse_position)) > 5) {
