@@ -69,6 +69,18 @@ void line_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t
     printf("line tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     rasterizeLine(tool->inputs[0],point,scene,app->current_color,app->current_color_index);
 }
+void structure_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+    printf("structure tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    if(tool->num_inputs==1){
+        scene__add_voxel(&(app->construction_hints),tool->inputs[0],app->current_color,app->current_color_index);
+    } else if(tool->num_inputs==2){
+        rasterizeStructureCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index);
+    }
+}
+void structure_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+    printf("structure tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    rasterizeStructureCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index);
+}
 void plate_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("plate tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
 }
@@ -95,6 +107,8 @@ int main(void) {
     multistep_tool__init(&voxel_tool,1,voxel_tool_acquire,voxel_tool_finish);
     vxdi_multistep_tool_t shell_tool;
     multistep_tool__init(&shell_tool,2,shell_tool_acquire,shell_tool_finish);
+    vxdi_multistep_tool_t structure_tool;
+    multistep_tool__init(&structure_tool,2,structure_tool_acquire,structure_tool_finish);
     vxdi_multistep_tool_t plate_tool;
     multistep_tool__init(&plate_tool,3,plate_tool_acquire,plate_tool_finish);
     vxdi_multistep_tool_t line_tool;
@@ -267,6 +281,7 @@ int main(void) {
             if(IsKeyPressed(KEY_SPACE)){
                 scene__clear(&app.guides);
                 scene__clear(&app.construction_hints);
+                multistep_tool__reset(&structure_tool);
                 multistep_tool__reset(&plate_tool);
                 multistep_tool__reset(&shell_tool);
                 multistep_tool__reset(&volume_tool);
@@ -298,6 +313,14 @@ int main(void) {
                         } else if(is_mouse_position_changed){
                             printf("PLATE tool move[%d] %d\n",dbg_move_number,APP_CONSTRUCTION_MODE_PLATE);
                             multistep_tool__receive_moving_point(&plate_tool,&app,model_point_int);
+                        }
+                    case APP_CONSTRUCTION_MODE_STRUCTURE:
+                        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                            printf("SHELL tool click %d\n",APP_CONSTRUCTION_MODE_STRUCTURE);
+                            multistep_tool__receive_point(&structure_tool,&app,&scene,model_point_int);
+                        } else if(is_mouse_position_changed){
+                            printf("SHELL tool move[%d] %d\n",dbg_move_number,APP_CONSTRUCTION_MODE_STRUCTURE);
+                            multistep_tool__receive_moving_point(&structure_tool,&app,model_point_int);
                         }
                     break;
                     case APP_CONSTRUCTION_MODE_SHELL:
@@ -375,13 +398,21 @@ int main(void) {
             if(app.construction_mode==APP_CONSTRUCTION_MODE_SHELL) {
                 DrawRectangleLinesEx((Rectangle){app.screenWidth-60-2, crt+50-2, 50+4, 30+4},2,PINK);
             }
-            if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+50, 50, 30 }, "SHELL")) {
+            if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+50, 50, 30 }, "Shell")) {
                 app.construction_mode = APP_CONSTRUCTION_MODE_SHELL;
+            }
+
+            if(app.construction_mode==APP_CONSTRUCTION_MODE_STRUCTURE) {
+                DrawRectangleLinesEx((Rectangle){app.screenWidth-60-2, crt+50-2, 50+4, 30+4},2,PINK);
+            }
+            if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+50, 50, 30 }, "Skeleton")) {
+                app.construction_mode = APP_CONSTRUCTION_MODE_STRUCTURE;
             }
 
             if(app.construction_mode==APP_CONSTRUCTION_MODE_PLATE) {
                 DrawRectangleLinesEx((Rectangle){app.screenWidth-60-2, crt+50-2, 50+4, 30+4},2,PINK);
             }
+
             if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+50, 50, 30 }, "Plate")) {
                 app.construction_mode = APP_CONSTRUCTION_MODE_PLATE;
             }
@@ -389,7 +420,7 @@ int main(void) {
             if(app.construction_mode==APP_CONSTRUCTION_MODE_LINE) {
                 DrawRectangleLinesEx((Rectangle){app.screenWidth-60-2, crt+50-2, 50+4, 30+4},2,PINK);
             }
-            if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+50, 50, 30 }, "LINE")) {
+            if (GuiButton((Rectangle){ app.screenWidth-60,crt=crt+50, 50, 30 }, "Line")) {
                 app.construction_mode = APP_CONSTRUCTION_MODE_LINE;
             }
 
@@ -401,23 +432,26 @@ int main(void) {
             }
 
             if(show_help){
-                    int row=60;
-                    int left=app.screenWidth-380;
-                    DrawRectangle( left-10, row, 320, 160, Fade(SKYBLUE, 0.5f));
-                    DrawRectangleLines( left-10, row, 320, 160, BLUE);
-                    if (GuiButton((Rectangle){ left+290,row, 20, 20 }, "X")) {
-                        show_help=0;
-                    }
-                    DrawText("Free camera default controls:", left, row+=10, 10, BLACK);
-                    DrawText("- Mouse Wheel to Zoom in-out" , left, row+=20, 10, DARKGRAY);
-                    DrawText("- Ctrl-Left Click Pressed to Orbit" , left, row+=20, 10, DARKGRAY);
-                    DrawText("- Shift-Left Click Pressed to Pan" , left, row+=20, 10, DARKGRAY);
-                    DrawText("- Left Click to Add Voxels" , left, row+=20, 10, DARKGRAY);
-                    DrawText("- Right Click to Remove Voxels" , left, row+=20, 10, DARKGRAY);
-                    DrawText("- Z to zoom to (0, 0, 0)"     , left, row+=20, 10, DARKGRAY);
+                int row=60;
+                int left=app.screenWidth-380;
+                DrawRectangle( left-10, row, 320, 160, Fade(SKYBLUE, 0.5f));
+                DrawRectangleLines( left-10, row, 320, 160, BLUE);
+                if (GuiButton((Rectangle){ left+290,row, 20, 20 }, "X")) {
+                    show_help=0;
+                }
+                DrawText("Free camera default controls:", left, row+=10, 10, BLACK);
+                DrawText("- Mouse Wheel to Zoom in-out" , left, row+=20, 10, DARKGRAY);
+                DrawText("- Ctrl-Left Click Pressed to Orbit" , left, row+=20, 10, DARKGRAY);
+                DrawText("- Shift-Left Click Pressed to Pan" , left, row+=20, 10, DARKGRAY);
+                DrawText("- Left Click to Add Voxels" , left, row+=20, 10, DARKGRAY);
+                DrawText("- Right Click to Remove Voxels" , left, row+=20, 10, DARKGRAY);
+                DrawText("- Z to zoom to (0, 0, 0)"     , left, row+=20, 10, DARKGRAY);
             }
             DrawRectangle( 0, 0, app.screenWidth, 20, Fade(DARKGRAY, 0.95f));
             DrawText(status     , app.screenWidth-300, 5, 10, (Color){200,200,200,255});
+            char coords[12];
+            snprintf(coords,12,"%3d %3d %3d",(int)model_point_int.x,(int)model_point_int.y,(int)model_point_int.z);
+            DrawText(coords, current_mouse_position.x+10, current_mouse_position.y-10, 20, BLACK);
 
             EndDrawing();
 

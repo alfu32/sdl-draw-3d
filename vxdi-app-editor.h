@@ -9,9 +9,10 @@
 typedef enum app_construction_mode_e{
     APP_CONSTRUCTION_MODE_VOLUME=0x100,
     APP_CONSTRUCTION_MODE_SHELL=0x101,
-    APP_CONSTRUCTION_MODE_PLATE=0x102,
-    APP_CONSTRUCTION_MODE_LINE=0x103,
-    APP_CONSTRUCTION_MODE_VOXEL=0x104,
+    APP_CONSTRUCTION_MODE_STRUCTURE=0x102,
+    APP_CONSTRUCTION_MODE_PLATE=0x103,
+    APP_CONSTRUCTION_MODE_LINE=0x104,
+    APP_CONSTRUCTION_MODE_VOXEL=0x105,
 } app_construction_mode_e;
 
 typedef struct vxdi_app_editor_s {
@@ -54,8 +55,10 @@ vxdi_app_editor_t vxdi_app_editor__setup(Camera3D* camera){
     camera->projection = CAMERA_PERSPECTIVE;             // Camera projection type
     scene_t guides;
     scene__init(&guides,0);           // Camera projection type
+    guides.temp_filename="guides.vxde";
     scene_t construction_hints;
-    scene__init(&construction_hints,2);
+    scene__init(&construction_hints,0);
+    guides.temp_filename="construction_hints.vxde";
 
     vxdi_app_editor_t app = {
         .construction_mode=APP_CONSTRUCTION_MODE_VOXEL,
