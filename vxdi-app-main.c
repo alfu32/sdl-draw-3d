@@ -196,7 +196,7 @@ int main(void) {
     scene__load_model(&scene,"temp.vxde");
 
     // Example: Add a voxel to the scene
-    scene__add_voxel(&scene, (Vector3){0.0f, 0.0f, 0.0f}, RED,1);
+    // scene__add_voxel(&scene, (Vector3){0.0f, 0.0f, 0.0f}, RED,1);
     voxel_t cursor={20,30,20,3};
     voxel_t cursor2={20,30,20,2};
 
