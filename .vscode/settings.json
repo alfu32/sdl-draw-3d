@@ -25,6 +25,7 @@
         "deque": "c",
         "string": "c",
         "vector": "c",
-        "string_view": "c"
+        "string_view": "c",
+        "raymath.h": "c"
     }
 }
