@@ -45,4 +45,80 @@ BoundingBox voxel__get_bounding_box(voxel_t* self){
     };
 }
 
+
+// Function to shade a color based on its brightness and the light angle
+Color ShadeColor(Color color, Vector3 lightDir) {
+    // Compute the angle between the light direction and the normal of the face (assuming up is the normal direction)
+    float angle = acosf(Vector3DotProduct(lightDir, (Vector3){0.0f, 1.0f, 0.0f}));
+
+    // Compute the shading factor based on the angle
+    float shadingFactor = (1.0f - (angle / PI)) * 0.5f; // Range from 0.0f to 0.5f
+
+    // Adjust the brightness of the color based on the shading factor
+    float brightness = (float)color.r / 255.0f; // Assuming the color components are in the range [0, 255]
+    brightness += shadingFactor;
+
+    // Clamp brightness value to [0.0, 1.0]
+    brightness = Clamp(brightness, 0.0f, 1.0f);
+
+    // Compute the shaded color
+    return ColorBrightness(color,brightness);
+}
+
+// Function to draw a shaded voxel based on directional light
+void voxel__draw_shaded(voxel_t *voxel, Vector3 light_direction) {
+    // Define cube size
+    float size = 0.5f; // Half of the total size to make the cube size 1 in all directions
+
+    // Define vertices for each face of the cube
+    // Define vertices for each face of the cube
+    Vector3 vertices[] = {
+        // Front face
+        { voxel->position.x - size, voxel->position.y - size, voxel->position.z + size },
+        { voxel->position.x + size, voxel->position.y - size, voxel->position.z + size },
+        { voxel->position.x - size, voxel->position.y + size, voxel->position.z + size },
+        { voxel->position.x + size, voxel->position.y + size, voxel->position.z + size },
+        // Back face
+        { voxel->position.x - size, voxel->position.y - size, voxel->position.z - size },
+        { voxel->position.x - size, voxel->position.y + size, voxel->position.z - size },
+        { voxel->position.x + size, voxel->position.y - size, voxel->position.z - size },
+        { voxel->position.x + size, voxel->position.y + size, voxel->position.z - size },
+        // Top face
+        { voxel->position.x - size, voxel->position.y + size, voxel->position.z + size },
+        { voxel->position.x + size, voxel->position.y + size, voxel->position.z + size },
+        { voxel->position.x - size, voxel->position.y + size, voxel->position.z - size },
+        { voxel->position.x + size, voxel->position.y + size, voxel->position.z - size },
+        // Bottom face
+        { voxel->position.x - size, voxel->position.y - size, voxel->position.z - size },
+        { voxel->position.x + size, voxel->position.y - size, voxel->position.z - size },
+        { voxel->position.x - size, voxel->position.y - size, voxel->position.z + size },
+        { voxel->position.x + size, voxel->position.y - size, voxel->position.z + size },
+        // Left face
+        { voxel->position.x - size, voxel->position.y - size, voxel->position.z - size },
+        { voxel->position.x - size, voxel->position.y - size, voxel->position.z + size },
+        { voxel->position.x - size, voxel->position.y + size, voxel->position.z - size },
+        { voxel->position.x - size, voxel->position.y + size, voxel->position.z + size },
+        // Right face
+        { voxel->position.x + size, voxel->position.y - size, voxel->position.z - size },
+        { voxel->position.x + size, voxel->position.y + size, voxel->position.z - size },
+        { voxel->position.x + size, voxel->position.y - size, voxel->position.z + size },
+        { voxel->position.x + size, voxel->position.y + size, voxel->position.z + size }
+   };
+
+
+    // Draw the cube using triangle strips with shaded colors
+        DrawTriangleStrip3D(&vertices[0], 4, voxel->material_color);// Front face
+        DrawTriangleStrip3D(&vertices[4], 4, voxel->material_color);// Back face
+        DrawTriangleStrip3D(&vertices[8], 4, voxel->material_color);// Top face
+        DrawTriangleStrip3D(&vertices[12], 4, voxel->material_color);// Bottom face
+        DrawTriangleStrip3D(&vertices[16], 4, voxel->material_color);// Left face
+        DrawTriangleStrip3D(&vertices[20], 4, voxel->material_color);// Right face
+    // Draw each face of the cube with shaded colors
+}
+// Function to draw a plane with specified vertices and color
+void voxel__draw_plane(Vector3 vertices[], Color color) {
+    // Draw the plane using a triangle strip
+    DrawTriangleStrip3D(vertices, 4, color);
+}
+
 #endif /* VOXEL_H */

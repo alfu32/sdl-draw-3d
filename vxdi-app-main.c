@@ -190,8 +190,8 @@ int main(void) {
 
     Camera3D camera;
     scene_t scene;
-    vxdi_app_editor_t app=vxdi_app_editor__setup(&camera);
-    scene__init(&scene,1);
+    vxdi_app_editor_t app=vxdi_app_editor__setup(&camera,(Vector3){ 0.5f, -1.0f, 0.5f });
+    scene__init(&scene,1,app.light_direction);
 
     scene__load_model(&scene,"temp.vxde");
 

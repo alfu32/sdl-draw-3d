@@ -42,6 +42,8 @@ typedef struct vxdi_app_editor_s {
     scene_t guides;
     scene_t construction_hints;
 
+    Vector3 light_direction;
+
     char text_buffer[1000];
 
 } vxdi_app_editor_t;
@@ -49,18 +51,19 @@ typedef struct vxdi_app_editor_s {
 // #define PI 3.14159265358979323846
 
 
-vxdi_app_editor_t vxdi_app_editor__setup(Camera3D* camera){
+vxdi_app_editor_t vxdi_app_editor__setup(Camera3D* camera,Vector3 light_direction){
     // Define the camera to look into our 3d world
     camera->position = (Vector3){ 10.0f, 10.0f, 10.0f }; // Camera position
     camera->target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
     camera->up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
     camera->fovy = 45.0f;                                // Camera field-of-view Y
     camera->projection = CAMERA_PERSPECTIVE;             // Camera projection type
+    
     scene_t guides;
-    scene__init(&guides,0);           // Camera projection type
+    scene__init(&guides,0,light_direction);           // Camera projection type
     guides.temp_filename="guides.vxde";
     scene_t construction_hints;
-    scene__init(&construction_hints,0);
+    scene__init(&construction_hints,0,light_direction);
     guides.temp_filename="construction_hints.vxde";
 
     vxdi_app_editor_t app = {
@@ -82,6 +85,7 @@ vxdi_app_editor_t vxdi_app_editor__setup(Camera3D* camera){
 
         .screenWidth = 800,
         .screenHeight = 450,
+        .light_direction = light_direction,
 
         .guides=guides,
         .construction_hints=construction_hints,

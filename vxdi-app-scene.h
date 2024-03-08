@@ -20,13 +20,17 @@ typedef struct {
     int numVoxels;
     Color colormap[MAX_MAT_ID];
     char is_persisted;
+    Vector3 light_direction;
     const char* temp_filename;
 } scene_t;
 
-void scene__init(scene_t *scene,char is_persisted) {
+void scene__init(scene_t *scene,char is_persisted,Vector3 light_direction) {
     scene->is_persisted=is_persisted;
     scene->temp_filename="temp.vxde";
     scene->numVoxels = 0;
+
+    // Define directional light direction
+    scene->light_direction = light_direction; // Example light direction
     scene->colormap[0]=WHITE;
     scene->colormap[1]=RED;
     scene->colormap[2]=ORANGE;
@@ -132,7 +136,8 @@ int scene__render(scene_t *scene,int type) {
         // DrawCube(pos, 1.0f, 1.0f, 1.0f, scene->colormap[vox.material_id % MAX_MAT_ID]);
         switch(type){
             case 0:
-                DrawCube(vox.position, 1.0f, 1.0f, 1.0f, vox.material_color);
+                //DrawCube(vox.position, 1.0f, 1.0f, 1.0f, vox.material_color);
+                voxel__draw_shaded(&vox,scene->light_direction);
                 DrawCubeWires(vox.position, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
                 break;
             case 1:
