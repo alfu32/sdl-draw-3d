@@ -153,6 +153,16 @@ int scene__render(scene_t *scene,int type) {
     return 0;
 }
 
+collision_t* scene__get_shadows(scene_t *scene){
+    collision_t* hitpoints=(collision_t*)malloc(sizeof(collision_t)*10000);
+    Ray ray=(Ray){.direction=scene->light_direction.direction};
+    for (int i = 0; i < scene->numVoxels; ++i) {
+        voxel_t cube=scene->voxels[i];
+        RayCollision collision = GetRayCollisionBox(ray,voxel__get_bounding_box(&cube));
+        hitpoints[i]=(collision_t){collision.hit,collision.distance,collision.point,collision.normal,cube,i,COLLISION_HIT_VOXEL};
+    }
+    return hitpoints;
+}
 
 // Method to check if a cube exists in the scene
 collision_t scene__ray_intersect_point(scene_t *scene,Ray* ray) {
