@@ -139,13 +139,14 @@ int scene__render(scene_t *scene,int type) {
             case 0:
                 //DrawCube(vox.position, 1.0f, 1.0f, 1.0f, vox.material_color);
                 voxel__draw_shaded(&vox,&(scene->light_direction));
-                DrawCubeWires(vox.position, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
+                //DrawCubeWires(vox.position, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
                 break;
             case 1:
                 DrawSphere(vox.position, 0.1f, vox.material_color);
                 break;
             case 2:
-                DrawCube(vox.position, 1.0f, 1.0f, 1.0f, Fade(vox.material_color,0.5f));
+                // DrawCube(vox.position, 1.0f, 1.0f, 1.0f, Fade(vox.material_color,0.5f));
+                voxel__draw_shaded(&vox,&(scene->light_direction));
                 DrawCubeWires(vox.position, 1.0f, 1.0f, 1.0f, DARKGRAY);
                 break;
         }

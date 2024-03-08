@@ -166,6 +166,8 @@ Texture2D load_texture(const char* filename){
 }
 
 int main(void) {
+    int color_btn_size=25;
+    int left_menu_sz_width = 20 + color_btn_size*5;
     // Initialization
     //--------------------------------------------------------------------------------------
     vxdi_multistep_tool_t voxel_tool;
@@ -190,7 +192,7 @@ int main(void) {
 
     Camera3D camera;
     scene_t scene;
-    vxdi_app_editor_t app=vxdi_app_editor__setup(&camera,(Vector3){ 0.5f, -1.0f, 0.5f });
+    vxdi_app_editor_t app=vxdi_app_editor__setup(&camera,(Vector3){ 0.7f, -1.0f, 0.3f });
     scene__init(&scene,1,app.light_direction);
 
     scene__load_model(&scene,"temp.vxde");
@@ -330,7 +332,7 @@ int main(void) {
                 // Optionally, to cast a ray from the mouse:
                 Ray ray = GetMouseRay(current_mouse_position, camera);
                 // You can then use Raylib functions to check for intersections, etc.
-                if(current_mouse_position.x>170 && current_mouse_position.x<(app.screenWidth-70)){
+                if(current_mouse_position.x>left_menu_sz_width && current_mouse_position.x<(app.screenWidth-70)){
                     DrawLine3D(
                         mouse_model.point,
                         Vector3Add(
@@ -389,7 +391,7 @@ int main(void) {
 
             //feed mouse events in function of the selected tool
             if (
-                current_mouse_position.x>170 && 
+                current_mouse_position.x>left_menu_sz_width && 
                 current_mouse_position.x<(app.screenWidth-70) && 
                 (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || is_mouse_position_changed) &&
                 !IsKeyDown(KEY_LEFT_CONTROL) &&
@@ -401,7 +403,7 @@ int main(void) {
                     case APP_CONSTRUCTION_MODE_SELECT:break;
                     case APP_CONSTRUCTION_MODE_VOXEL:
                         if (
-                            current_mouse_position.x>170 && 
+                            current_mouse_position.x>left_menu_sz_width && 
                             current_mouse_position.x<(app.screenWidth-100) && 
                             IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) &&
                             !IsKeyDown(KEY_LEFT_CONTROL) &&
@@ -410,7 +412,7 @@ int main(void) {
                             scene__remove_voxel(&scene,model_point_int);
                         }
                         if (
-                            current_mouse_position.x>170 && 
+                            current_mouse_position.x>left_menu_sz_width && 
                             current_mouse_position.x<(app.screenWidth-100) && 
                             IsMouseButtonPressed(MOUSE_BUTTON_LEFT) &&
                             !IsKeyDown(KEY_LEFT_CONTROL) &&
@@ -472,12 +474,12 @@ int main(void) {
             // draw color pallete
             for(int ci=0;ci<24;ci+=1){
                 for(int lum=-1;lum<2;lum+=1){
-                    Vector2 pos = {60+lum*(35+5), (35+5)+ci*35};
+                    Vector2 pos = {20+color_btn_size+5+lum*(color_btn_size+5), (color_btn_size+5)+ci*color_btn_size};
                     Color cl=ColorBrightness(app.colors[ci*15],((float)lum*5.0f)/10.0f);
                     if(app.current_color_index == ci*10 + lum+1){
-                        DrawCircle(pos.x,pos.y,20,WHITE);
+                        DrawCircle(pos.x,pos.y,color_btn_size+5,WHITE);
                     }
-                    if (ext_RoundButton(pos,15,cl) && current_mouse_position.x<130) {
+                    if (ext_RoundButton(pos,(color_btn_size-5)/2,cl) && current_mouse_position.x<left_menu_sz_width) {
                         app.current_color = cl;
                         app.current_color_index = ci*10 + lum+1;
                         // goto start;
@@ -485,16 +487,29 @@ int main(void) {
                 }
             }
             for(int lum=0;lum<24;lum+=1){
-                Vector2 pos = {140, (35+5)+lum*35};
+                Vector2 pos = {20+3*(color_btn_size+5), (color_btn_size+5)+lum*color_btn_size};
                 Color cl=ColorFromHSV(0,0,(lum+1)/24.0f);
                 if(app.current_color_index == 0xFFFF+lum){
-                    DrawCircle(pos.x,pos.y,20,WHITE);
+                    DrawCircle(pos.x,pos.y,color_btn_size+5,WHITE);
                 }
-                if (ext_RoundButton(pos,15,cl) && current_mouse_position.x>140 && current_mouse_position.x<180) {
+                if (ext_RoundButton(pos,(color_btn_size-5)/2,cl) && current_mouse_position.x<left_menu_sz_width) {
                     app.current_color = cl;
                     app.current_color_index = 0xFFFF+lum;
                     // goto start;
                 }
+            }
+            // draw color pallete
+            for(int ci=0;ci<24;ci+=1){
+                    Vector2 pos = {20+4*(color_btn_size+5), (color_btn_size+5)+ci*color_btn_size};
+                    Color cl=Fade(app.colors[ci*15],0.2f);
+                    if(app.current_color_index == ci*0x100){
+                        DrawCircle(pos.x,pos.y,color_btn_size+5,WHITE);
+                    }
+                    if (ext_RoundButton(pos,(color_btn_size-5)/2,cl) && current_mouse_position.x<left_menu_sz_width) {
+                        app.current_color = cl;
+                        app.current_color_index = ci*0x100;
+                        // goto start;
+                    }
             }
 
             DrawRectangle( 0, 0, app.screenWidth, 20, Fade(DARKGRAY, 0.95f));
