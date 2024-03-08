@@ -25,7 +25,7 @@ jobs:
         echo "$PWD/zig-linux-x86_64-0.11.0-dev.1234+abcdef123" >> $GITHUB_PATH
     - name: Build with Zig for Linux
       run: |
-        zig cc -target x86_64-linux-gnu -I/path/to/includes -L/path/to/libs src/main.c -o MyAppLinux
+        ./_build.sh
 
   build-android:
     runs-on: ubuntu-latest
