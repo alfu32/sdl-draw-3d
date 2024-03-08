@@ -1,15 +1,19 @@
-#ifndef __SCENE_H__
-#define __SCENE_H__
+#ifndef __VXDI_APP_SCENE_H__
+#define __VXDI_APP_SCENE_H__
 
 #include <stdbool.h>
 #include <stdlib.h>
 #include <float.h>
-#include "lib.h"
-#include "raylib.h"
+#include <raylib.h>
+#include "vxdi-lib-general.h"
+#include "vxdi-app-light.h"
+//#include "raylib/examples/https://raw.githubusercontent.com/raysan5/raylib/master/examples/shaders/rlights.h"
 
 // Define maximum number of voxels in the scene
 #define MAX_VOXELS 10000
 #define MAX_MAT_ID 10000
+
+
 
 // Structure to represent the scene
 typedef struct {
@@ -17,14 +21,17 @@ typedef struct {
     int numVoxels;
     Color colormap[MAX_MAT_ID];
     char is_persisted;
+    vxdi_light_t light_direction;
     const char* temp_filename;
 } scene_t;
 
-
-void scene__init(scene_t *scene,char is_persisted) {
+void scene__init(scene_t *scene,char is_persisted,Vector3 light_direction) {
     scene->is_persisted=is_persisted;
     scene->temp_filename="temp.vxde";
     scene->numVoxels = 0;
+
+    // Define directional light direction
+    scene->light_direction = (vxdi_light_t){light_direction,.5,.5}; // Example light direction
     scene->colormap[0]=WHITE;
     scene->colormap[1]=RED;
     scene->colormap[2]=ORANGE;
@@ -130,30 +137,43 @@ int scene__render(scene_t *scene,int type) {
         // DrawCube(pos, 1.0f, 1.0f, 1.0f, scene->colormap[vox.material_id % MAX_MAT_ID]);
         switch(type){
             case 0:
-                DrawCube(vox.position, 1.0f, 1.0f, 1.0f, vox.material_color);
-                DrawCubeWires(vox.position, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
+                //DrawCube(vox.position, 1.0f, 1.0f, 1.0f, vox.material_color);
+                voxel__draw_shaded(&vox,&(scene->light_direction));
+                //DrawCubeWires(vox.position, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
                 break;
             case 1:
                 DrawSphere(vox.position, 0.1f, vox.material_color);
                 break;
             case 2:
-                DrawCubeWires(vox.position, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
+                // DrawCube(vox.position, 1.0f, 1.0f, 1.0f, Fade(vox.material_color,0.5f));
+                voxel__draw_shaded(&vox,&(scene->light_direction));
+                DrawCubeWires(vox.position, 1.0f, 1.0f, 1.0f, DARKGRAY);
                 break;
         }
     }
     return 0;
 }
 
+collision_t* scene__get_shadows(scene_t *scene){
+    collision_t* hitpoints=(collision_t*)malloc(sizeof(collision_t)*10000);
+    Ray ray=(Ray){.direction=scene->light_direction.direction};
+    for (int i = 0; i < scene->numVoxels; ++i) {
+        voxel_t cube=scene->voxels[i];
+        RayCollision collision = GetRayCollisionBox(ray,voxel__get_bounding_box(&cube));
+        hitpoints[i]=(collision_t){collision.hit,collision.distance,collision.point,collision.normal,cube,i,COLLISION_HIT_VOXEL};
+    }
+    return hitpoints;
+}
 
 // Method to check if a cube exists in the scene
 collision_t scene__ray_intersect_point(scene_t *scene,Ray* ray) {
-    collision_t result={false,FLT_MAX,kMAX_POINT,kZERO_POINT,kVOXEL_NONE,0xFFFFFFFF,"none"};
+    collision_t result={false,FLT_MAX,kMAX_POINT,kZERO_POINT,kVOXEL_NONE,0xFFFFFFFF,COLLISION_HIT_NONE};
     for (int i = 0; i < scene->numVoxels; ++i) {
         voxel_t cube=scene->voxels[i];
         RayCollision collision = GetRayCollisionBox(*ray,voxel__get_bounding_box(&cube));
         if( collision.hit ) {
             if( collision.distance < result.distance){
-                result=(collision_t){collision.hit,collision.distance,collision.point,collision.normal,cube,i,"voxel"};;
+                result=(collision_t){collision.hit,collision.distance,collision.point,collision.normal,cube,i,COLLISION_HIT_VOXEL};;
             }
         }
     }
@@ -174,7 +194,7 @@ collision_t scene__get_intersections(Camera camera,scene_t* scene){
         RayCollision collision = GetRayCollisionBox(ray,
                 (BoundingBox){(Vector3){ -100.0f, -0.1f, -100.0f},
                                 (Vector3){ 100.0f, 0.0f, 100.0f }});
-        result=(collision_t){false,collision.distance,collision.point,collision.normal,kVOXEL_NONE,-1,"plane"};
+        result=(collision_t){false,collision.distance,collision.point,collision.normal,kVOXEL_NONE,-1,COLLISION_HIT_PLANE};
     }
     return result;
 }

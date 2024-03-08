@@ -1,5 +1,5 @@
-#ifndef __RLIB_RLMODELS_EXTRAS__
-#define __RLIB_RLMODELS_EXTRAS__
+#ifndef __VXDI_RL_MODEL_EXTRAS_H__
+#define __VXDI_RL_MODEL_EXTRAS_H__
 #include <raylib.h>
 #include <rlgl.h>
 

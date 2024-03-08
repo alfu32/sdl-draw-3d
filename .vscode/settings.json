@@ -20,6 +20,13 @@
         "utility": "c",
         "scene.h": "c",
         "random": "c",
-        "raygui.h": "c"
+        "raygui.h": "c",
+        "sdl.h": "c",
+        "deque": "c",
+        "string": "c",
+        "vector": "c",
+        "string_view": "c",
+        "raymath.h": "c",
+        "vxdi-lib-general.h": "c"
     }
 }
