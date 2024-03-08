@@ -104,7 +104,7 @@ error_id scene__add_voxel(scene_t *scene, Vector3 position, Color material,unsig
     return 0; // Success
 }
 
-error_id scene__remove_voxel(scene_t *scene, Vector3 position) {
+error_id scene__remove_voxel(scene_t *scene, Vector3 position, Color material,unsigned int mat_id) {
     for (int i = 0; i < scene->numVoxels; i++) {
         float dist = Vector3DistanceSqr(scene->voxels[i].position,position);
         // printf("voxel %d is at %3.2f\n",i,dist);

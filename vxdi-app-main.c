@@ -19,6 +19,7 @@
 #include "vxdi-app-multistep-tool.h"
 #include "vxdi-app-editor.h"
 #include "vxdi-app-voxel-rasterizers.h"
+#include "vxdi-lib-shadowmapping.h"
 
 
 typedef struct control_keys_s { char ctrl,alt,shift,left_alt,right_alt,left_shift,right_shift,left_ctrl,right_ctrl; } control_keys_t;
@@ -52,54 +53,88 @@ void shell_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene
     if(tool->num_inputs==1){
         scene__add_voxel(&(app->construction_hints),tool->inputs[0],app->current_color,app->current_color_index);
     } else if(tool->num_inputs==2){
-        rasterizeHollowCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index);
+        rasterizeHollowCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
 void shell_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("shell tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-    rasterizeHollowCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index);
+    
+    if(IsKeyDown(KEY_LEFT_ALT)){
+        printf("shell tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        rasterizeHollowCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__remove_voxel);
+    } else {
+        printf("shell tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        rasterizeHollowCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+    }
 }
 void line_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("line tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->num_inputs==1){
         scene__add_voxel(&(app->construction_hints),tool->inputs[0],app->current_color,app->current_color_index);
     } else if(tool->num_inputs==2){
-        rasterizeLine(tool->inputs[0],point,scene,app->current_color,app->current_color_index);
+        rasterizeLine(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
 void line_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("line tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-    rasterizeLine(tool->inputs[0],point,scene,app->current_color,app->current_color_index);
+    if(IsKeyDown(KEY_LEFT_ALT)){
+        printf("line tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        rasterizeLine(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__remove_voxel);
+    } else {
+        printf("line tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        rasterizeLine(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+    }
 }
 void structure_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("structure tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->num_inputs==1){
         scene__add_voxel(&(app->construction_hints),tool->inputs[0],app->current_color,app->current_color_index);
     } else if(tool->num_inputs==2){
-        rasterizeStructureCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index);
+        rasterizeStructureCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
 void structure_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("structure tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-    rasterizeStructureCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index);
+    if(IsKeyDown(KEY_LEFT_ALT)){
+        printf("plate tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        rasterizeStructureCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__remove_voxel);
+    } else {
+        printf("plate tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        rasterizeStructureCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+    }
+    rasterizeStructureCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,IsKeyPressed(KEY_LEFT_ALT)?scene__remove_voxel:scene__add_voxel);
 }
 void plate_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("plate tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
 }
 void plate_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("plate tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    if(IsKeyDown(KEY_LEFT_ALT)){
+        printf("plate tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        //rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__remove_voxel);
+    } else {
+        printf("plate tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        //rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+    }
 }
 void volume_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("volume tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->num_inputs==1){
         scene__add_voxel(&(app->construction_hints),tool->inputs[0],app->current_color,app->current_color_index);
     } else if(tool->num_inputs==2){
-        rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index);
+        rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
 void volume_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("volume tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-    rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index);
+    if(IsKeyDown(KEY_LEFT_ALT)){
+        printf("volume tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__remove_voxel);
+    } else {
+        printf("volume tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+    }
+    
 }
 
 Image SDL_SurfaceToRaylibImage(SDL_Surface* surface) {
@@ -167,6 +202,7 @@ Texture2D load_texture(const char* filename){
 
 int main(void) {
     int color_btn_size=25;
+    int color_btn_spacing=1;
     int left_menu_sz_width = 20 + color_btn_size*5;
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -210,6 +246,7 @@ int main(void) {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
     InitWindow(app.screenWidth, app.screenHeight, "Raylib Voxel Scene");
+    /// InitShadowMapping();
 
     mut char status[100];
     mut int ctrl,left_ctrl;
@@ -244,6 +281,12 @@ int main(void) {
         if(1 || is_mouse_position_changed){
             UpdateCamera(&camera, app.current_camera_projection );// Update camera position/movement
             vxdi_app_editor__update(&app);
+
+
+            // 1. First pass, from light's perspective
+            // BeginShadowPass();
+            //     RenderModelWithShadows(&scene, camera, depthShader); // Use depth shader
+            // EndShadowPass();
 
             collision_t mouse_model=scene__get_intersections(camera,&scene);
             if(mouse_model.collision_hit == COLLISION_HIT_PLANE || mouse_model.collision_hit == COLLISION_HIT_NONE) {
@@ -315,7 +358,11 @@ int main(void) {
 
             BeginMode3D(camera);
 
-                // Render the scene
+                /// BeginScenePass();
+                ///    RenderModelWithShadows(&scene, camera, shadowShader); // Use shadow shader
+                ///    // Render the scene
+                ///    // 
+                /// EndScenePass();
                 scene__render(&scene,0);
                 scene__render(&app.guides,1);
                 scene__render(&app.construction_hints,2);
@@ -405,20 +452,15 @@ int main(void) {
                         if (
                             current_mouse_position.x>left_menu_sz_width && 
                             current_mouse_position.x<(app.screenWidth-100) && 
-                            IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) &&
-                            !IsKeyDown(KEY_LEFT_CONTROL) &&
-                            !IsKeyDown(KEY_LEFT_SHIFT)
-                        ){
-                            scene__remove_voxel(&scene,model_point_int);
-                        }
-                        if (
-                            current_mouse_position.x>left_menu_sz_width && 
-                            current_mouse_position.x<(app.screenWidth-100) && 
                             IsMouseButtonPressed(MOUSE_BUTTON_LEFT) &&
                             !IsKeyDown(KEY_LEFT_CONTROL) &&
                             !IsKeyDown(KEY_LEFT_SHIFT)
                         ){
-                            scene__add_voxel(&scene,model_point_next_int,app.current_color,app.current_color_index);
+                            if(IsKeyDown(KEY_LEFT_ALT)){
+                                scene__remove_voxel(&scene,model_point_int,app.current_color,app.current_color_index);
+                            } else {
+                                scene__add_voxel(&scene,model_point_next_int,app.current_color,app.current_color_index);
+                            }
                         }
                     break;
                     case APP_CONSTRUCTION_MODE_LINE:
@@ -474,41 +516,41 @@ int main(void) {
             // draw color pallete
             for(int ci=0;ci<24;ci+=1){
                 for(int lum=-1;lum<2;lum+=1){
-                    Vector2 pos = {20+color_btn_size+5+lum*(color_btn_size+5), (color_btn_size+5)+ci*color_btn_size};
+                    Vector2 pos = {20+color_btn_size+color_btn_spacing+lum*(color_btn_size+color_btn_spacing), (color_btn_size+color_btn_spacing)+ci*color_btn_size};
                     Color cl=ColorBrightness(app.colors[ci*15],((float)lum*5.0f)/10.0f);
-                    if(app.current_color_index == ci*10 + lum+1){
-                        DrawCircle(pos.x,pos.y,color_btn_size+5,WHITE);
-                    }
-                    if (ext_RoundButton(pos,(color_btn_size-5)/2,cl) && current_mouse_position.x<left_menu_sz_width) {
+                    if (ext_SquareButton(pos,(color_btn_size-color_btn_spacing)/2,cl) && current_mouse_position.x<left_menu_sz_width) {
                         app.current_color = cl;
                         app.current_color_index = ci*10 + lum+1;
                         // goto start;
                     }
+                    if(app.current_color_index == ci*10 + lum+1){
+                        DrawRectangleLines(pos.x-color_btn_size/2,pos.y-color_btn_size/2,color_btn_size,color_btn_size,WHITE);
+                    }
                 }
             }
             for(int lum=0;lum<24;lum+=1){
-                Vector2 pos = {20+3*(color_btn_size+5), (color_btn_size+5)+lum*color_btn_size};
+                Vector2 pos = {20+3*(color_btn_size+color_btn_spacing), (color_btn_size+color_btn_spacing)+lum*color_btn_size};
                 Color cl=ColorFromHSV(0,0,(lum+1)/24.0f);
-                if(app.current_color_index == 0xFFFF+lum){
-                    DrawCircle(pos.x,pos.y,color_btn_size+5,WHITE);
-                }
-                if (ext_RoundButton(pos,(color_btn_size-5)/2,cl) && current_mouse_position.x<left_menu_sz_width) {
+                if (ext_SquareButton(pos,(color_btn_size-color_btn_spacing)/2,cl) && current_mouse_position.x<left_menu_sz_width) {
                     app.current_color = cl;
                     app.current_color_index = 0xFFFF+lum;
                     // goto start;
                 }
+                if(app.current_color_index == 0xFFFF+lum){
+                    DrawRectangleLines(pos.x-color_btn_size/2,pos.y-color_btn_size/2,color_btn_size,color_btn_size,WHITE);
+                }
             }
             // draw color pallete
             for(int ci=0;ci<24;ci+=1){
-                    Vector2 pos = {20+4*(color_btn_size+5), (color_btn_size+5)+ci*color_btn_size};
+                    Vector2 pos = {20+4*(color_btn_size+color_btn_spacing), (color_btn_size+color_btn_spacing)+ci*color_btn_size};
                     Color cl=Fade(app.colors[ci*15],0.2f);
-                    if(app.current_color_index == ci*0x100){
-                        DrawCircle(pos.x,pos.y,color_btn_size+5,WHITE);
-                    }
-                    if (ext_RoundButton(pos,(color_btn_size-5)/2,cl) && current_mouse_position.x<left_menu_sz_width) {
+                    if (ext_SquareButton(pos,(color_btn_size-color_btn_spacing)/2,cl) && current_mouse_position.x<left_menu_sz_width) {
                         app.current_color = cl;
                         app.current_color_index = ci*0x100;
                         // goto start;
+                    }
+                    if(app.current_color_index == ci*0x100){
+                        DrawRectangleLines(pos.x-color_btn_size/2,pos.y-color_btn_size/2,color_btn_size,color_btn_size,WHITE);
                     }
             }
 
@@ -517,6 +559,10 @@ int main(void) {
             char coords[12];
             snprintf(coords,12,"%3d %3d %3d",(int)model_point_int.x,(int)model_point_int.y,(int)model_point_int.z);
             DrawText(coords, current_mouse_position.x+10, current_mouse_position.y-10, 20, BLACK);
+
+            // Draw the shadow map texture
+            DrawTextureRec(shadowMap.texture, (Rectangle){ 0, 0, shadowMap.texture.width, shadowMap.texture.height }, (Vector2){ 100, 1000 }, WHITE);
+            /// DrawFPS(10, 10);
 
             EndDrawing();
 
@@ -541,7 +587,13 @@ int main(void) {
             DrawText("- Z to zoom to (0, 0, 0)"     , left, row+=20, 10, DARKGRAY);
         }
     }
+    // De-Initialization
+    //--------------------------------------------------------------------------------------
     multistep_tool__deinit(&voxel_tool);
+
+    UnloadShader(depthShader); // Unload shader
+    UnloadShader(shadowShader); // Unload shader
+    UnloadRenderTexture(shadowMap); // Unload render texture
     CloseWindow();
     /// scene__save_model(&scene,"temp.vxde");
 
