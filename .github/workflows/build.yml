@@ -18,6 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
+    - name: Install SDL2 dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev
     - name: Install Zig
       run: |
         wget https://ziglang.org/download/0.11.0/zig-linux-x86_64-0.11.0.tar.xz
