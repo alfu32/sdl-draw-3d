@@ -22,6 +22,9 @@ jobs:
         # Fetches all history for all tags and branches, and also submodules
         fetch-depth: 0
         submodules: 'recursive'
+    - name: clone raylib
+      run: |
+        git clone https://github.com/raysan5/raylib.git
     - name: Install SDL2 dependencies
       run: |
         sudo apt-get update
