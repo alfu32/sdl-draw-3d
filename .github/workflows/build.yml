@@ -35,13 +35,17 @@ jobs:
         Expand-Archive "SDL2_ttf.zip" -DestinationPath "SDL2_ttf"
         Remove-Item "SDL2_ttf.zip"
 
+    - name: Setup Dependencies
+      run: |
+        choco install ninja
+
     - name: Clone and build Raylib
       run: |
         git clone https://github.com/raysan5/raylib.git submodules/raylib
         cd submodules/raylib
         mkdir build && cd build
-        cmake -G "Visual Studio 16 2019" -A x64 -DBUILD_SHARED_LIBS=TRUE ..
-        cmake --build . --config Release
+        cmake -G "Ninja" -DBUILD_SHARED_LIBS=TRUE ..
+        cmake --build .
 
     - name: Build project using CMake
       run: |
