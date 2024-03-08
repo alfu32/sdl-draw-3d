@@ -24,7 +24,18 @@ jobs:
         submodules: 'recursive'
     - name: clone raylib
       run: |
-        git clone https://github.com/raysan5/raylib.git
+        mkdir submodules
+        git clone https://github.com/raysan5/raylib.git submodules/raylib
+
+    - name: Install dependencies and build Raylib
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev cmake make gcc libasound2-dev libgl1-mesa-dev libxcursor-dev libxinerama-dev libxrandr-dev
+        cd submodules/raylib  # Adjust the path according to your project structure
+        mkdir build && cd build
+        cmake -DPLATFORM=Desktop -DBUILD_SHARED_LIBS=ON ..
+        make -j4
+        sudo make install
     - name: Install SDL2 dependencies
       run: |
         sudo apt-get update
