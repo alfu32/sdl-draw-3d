@@ -8,32 +8,32 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Create SDL2 directories
+      run: |
+        New-Item -Path . -Name "SDL2" -ItemType "directory"
+        New-Item -Path . -Name "SDL2_image" -ItemType "directory"
+        New-Item -Path . -Name "SDL2_ttf" -ItemType "directory"
+
     - name: Download and extract SDL2
       run: |
         Invoke-WebRequest "https://www.libsdl.org/release/SDL2-devel-2.0.14-VC.zip" -OutFile "SDL2.zip"
-        Expand-Archive "SDL2.zip" -DestinationPath "."
-        $sdlDir = Get-ChildItem -Name "SDL2-*"
-        Move-Item "$sdlDir\*" "."
-        Remove-Item "$sdlDir" -Force -Recurse
+        Expand-Archive "SDL2.zip" -DestinationPath "SDL2"
+        Remove-Item "SDL2.zip"
 
     - name: Download and extract SDL2_image
       run: |
         Invoke-WebRequest "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.0.5-VC.zip" -OutFile "SDL2_image.zip"
-        Expand-Archive "SDL2_image.zip" -DestinationPath "."
-        $sdlImageDir = Get-ChildItem -Name "SDL2_image-*"
-        Move-Item "$sdlImageDir\*" "."
-        Remove-Item "$sdlImageDir" -Force -Recurse
+        Expand-Archive "SDL2_image.zip" -DestinationPath "SDL2_image"
+        Remove-Item "SDL2_image.zip"
 
     - name: Download and extract SDL2_ttf
       run: |
         Invoke-WebRequest "https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.15-VC.zip" -OutFile "SDL2_ttf.zip"
-        Expand-Archive "SDL2_ttf.zip" -DestinationPath "."
-        $sdlTtfDir = Get-ChildItem -Name "SDL2_ttf-*"
-        Move-Item "$sdlTtfDir\*" "."
-        Remove-Item "$sdlTtfDir" -Force -Recurse
-
-    - name: Setup MSVC
-      uses: ilammy/msvc-dev-cmd@v1
+        Expand-Archive "SDL2_ttf.zip" -DestinationPath "SDL2_ttf"
+        Remove-Item "SDL2_ttf.zip"
 
     - name: Clone and build Raylib
       run: |
@@ -46,7 +46,7 @@ jobs:
     - name: Build project using CMake
       run: |
         mkdir build && cd build
-        cmake -G "Visual Studio 16 2019" -A x64 ..
+        cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_PREFIX_PATH="./SDL2;./SDL2_image;./SDL2_ttf" ..
         cmake --build . --config Release
   build-linux:
     runs-on: ubuntu-latest
