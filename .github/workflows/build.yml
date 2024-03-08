@@ -18,7 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-
+      with:
+        # Fetches all history for all tags and branches, and also submodules
+        fetch-depth: 0
+        submodules: 'recursive'
     - name: Install SDL2 dependencies
       run: |
         sudo apt-get update
