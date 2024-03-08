@@ -7,40 +7,46 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-      with:
-        submodules: 'recursive'
-        fetch-depth: 0
+
+    - name: Download and extract SDL2
+      run: |
+        Invoke-WebRequest "https://www.libsdl.org/release/SDL2-devel-2.0.14-VC.zip" -OutFile "SDL2.zip"
+        Expand-Archive "SDL2.zip" -DestinationPath "."
+        $sdlDir = Get-ChildItem -Name "SDL2-*"
+        Move-Item "$sdlDir\*" "."
+        Remove-Item "$sdlDir" -Force -Recurse
+
+    - name: Download and extract SDL2_image
+      run: |
+        Invoke-WebRequest "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.0.5-VC.zip" -OutFile "SDL2_image.zip"
+        Expand-Archive "SDL2_image.zip" -DestinationPath "."
+        $sdlImageDir = Get-ChildItem -Name "SDL2_image-*"
+        Move-Item "$sdlImageDir\*" "."
+        Remove-Item "$sdlImageDir" -Force -Recurse
+
+    - name: Download and extract SDL2_ttf
+      run: |
+        Invoke-WebRequest "https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.15-VC.zip" -OutFile "SDL2_ttf.zip"
+        Expand-Archive "SDL2_ttf.zip" -DestinationPath "."
+        $sdlTtfDir = Get-ChildItem -Name "SDL2_ttf-*"
+        Move-Item "$sdlTtfDir\*" "."
+        Remove-Item "$sdlTtfDir" -Force -Recurse
 
     - name: Setup MSVC
       uses: ilammy/msvc-dev-cmd@v1
 
-    - name: Install Chocolatey packages (SDL2 libraries)
-      run: |
-        choco install sdl2 sdl2-ttf sdl2-image
-
-    - name: Clone Raylib and prepare for build
+    - name: Clone and build Raylib
       run: |
         git clone https://github.com/raysan5/raylib.git submodules/raylib
         cd submodules/raylib
         mkdir build && cd build
-
-    - name: Configure Raylib with CMake
-      run: |
-        cd submodules/raylib/build
         cmake -G "Visual Studio 16 2019" -A x64 -DBUILD_SHARED_LIBS=TRUE ..
-
-    - name: Build Raylib using CMake
-      run: |
         cmake --build . --config Release
-
-    - name: Configure project with CMake
-      run: |
-        mkdir build && cd build
-        cmake -G "Visual Studio 16 2019" -A x64 ..
 
     - name: Build project using CMake
       run: |
-        cd build
+        mkdir build && cd build
+        cmake -G "Visual Studio 16 2019" -A x64 ..
         cmake --build . --config Release
   build-linux:
     runs-on: ubuntu-latest
