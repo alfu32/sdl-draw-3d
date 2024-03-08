@@ -1,18 +1,45 @@
 name: Build
-
 on: [push, pull_request]
-
 jobs:
   build-windows:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up MSVC
+      with:
+        submodules: 'recursive'
+        fetch-depth: 0
+  
+    - name: Setup MSVC
       uses: ilammy/msvc-dev-cmd@v1
-    - name: Build with MSVC
+
+    - name: Install Chocolatey packages (SDL2 libraries)
       run: |
-        # Add your build commands here
-        cl /I"path\to\includes" /L"path\to\libs" src\main.c /Fe:MyApp.exe
+        choco install sdl2 sdl2-ttf sdl2-image
+
+    - name: Clone Raylib and prepare for build
+      run: |
+        git clone https://github.com/raysan5/raylib.git submodules/raylib
+        cd submodules/raylib
+        mkdir build && cd build
+
+    - name: Configure Raylib with CMake
+      run: |
+        cd submodules/raylib/build
+        cmake -G "Visual Studio 16 2019" -A x64 -DBUILD_SHARED_LIBS=TRUE ..
+
+    - name: Build Raylib using CMake
+      run: |
+        cmake --build . --config Release
+
+    - name: Configure project with CMake
+      run: |
+        mkdir build && cd build
+        cmake -G "Visual Studio 16 2019" -A x64 ..
+
+    - name: Build project using CMake
+      run: |
+        cd build
+        cmake --build . --config Release
 
   build-linux:
     runs-on: ubuntu-latest
