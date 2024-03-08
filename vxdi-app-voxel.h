@@ -3,6 +3,8 @@
 #define __VXDI_APP_VOXEL_H__
 #include <float.h>
 #include <raylib.h>
+#include "vxdi-app-light.h"
+
 #define VOXEL_SIZE 1.0f
 #define VOXEL_SIZE_2 0.5f
 
@@ -45,30 +47,11 @@ BoundingBox voxel__get_bounding_box(voxel_t* self){
     };
 }
 
-
-// Function to shade a color based on its brightness and the light angle
-Color ShadeColor(Color color, Vector3 lightDir) {
-    // Compute the angle between the light direction and the normal of the face (assuming up is the normal direction)
-    float angle = acosf(Vector3DotProduct(lightDir, (Vector3){0.0f, 1.0f, 0.0f}));
-
-    // Compute the shading factor based on the angle
-    float shadingFactor = (1.0f - (angle / PI)) * 0.5f; // Range from 0.0f to 0.5f
-
-    // Adjust the brightness of the color based on the shading factor
-    float brightness = (float)color.r / 255.0f; // Assuming the color components are in the range [0, 255]
-    brightness += shadingFactor;
-
-    // Clamp brightness value to [0.0, 1.0]
-    brightness = Clamp(brightness, 0.0f, 1.0f);
-
-    // Compute the shaded color
-    return ColorBrightness(color,brightness);
-}
-
 // Function to draw a shaded voxel based on directional light
-void voxel__draw_shaded(voxel_t *voxel, Vector3 light_direction) {
+void voxel__draw_shaded(voxel_t *voxel, vxdi_light_t *light) {
     // Define cube size
     float size = 0.5f; // Half of the total size to make the cube size 1 in all directions
+    Vector3 n=Vector3Normalize(light->direction);
 
     // Define vertices for each face of the cube
     // Define vertices for each face of the cube
@@ -107,12 +90,12 @@ void voxel__draw_shaded(voxel_t *voxel, Vector3 light_direction) {
 
 
     // Draw the cube using triangle strips with shaded colors
-        DrawTriangleStrip3D(&vertices[0], 4, voxel->material_color);// Front face
-        DrawTriangleStrip3D(&vertices[4], 4, voxel->material_color);// Back face
-        DrawTriangleStrip3D(&vertices[8], 4, voxel->material_color);// Top face
-        DrawTriangleStrip3D(&vertices[12], 4, voxel->material_color);// Bottom face
-        DrawTriangleStrip3D(&vertices[16], 4, voxel->material_color);// Left face
-        DrawTriangleStrip3D(&vertices[20], 4, voxel->material_color);// Right face
+        DrawTriangleStrip3D(&vertices[0], 4, ColorBrightness(voxel->material_color,-n.x*light->shadow_strength));//voxel->material_color);// Front face
+        DrawTriangleStrip3D(&vertices[4], 4, ColorBrightness(voxel->material_color,n.x*light->light_strength));//voxel->material_color);// Back face
+        DrawTriangleStrip3D(&vertices[8], 4, ColorBrightness(voxel->material_color,-n.y*light->shadow_strength));// Top face
+        DrawTriangleStrip3D(&vertices[12], 4, ColorBrightness(voxel->material_color,n.y*light->light_strength));// Bottom face
+        DrawTriangleStrip3D(&vertices[16], 4, ColorBrightness(voxel->material_color,-n.z*light->shadow_strength));// Left face
+        DrawTriangleStrip3D(&vertices[20], 4, ColorBrightness(voxel->material_color,n.z*light->light_strength));// Right face
     // Draw each face of the cube with shaded colors
 }
 // Function to draw a plane with specified vertices and color

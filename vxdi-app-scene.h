@@ -6,6 +6,7 @@
 #include <float.h>
 #include <raylib.h>
 #include "vxdi-lib-general.h"
+#include "vxdi-app-light.h"
 //#include "raylib/examples/https://raw.githubusercontent.com/raysan5/raylib/master/examples/shaders/rlights.h"
 
 // Define maximum number of voxels in the scene
@@ -20,7 +21,7 @@ typedef struct {
     int numVoxels;
     Color colormap[MAX_MAT_ID];
     char is_persisted;
-    Vector3 light_direction;
+    vxdi_light_t light_direction;
     const char* temp_filename;
 } scene_t;
 
@@ -30,7 +31,7 @@ void scene__init(scene_t *scene,char is_persisted,Vector3 light_direction) {
     scene->numVoxels = 0;
 
     // Define directional light direction
-    scene->light_direction = light_direction; // Example light direction
+    scene->light_direction = (vxdi_light_t){light_direction,.5,.5}; // Example light direction
     scene->colormap[0]=WHITE;
     scene->colormap[1]=RED;
     scene->colormap[2]=ORANGE;
@@ -137,7 +138,7 @@ int scene__render(scene_t *scene,int type) {
         switch(type){
             case 0:
                 //DrawCube(vox.position, 1.0f, 1.0f, 1.0f, vox.material_color);
-                voxel__draw_shaded(&vox,scene->light_direction);
+                voxel__draw_shaded(&vox,&(scene->light_direction));
                 DrawCubeWires(vox.position, 1.0f, 1.0f, 1.0f, Fade(DARKGRAY, 0.5f));
                 break;
             case 1:
