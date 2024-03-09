@@ -34,18 +34,12 @@ jobs:
         Invoke-WebRequest "https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.15-VC.zip" -OutFile "SDL2_ttf.zip"
         Expand-Archive "SDL2_ttf.zip" -DestinationPath "SDL2_ttf"
         Remove-Item "SDL2_ttf.zip"
-
-    - name: Setup Dependencies
+  
+    - name: Download and extract Raylib (Windows)
       run: |
-        choco install ninja
-
-    - name: Clone and build Raylib
-      run: |
-        git clone https://github.com/raysan5/raylib.git submodules/raylib
-        cd submodules/raylib
-        mkdir build && cd build
-        cmake -G "Ninja" -DBUILD_SHARED_LIBS=TRUE ..
-        cmake --build .
+        Invoke-WebRequest "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_win64_msvc16.zip" -OutFile raylib.zip
+        Expand-Archive raylib.zip -DestinationPath .\raylib
+        Remove-Item raylib.zip
 
     - name: Build project using CMake
       run: |
