@@ -55,8 +55,8 @@ jobs:
     - name: Build project using CMake
       run: |
         cd build
-        cmake .. -G "Visual Studio 16 2019" -A x64 -DCMAKE_PREFIX_PATH="./SDL2;./SDL2_image;./SDL2_ttf" -DRAYLIB_PATH=./raylib
-        cmake --build .. --config Release
+        cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_PREFIX_PATH="./SDL2;./SDL2_image;./SDL2_ttf" -DRAYLIB_PATH=./raylib ..
+        cmake --build . --config Release
   build-linux:
     runs-on: ubuntu-latest
     steps:
