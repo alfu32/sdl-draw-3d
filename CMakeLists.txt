@@ -22,6 +22,12 @@ find_package(SDL2_image CONFIG REQUIRED PATHS ${SDL2_IMAGE_PATH})
 include_directories(${RAYLIB_PATH}/include)
 link_directories(${RAYLIB_PATH}/lib)
 
+include_directories(${RAYLIB_PATH}/include)
+include_directories(${NUKLEAR_PATH}) # Adjust this path based on your directory structure
+include_directories(${RAYGUI_PATH}) # Adjust this path based on your directory structure
+
+# The rest of your CMakeLists.txt configuration goes here...
+
 # Add your source files here
 add_executable(${PROJECT_NAME} main.cpp) # Replace main.cpp with the list of your source files
 
