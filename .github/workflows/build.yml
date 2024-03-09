@@ -41,11 +41,22 @@ jobs:
         Expand-Archive raylib.zip -DestinationPath .\raylib
         Remove-Item raylib.zip
 
+    
+###    - name: Configure project with CMake (Windows)
+###      run: |
+###        cmake -B build -S . -G "Visual Studio 16 2019" -A x64 -DCMAKE_PREFIX_PATH="./SDL2;./SDL2_image;./SDL2_ttf" -DRAYLIB_PATH=./raylib
+###      shell: pwsh
+###    
+###    - name: Build project with CMake (Windows)
+###      run: |
+###        cmake --build build --config Release
+###      shell: pwsh
+
     - name: Build project using CMake
       run: |
         cd build
-        cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_PREFIX_PATH="./SDL2;./SDL2_image;./SDL2_ttf" ..
-        cmake --build . --config Release
+        cmake .. -G "Visual Studio 16 2019" -A x64 -DCMAKE_PREFIX_PATH="./SDL2;./SDL2_image;./SDL2_ttf" -DRAYLIB_PATH=./raylib
+        cmake --build .. --config Release
   build-linux:
     runs-on: ubuntu-latest
     steps:
