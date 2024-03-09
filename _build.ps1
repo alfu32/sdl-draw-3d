@@ -44,3 +44,25 @@ DownloadAndExtract $nuklearUrl $nuklearDir
 DownloadAndExtract $rayguiUrl $rayguiDir
 
 Write-Host "Libraries downloaded and extracted."
+
+$buildDir = Join-Path $PSScriptRoot "build"
+New-Item -ItemType Directory -Force -Path $buildDir
+Set-Location $buildDir
+
+# Configure the project with CMake
+# Note: Additional flags can be added according to your project's requirements
+cmake -G "Visual Studio 16 2019" -A x64 -S $PSScriptRoot -B $buildDir
+
+# Build the project with CMake
+# You can adjust the configuration (Debug, Release, etc.) as needed
+cmake --build $buildDir --config Release
+
+# Optionally, if you want to specify the target to build, you can use:
+# cmake --build $buildDir --target YourTargetName --config Release
+
+# After the build
+Write-Host "Build completed. The binaries are located in the $buildDir/Release directory."
+
+# Navigate back to the script's root directory
+Set-Location $PSScriptRoot
+
