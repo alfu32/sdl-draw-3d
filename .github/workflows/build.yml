@@ -71,6 +71,11 @@ jobs:
     - name: Build with Zig for Linux
       run: |
         ./_build.sh
+    - name: Archive Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: compiled-application
+        path: build/vxdi-app-main.xe
 
   build-android:
     runs-on: ubuntu-latest
