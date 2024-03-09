@@ -14,6 +14,10 @@ jobs:
     - name: do build for windows
       run: |
         ./_build.ps1
+    - name: Build project with CMake (Windows)
+      run: |
+        cmake --build build --config Release
+      shell: pwsh
   
   build-linux:
     runs-on: ubuntu-latest
