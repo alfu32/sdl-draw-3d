@@ -2,7 +2,7 @@
 
 # Define base libraries URLs
 $sdl2Url = "https://www.libsdl.org/release/SDL2-devel-2.30.1-VC.zip"
-$sdl2TtfUrl = "https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.30.1-VC.zip"
+$sdl2TtfUrl = "https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.22.0-VC.zip"
 $sdl2ImageUrl = "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.8.2-VC.zip"
 $raylibUrl = "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_win64_msvc16.zip"
 
