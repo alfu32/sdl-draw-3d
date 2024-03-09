@@ -10,6 +10,8 @@ jobs:
 
     - name: Setup MSBuild Path
       uses: microsoft/setup-msbuild@v1.1
+      with:
+        msbuild-architecture: x86_64
       
     - name: Setup Python
       uses: actions/setup-python@v4
