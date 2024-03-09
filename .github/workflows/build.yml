@@ -8,12 +8,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup MSVC
-      uses: ilammy/msvc-dev-cmd@v1
+    - name: Setup MSBuild Path
+      uses: microsoft/setup-msbuild@v1.1
+      
     - name: Setup Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.x'
+        python-version: '3.11'
 
     - name: Install CMake
       run: pip install cmake
@@ -21,15 +22,12 @@ jobs:
     - name: do build for windows
       run: |
         ./_build.ps1
+
     - name: Configure CMake Project
-      shell: cmd
-      run: |
-        cmake -B build -S . -G "Visual Studio 16 2019" -A x64
+      run: cmake -B build -S . -G "Visual Studio 16 2019" -A x64
         
     - name: Build CMake Project
-      shell: cmd
-      run: |
-        cmake --build build --config Release
+      run: cmake --build build --config Release
 
     - name: Archive Artifacts
       uses: actions/upload-artifact@v3
