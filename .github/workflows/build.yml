@@ -1,0 +1,109 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Create SDL2 directories
+      run: |
+        New-Item -Path . -Name "SDL2" -ItemType "directory"
+        New-Item -Path . -Name "SDL2_image" -ItemType "directory"
+        New-Item -Path . -Name "SDL2_ttf" -ItemType "directory"
+
+    - name: Download and extract SDL2
+      run: |
+        Invoke-WebRequest "https://www.libsdl.org/release/SDL2-devel-2.0.14-VC.zip" -OutFile "SDL2.zip"
+        Expand-Archive "SDL2.zip" -DestinationPath "SDL2"
+        Remove-Item "SDL2.zip"
+
+    - name: Download and extract SDL2_image
+      run: |
+        Invoke-WebRequest "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.0.5-VC.zip" -OutFile "SDL2_image.zip"
+        Expand-Archive "SDL2_image.zip" -DestinationPath "SDL2_image"
+        Remove-Item "SDL2_image.zip"
+
+    - name: Download and extract SDL2_ttf
+      run: |
+        Invoke-WebRequest "https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.15-VC.zip" -OutFile "SDL2_ttf.zip"
+        Expand-Archive "SDL2_ttf.zip" -DestinationPath "SDL2_ttf"
+        Remove-Item "SDL2_ttf.zip"
+
+    - name: Setup Dependencies
+      run: |
+        choco install ninja
+
+    - name: Clone and build Raylib
+      run: |
+        git clone https://github.com/raysan5/raylib.git submodules/raylib
+        cd submodules/raylib
+        mkdir build && cd build
+        cmake -G "Ninja" -DBUILD_SHARED_LIBS=TRUE ..
+        cmake --build .
+
+    - name: Build project using CMake
+      run: |
+        mkdir build && cd build
+        cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_PREFIX_PATH="./SDL2;./SDL2_image;./SDL2_ttf" ..
+        cmake --build . --config Release
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        # Fetches all history for all tags and branches, and also submodules
+        fetch-depth: 0
+        submodules: 'recursive'
+    - name: clone raylib
+      run: |
+        mkdir submodules
+        git clone https://github.com/raysan5/raylib.git submodules/raylib
+
+    - name: Install dependencies and build Raylib
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev cmake make gcc libasound2-dev libgl1-mesa-dev libxcursor-dev libxinerama-dev libxrandr-dev
+        cd submodules/raylib  # Adjust the path according to your project structure
+        mkdir build && cd build
+        cmake -DPLATFORM=Desktop -DBUILD_SHARED_LIBS=ON ..
+        make -j4
+        sudo make install
+    - name: Install SDL2 dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev
+    - name: Install Zig
+      run: |
+        wget https://ziglang.org/download/0.11.0/zig-linux-x86_64-0.11.0.tar.xz
+        tar -xf zig-linux-x86_64-0.11.0.tar.xz
+        echo "$PWD/zig-linux-x86_64-0.11.0" >> $GITHUB_PATH
+    - name: Build with Zig for Linux
+      run: |
+        ./_build.sh
+
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+    - name: Install Android SDK
+      run: |
+        wget https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
+        unzip commandlinetools-linux-6609375_latest.zip -d $HOME/android-sdk
+        echo "$HOME/android-sdk/cmdline-tools/bin" >> $GITHUB_PATH
+        yes | sdkmanager --licenses
+        sdkmanager "platforms;android-30" "build-tools;30.0.3" "ndk;21.3.6528147"
+    - name: Build APK with Gradle
+      run: |
+        # Assuming you have a Gradle wrapper in your repository
+        ./gradlew assembleRelease
