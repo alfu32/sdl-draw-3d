@@ -23,9 +23,13 @@ New-Item -ItemType Directory -Force -Path $sdl2Dir, $sdl2TtfDir, $sdl2ImageDir, 
 
 # Function to download and extract libraries
 Function DownloadAndExtract ($url, $destination) {
+    echo "downloading $url to $destination"
+    ls
     $fileName = [System.IO.Path]::GetFileName($url)
     $downloadPath = Join-Path $libsDir $fileName
     Invoke-WebRequest $url -OutFile $downloadPath
+    ls
+    echo "extracting to $destination"
     Expand-Archive $downloadPath -DestinationPath $destination -Force
     Remove-Item $downloadPath
 }
