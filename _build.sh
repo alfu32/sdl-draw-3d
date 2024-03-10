@@ -48,7 +48,7 @@ zig cc  -target x86_64-windows-gnu \
 -L./libs/Raylib/raylib-5.0_win64_mingw-w64/lib \
 -L./libs/SDL2_image-2.8.2/x86_64-w64-mingw32/lib -L./libs/SDL2_image-2.8.2/x86_64-w64-mingw32/bin \
 -L./libs/SDL2_ttf-2.22.0/lib -L./libs/SDL2_ttf-2.22.0/x86_64-w64-mingw32/bin \
--lwinpthread -lSDL2 -lSDL2main -lraylib -llibEGL -lSDL2_image -lSDL2_ttf $zig_flags \
+-lwinpthread -lSDL2 -lSDL2main -lraylib -lOpenGL -lGLU32 -lSDL2_image -lSDL2_ttf $zig_flags \
 -o build/x86_64-windows-gnu/$appname.exe $appname.c
 
 

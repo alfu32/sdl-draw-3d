@@ -41,6 +41,7 @@ mkdir -p libs/mesa
 wget "https://github.com/pal1000/mesa-dist-win/releases/download/24.0.2/mesa3d-24.0.2-development-pack-mingw.7z" -O "libs/mesa/mesa3d-24.0.2-development-pack-mingw.7z"
 cd libs/mesa
 p7zip -d mesa3d-24.0.2-development-pack-mingw.7z
+cd ../../
 
 downloadAndExtract "$sdl2Url" "$sdl2Dir"
 downloadAndExtract "$sdl2TtfUrl" "$sdl2TtfDir"

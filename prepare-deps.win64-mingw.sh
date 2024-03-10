@@ -20,7 +20,7 @@ raylibDir="${libsDir}/Raylib"
 nuklearDir="${libsDir}/Nuklear"
 rayguiDir="${libsDir}/raygui"
 
-mkdir -p "$sdl2Dir" "$sdl2TtfDir" "$sdl2ImageDir" "$raylibDir" "$nuklearDir" "$rayguiDir"
+mkdir -p "$openglESMesaDir" "$sdl2Dir" "$sdl2TtfDir" "$sdl2ImageDir" "$raylibDir" "$nuklearDir" "$rayguiDir"
 
 # Function to download and extract libraries
 downloadAndExtract() {
@@ -30,7 +30,7 @@ downloadAndExtract() {
     fileName=$(basename "$url")
     downloadPath="${libsDir}/${fileName}"
     wget "$url" -O "$downloadPath"
-    echo "Extracting to $destination"
+    echo "Extracting $downloadPath to $destination"
     unzip -o "$downloadPath" -d "$destination"
     rm "$downloadPath"
 }
@@ -41,6 +41,7 @@ mkdir -p libs/mesa
 wget "https://github.com/pal1000/mesa-dist-win/releases/download/24.0.2/mesa3d-24.0.2-development-pack-mingw.7z" -O "libs/mesa/mesa3d-24.0.2-development-pack-mingw.7z"
 cd libs/mesa
 p7zip -d mesa3d-24.0.2-development-pack-mingw.7z
+cd ../../
 
 downloadAndExtract "$sdl2Url" "$sdl2Dir"
 downloadAndExtract "$sdl2TtfUrl" "$sdl2TtfDir"
