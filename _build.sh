@@ -29,3 +29,6 @@ zig cc -o build/$appname.xe $appname.c $flags $zig_flags -I/usr/include/SDL2 $*
 #zig cc -o $appname.xe $appname.c $flags $zig_flags -I/usr/include/SDL2 $* -target x86_64-linux-musl
 #zig cc -o $appname.xe $appname.c $flags $zig_flags -I/usr/include/SDL2 $* -target riscv64-linux-gnu
 #zig cc -o $appname.xe $appname.c $flags $zig_flags -I/usr/include/SDL2 $* -target x86_64-windows-msvc
+
+
+zig cc -o build/$appname.exe $appname.c $flags $zig_flags -I/usr/include/SDL2 -target x86_64-windows-gnu $*
