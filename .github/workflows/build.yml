@@ -70,6 +70,7 @@ jobs:
         echo "$PWD/zig-linux-x86_64-0.11.0" >> $GITHUB_PATH
     - name: Build with Zig for Linux
       run: |
+        ./prepare-deps.sh
         ./_build.sh
     - name: Archive Artifacts
       uses: actions/upload-artifact@v3
