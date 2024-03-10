@@ -31,10 +31,12 @@ zig cc -o build/x86_64-linux-gnu/$appname.xe $appname.c $flags $zig_flags -I/usr
 #zig cc -o $appname.xe $appname.c $flags $zig_flags -I/usr/include/SDL2 $* -target riscv64-linux-gnu
 #zig cc -o $appname.xe $appname.c $flags $zig_flags -I/usr/include/SDL2 $* -target x86_64-windows-msvc
 
+MINGW="$(which x86_64-w64-mingw32-gcc)"
+if [ "$MINGW" == "" ] ;then
+    sudo apt install mingw-w64
+fi
 
-sudo apt install mingw-w64
-
-mkdir build/x86_64-windows-gnu
+mkdir -p build/x86_64-windows-gnu
 
 zig cc  -target x86_64-windows-gnu \
 -I./libs/mesa/include/EGL \
@@ -50,8 +52,8 @@ zig cc  -target x86_64-windows-gnu \
 -L./libs/SDL2-2.30.1/x86_64-w64-mingw32/lib -L./libs/SDL2-2.30.1/x86_64-w64-mingw32/bin \
 -L./libs/Raylib/raylib-5.0_win64_mingw-w64/lib \
 -L./libs/SDL2_image-2.8.2/x86_64-w64-mingw32/lib -L./libs/SDL2_image-2.8.2/x86_64-w64-mingw32/bin \
--L./libs/SDL2_ttf-2.22.0/lib -L./libs/SDL2_ttf-2.22.0/x86_64-w64-mingw32/bin \
--lwinpthread -lSDL2 -lraylib -lopengl32 -lglu32 -lSDL2_image -lSDL2_ttf $zig_flags \
+-L./libs/SDL2_ttf-2.22.0/x86_64-w64-mingw32/lib -L./libs/SDL2_ttf-2.22.0/x86_64-w64-mingw32/bin \
+-lwinpthread -lSDL2 -lraylibdll -lopengl32 -lglu32 -lSDL2_image -lSDL2_ttf $zig_flags \
 -o build/x86_64-windows-gnu/$appname.exe $appname.c
 
 
