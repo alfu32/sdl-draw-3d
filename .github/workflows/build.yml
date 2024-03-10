@@ -71,7 +71,7 @@ jobs:
     - name: Build with Zig for Linux
       run: |
         ls -la libs/
-        ./prepare-deps.sh
+        ./prepare-deps.win64-mingw.sh
         ls -la libs/
         ./_build.sh
         ls -la build/
