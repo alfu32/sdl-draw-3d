@@ -3,3 +3,4 @@ zig-out
 raylib
 build
 *.vxde
+libs
