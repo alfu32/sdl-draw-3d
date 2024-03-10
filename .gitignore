@@ -4,3 +4,4 @@ raylib
 build
 *.vxde
 libs
+!libs/opengl
