@@ -29,7 +29,7 @@ downloadAndExtract() {
     echo "Downloading $url to $destination"
     fileName=$(basename "$url")
     downloadPath="${libsDir}/${fileName}"
-    wget "$url" -O "$downloadPath"
+    curl -Sl "$url" -i -o "$downloadPath"
     echo "Extracting to $destination"
     unzip -o "$downloadPath" -d "$destination"
     rm "$downloadPath"
@@ -45,9 +45,6 @@ p7zip -d mesa3d-24.0.2-development-pack-mingw.7z
 downloadAndExtract "$sdl2Url" "$sdl2Dir"
 downloadAndExtract "$sdl2TtfUrl" "$sdl2TtfDir"
 downloadAndExtract "$sdl2ImageUrl" "$sdl2ImageDir"
-mv "${libsDir}/SDL2-2.30.1" "${libsDir}/SDL2"
-mv "${libsDir}/SDL2_image-2.8.2" "${libsDir}/SDL2_image"
-mv "${libsDir}/SDL2_ttf-2.22.0" "${libsDir}/SDL2_ttf"
 
 downloadAndExtract "$raylibUrl" "$raylibDir"
 downloadAndExtract "$nuklearUrl" "$nuklearDir"
