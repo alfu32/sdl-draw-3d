@@ -1,3 +1,4 @@
+#define SDL_MAIN_HANDLED
 #include <stdio.h>
 #include <raylib.h>
 #include <SDL2/SDL.h>
@@ -200,7 +201,7 @@ Texture2D load_texture(const char* filename){
     return texture;
 }
 
-int main(void) {
+int main(int argc, char *argv[]) {
     int color_btn_size=25;
     int color_btn_spacing=1;
     int left_menu_sz_width = 20 + color_btn_size*5;
