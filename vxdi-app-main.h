@@ -229,8 +229,12 @@ int main(int argc, char *argv[]) {
     scene_t scene;
     vxdi_app_editor_t app=vxdi_app_editor__setup(&camera,(Vector3){ 0.7f, -1.0f, 0.3f });
     scene__init(&scene,1,app.light_direction);
+    scene.temp_filename="temp.vxdi";
+    if(argc >1) {
+        scene.temp_filename = argv[1];
+    }
 
-    scene__load_model(&scene,"temp.vxde");
+    scene__load_model(&scene,scene.temp_filename);
 
     // Example: Add a voxel to the scene
     // scene__add_voxel(&scene, (Vector3){0.0f, 0.0f, 0.0f}, RED,1);
