@@ -5,3 +5,4 @@ build
 *.vxde
 libs
 !libs/opengl
+!libs/raylib

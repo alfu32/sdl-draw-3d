@@ -22,7 +22,7 @@ echo "raylib-nuklear.h exists"
 else
 curl "https://raw.githubusercontent.com/RobLoach/raylib-nuklear/master/include/raylib-nuklear.h" -O external/raylib-nuklear.h
 fi
-mkdir build/x86_64-linux-gnu
+mkdir -p build/x86_64-linux-gnu
 echo "zig cc -o build/x86_64-linux-gnu/$appname.xe $appname.c $flags $zig_flags $*"
 zig cc -o build/x86_64-linux-gnu/$appname.xe $appname.c $flags $zig_flags -I/usr/include/SDL2 $*
 #zig cc -o $appname.xe $appname.c $flags $zig_flags -I/usr/include/SDL2 $* -target aarch64-linux-gnu
@@ -36,30 +36,30 @@ if [ "$MINGW" == "" ] ;then
     sudo apt install mingw-w64
 fi
 
-mkdir -p build/x86_64-windows-gnu
-
-zig cc  -target x86_64-windows-gnu \
--I./libs/mesa/include/EGL \
--I./usr/x86_64-w64-mingw32/include \
--I./libs/SDL2-2.30.1/x86_64-w64-mingw32/include \
--I./libs/SDL2-2.30.1/x86_64-w64-mingw32/include/SDL2 \
--I./libs/Raylib/raylib-5.0_win64_mingw-w64/include \
--I./libs/SDL2_image-2.8.2/x86_64-w64-mingw32/include \
--I./libs/SDL2_ttf-2.22.0/x86_64-w64-mingw32/include \
--L./libs/mesa/lib/x64 \
--L./libs/opengl \
--L/usr/x86_64-w64-mingw32/lib \
--L./libs/SDL2-2.30.1/x86_64-w64-mingw32/lib -L./libs/SDL2-2.30.1/x86_64-w64-mingw32/bin \
--L./libs/Raylib/raylib-5.0_win64_mingw-w64/lib \
--L./libs/SDL2_image-2.8.2/x86_64-w64-mingw32/lib -L./libs/SDL2_image-2.8.2/x86_64-w64-mingw32/bin \
--L./libs/SDL2_ttf-2.22.0/x86_64-w64-mingw32/lib -L./libs/SDL2_ttf-2.22.0/x86_64-w64-mingw32/bin \
--lwinpthread -lSDL2 -lraylibdll -lopengl32 -lglu32 -lSDL2_image -lSDL2_ttf $zig_flags \
--o build/x86_64-windows-gnu/$appname.exe $appname.c
-
-
-cp /usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll ./build/x86_64-windows-gnu/libwinpthread-1.dll
-cp ./libs/SDL2-2.30.1/x86_64-w64-mingw32/bin/SDL2.dll ./build/x86_64-windows-gnu/
-cp ./libs/Raylib/raylib-5.0_win64_mingw-w64/lib/*.dll ./build/x86_64-windows-gnu/
-cp ./libs/SDL2_image-2.8.2/x86_64-w64-mingw32/bin/*.dll ./build/x86_64-windows-gnu/
-cp ./libs/SDL2_ttf-2.22.0/x86_64-w64-mingw32/bin/*.dll ./build/x86_64-windows-gnu/
-cp ./libs/opengl/*.dll ./build/x86_64-windows-gnu/
+## mkdir -p build/x86_64-windows-gnu
+## 
+## zig cc  -target x86_64-windows-gnu \
+## -I./libs/mesa/include/EGL \
+## -I./usr/x86_64-w64-mingw32/include \
+## -I./libs/SDL2-2.30.1/x86_64-w64-mingw32/include \
+## -I./libs/SDL2-2.30.1/x86_64-w64-mingw32/include/SDL2 \
+## -I./libs/Raylib/raylib-5.0_win64_mingw-w64/include \
+## -I./libs/SDL2_image-2.8.2/x86_64-w64-mingw32/include \
+## -I./libs/SDL2_ttf-2.22.0/x86_64-w64-mingw32/include \
+## -L./libs/mesa/lib/x64 \
+## -L./libs/opengl \
+## -L/usr/x86_64-w64-mingw32/lib \
+## -L./libs/SDL2-2.30.1/x86_64-w64-mingw32/lib -L./libs/SDL2-2.30.1/x86_64-w64-mingw32/bin \
+## -L./libs/Raylib/raylib-5.0_win64_mingw-w64/lib \
+## -L./libs/SDL2_image-2.8.2/x86_64-w64-mingw32/lib -L./libs/SDL2_image-2.8.2/x86_64-w64-mingw32/bin \
+## -L./libs/SDL2_ttf-2.22.0/x86_64-w64-mingw32/lib -L./libs/SDL2_ttf-2.22.0/x86_64-w64-mingw32/bin \
+## -lwinpthread -lSDL2 -lraylibdll -lopengl32 -lglu32 -lSDL2_image -lSDL2_ttf $zig_flags \
+## -o build/x86_64-windows-gnu/$appname.exe $appname.c
+## 
+## 
+## cp /usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll ./build/x86_64-windows-gnu/libwinpthread-1.dll
+## cp ./libs/SDL2-2.30.1/x86_64-w64-mingw32/bin/SDL2.dll ./build/x86_64-windows-gnu/
+## cp ./libs/Raylib/raylib-5.0_win64_mingw-w64/lib/*.dll ./build/x86_64-windows-gnu/
+## cp ./libs/SDL2_image-2.8.2/x86_64-w64-mingw32/bin/*.dll ./build/x86_64-windows-gnu/
+## cp ./libs/SDL2_ttf-2.22.0/x86_64-w64-mingw32/bin/*.dll ./build/x86_64-windows-gnu/
+## cp ./libs/opengl/*.dll ./build/x86_64-windows-gnu/
