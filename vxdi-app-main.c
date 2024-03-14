@@ -1,13 +1,11 @@
-#define SDL_MAIN_HANDLED
+
 #include <stdio.h>
 #include <raylib.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 
 #define RAYGUI_IMPLEMENTATION
 #include "external/raygui.h"
 
-#include "external/raylib-nuklear.h"
+/////////// #include "external/raylib-nuklear.h"
 
 #include <raymath.h>
 #include "vxdi-app-voxel.h"
@@ -138,68 +136,68 @@ void volume_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene
     
 }
 
-Image SDL_SurfaceToRaylibImage(SDL_Surface* surface) {
-    Image image = {0};
+/// Image SDL_SurfaceToRaylibImage(SDL_Surface* surface) {
+///     Image image = {0};
+/// 
+///     if (surface == NULL) {
+///         return image; // Return an empty image structure if the input surface is NULL
+///     }
+/// 
+///     // Ensure the surface is locked before accessing the pixels
+///     if (!SDL_MUSTLOCK(surface) || SDL_LockSurface(surface) == 0) {
+///         // Initialize a Raylib Image with the surface's dimensions and pixel data
+///         // Note: We assume the pixel format is SDL_PIXELFORMAT_RGBA32 (Raylib's default)
+///         image.data = malloc(surface->w * surface->h * 4); // Allocate memory for pixels (4 bytes per pixel for RGBA)
+///         image.width = surface->w;
+///         image.height = surface->h;
+///         image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8; // This matches SDL_PIXELFORMAT_RGBA32
+///         image.mipmaps = 1; // Default to 1 mip level
+/// 
+///         // Copy pixel data from the SDL_Surface to the Raylib Image
+///         memcpy(image.data, surface->pixels, surface->w * surface->h * 4);
+/// 
+///         // Unlock the surface if it was locked
+///         if (SDL_MUSTLOCK(surface)) {
+///             SDL_UnlockSurface(surface);
+///         }
+///     }
+/// 
+///     return image;
+/// }
 
-    if (surface == NULL) {
-        return image; // Return an empty image structure if the input surface is NULL
-    }
-
-    // Ensure the surface is locked before accessing the pixels
-    if (!SDL_MUSTLOCK(surface) || SDL_LockSurface(surface) == 0) {
-        // Initialize a Raylib Image with the surface's dimensions and pixel data
-        // Note: We assume the pixel format is SDL_PIXELFORMAT_RGBA32 (Raylib's default)
-        image.data = malloc(surface->w * surface->h * 4); // Allocate memory for pixels (4 bytes per pixel for RGBA)
-        image.width = surface->w;
-        image.height = surface->h;
-        image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8; // This matches SDL_PIXELFORMAT_RGBA32
-        image.mipmaps = 1; // Default to 1 mip level
-
-        // Copy pixel data from the SDL_Surface to the Raylib Image
-        memcpy(image.data, surface->pixels, surface->w * surface->h * 4);
-
-        // Unlock the surface if it was locked
-        if (SDL_MUSTLOCK(surface)) {
-            SDL_UnlockSurface(surface);
-        }
-    }
-
-    return image;
-}
-
-Texture2D load_texture(const char* filename){
-
-
-        SDL_Surface* surface = IMG_Load(filename);
-        printf(" image loaded \n");
-        Texture2D texture ; // Convert Image to Texture2D
-
-    if (surface == NULL) {
-        printf(" surface was null \n");
-        return texture; // Return an empty image structure if the input surface is NULL
-    }
-        printf(" surface was not null \n");
-
-    Image image = {0};
-    // Ensure the surface is locked before accessing the pixels
-    // Initialize a Raylib Image with the surface's dimensions and pixel data
-    // Note: We assume the pixel format is SDL_PIXELFORMAT_RGBA32 (Raylib's default)
-    image.data = malloc(surface->w * surface->h * 4); // Allocate memory for pixels (4 bytes per pixel for RGBA)
-    image.width = surface->w;
-    image.height = surface->h;
-    image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8; // This matches SDL_PIXELFORMAT_RGBA32
-    image.mipmaps = 1; // Default to 1 mip level
-    printf(" image initialized \n");
-
-    // Copy pixel data from the SDL_Surface to the Raylib Image
-    memcpy(image.data, surface->pixels, surface->w * surface->h * 4);
-    printf(" memory copied \n");
-    texture = LoadTextureFromImage(image); // Convert Image to Texture2D
-    printf(" texture image loaded \n");
-    SDL_FreeSurface(surface);
-    UnloadImage(image);
-    return texture;
-}
+////// Texture2D load_texture(const char* filename){
+////// 
+////// 
+//////         SDL_Surface* surface = IMG_Load(filename);
+//////         printf(" image loaded \n");
+//////         Texture2D texture ; // Convert Image to Texture2D
+////// 
+//////     if (surface == NULL) {
+//////         printf(" surface was null \n");
+//////         return texture; // Return an empty image structure if the input surface is NULL
+//////     }
+//////         printf(" surface was not null \n");
+////// 
+//////     Image image = {0};
+//////     // Ensure the surface is locked before accessing the pixels
+//////     // Initialize a Raylib Image with the surface's dimensions and pixel data
+//////     // Note: We assume the pixel format is SDL_PIXELFORMAT_RGBA32 (Raylib's default)
+//////     image.data = malloc(surface->w * surface->h * 4); // Allocate memory for pixels (4 bytes per pixel for RGBA)
+//////     image.width = surface->w;
+//////     image.height = surface->h;
+//////     image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8; // This matches SDL_PIXELFORMAT_RGBA32
+//////     image.mipmaps = 1; // Default to 1 mip level
+//////     printf(" image initialized \n");
+////// 
+//////     // Copy pixel data from the SDL_Surface to the Raylib Image
+//////     memcpy(image.data, surface->pixels, surface->w * surface->h * 4);
+//////     printf(" memory copied \n");
+//////     texture = LoadTextureFromImage(image); // Convert Image to Texture2D
+//////     printf(" texture image loaded \n");
+//////     SDL_FreeSurface(surface);
+//////     UnloadImage(image);
+//////     return texture;
+////// }
 
 int main(int argc, char *argv[]) {
     int color_btn_size=25;
@@ -261,7 +259,7 @@ int main(int argc, char *argv[]) {
 
 
     printf(" loading buttons texture \n");
-    Texture2D buttons_tex=load_texture("buttons.svg");
+    /// Texture2D buttons_tex=load_texture("buttons.svg");
     printf(" got buttons texture \n");
 
     for (;!(WindowShouldClose() || window_should_close);) {
@@ -418,7 +416,7 @@ int main(int argc, char *argv[]) {
 
             // draw and check buttons on the right side
 
-            DrawTextureRec(buttons_tex, (Rectangle){0,0,64,448}, (Vector2){app.screenWidth-70,32}, WHITE);
+            // DrawTextureRec(buttons_tex, (Rectangle){0,0,64,448}, (Vector2){app.screenWidth-70,32}, WHITE);
 
             int Y=(int)((current_mouse_position.y-32)/64);
             // DrawRectangle(app.screenWidth-70,Y*64+32,64,64,(Color){128,255,255,128});
