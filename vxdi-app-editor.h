@@ -15,7 +15,29 @@ typedef enum app_construction_mode_e{
     APP_CONSTRUCTION_MODE_SHELL,
     APP_CONSTRUCTION_MODE_VOLUME,
     APP_CONSTRUCTION_MODE_PLATE,
+    APP_CONSTRUCTION_MODE_NUM=8,
 } app_construction_mode_e;
+
+const app_construction_mode_e construction_modes[APP_CONSTRUCTION_MODE_NUM] = {
+    APP_CONSTRUCTION_MODE_HELP,
+    APP_CONSTRUCTION_MODE_SELECT,
+    APP_CONSTRUCTION_MODE_VOXEL,
+    APP_CONSTRUCTION_MODE_LINE,
+    APP_CONSTRUCTION_MODE_STRUCTURE,
+    APP_CONSTRUCTION_MODE_SHELL,
+    APP_CONSTRUCTION_MODE_VOLUME,
+    APP_CONSTRUCTION_MODE_PLATE,
+};
+const char* const construction_mode_names[APP_CONSTRUCTION_MODE_NUM] = {
+    "_HELP",
+    "_SELECT",
+    "_VOXEL",
+    "_LINE",
+    "_STRUCTURE",
+    "_SHELL",
+    "_VOLUME",
+    "_PLATE",
+};
 
 
 typedef struct vxdi_app_editor_s {
@@ -44,7 +66,7 @@ typedef struct vxdi_app_editor_s {
 
     Vector3 light_direction;
 
-    char text_buffer[1000];
+    char text_buffer[100];
 
 } vxdi_app_editor_t;
 
@@ -105,7 +127,7 @@ int vxdi_app_editor__update(vxdi_app_editor_t* app){
 }
 unsigned int vxdi_app_editor__InputMathExpr(vxdi_app_editor_t* app) {
     int keypressed;
-    char b0[999]="";
+    char b0[50]="";
     int l;
     switch(keypressed=GetKeyPressed()){
         case KEY_ZERO:
@@ -119,7 +141,7 @@ unsigned int vxdi_app_editor__InputMathExpr(vxdi_app_editor_t* app) {
         case KEY_EIGHT:
         case KEY_NINE:
             strcpy(b0,app->text_buffer);
-            snprintf(app->text_buffer,1000,"%s%d",b0,(keypressed-48));
+            snprintf(app->text_buffer,100,"%s%d",b0,(keypressed-48));
             b0[0]='\0';
             return 25;
         break;
@@ -134,7 +156,7 @@ unsigned int vxdi_app_editor__InputMathExpr(vxdi_app_editor_t* app) {
         case KEY_KP_8:
         case KEY_KP_9:
             strcpy(b0,app->text_buffer);
-            snprintf(app->text_buffer,1000,"%s%d",b0,(keypressed-320));
+            snprintf(app->text_buffer,100,"%s%d",b0,(keypressed-320));
             return 25;
         case KEY_COMMA:
         case KEY_SEMICOLON:
@@ -145,9 +167,9 @@ unsigned int vxdi_app_editor__InputMathExpr(vxdi_app_editor_t* app) {
         case KEY_KP_ADD:
             strcpy(b0,app->text_buffer);
             if(keypressed == KEY_EQUAL || keypressed == KEY_KP_ADD){
-                snprintf(app->text_buffer,1000,"%s%c",b0,keypressed);
+                snprintf(app->text_buffer,100,"%s%c",b0,keypressed);
             }else{
-                snprintf(app->text_buffer,1000,"%s%c",b0,keypressed);
+                snprintf(app->text_buffer,100,"%s%c",b0,keypressed);
             }
             return 25;
         case KEY_BACKSPACE:

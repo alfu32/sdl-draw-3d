@@ -49,9 +49,9 @@ void voxel_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_
 
 void shell_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("shell tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-    if(tool->num_inputs==1){
-        scene__add_voxel(&(app->construction_hints),tool->inputs[0],app->current_color,app->current_color_index);
-    } else if(tool->num_inputs==2){
+    if(tool->last_input_index==0){
+        scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
+    } else if(tool->last_input_index==1){
         rasterizeHollowCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
@@ -68,9 +68,9 @@ void shell_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_
 }
 void line_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("line tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-    if(tool->num_inputs==1){
-        scene__add_voxel(&(app->construction_hints),tool->inputs[0],app->current_color,app->current_color_index);
-    } else if(tool->num_inputs==2){
+    if(tool->last_input_index==0){
+        scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
+    } else if(tool->last_input_index==1){
         rasterizeLine(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
@@ -86,9 +86,9 @@ void line_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t
 }
 void structure_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("structure tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-    if(tool->num_inputs==1){
-        scene__add_voxel(&(app->construction_hints),tool->inputs[0],app->current_color,app->current_color_index);
-    } else if(tool->num_inputs==2){
+    if(tool->last_input_index==0){
+        scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
+    } else if(tool->last_input_index==1){
         rasterizeStructureCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
@@ -105,22 +105,29 @@ void structure_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,sc
 }
 void plate_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("plate tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    if(tool->last_input_index==0){
+        rasterizePlane(point,point,point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+    } else if(tool->last_input_index==1){
+        rasterizePlane(tool->inputs[0],point,point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+    } else if(tool->last_input_index==2){
+        rasterizePlane(tool->inputs[0],tool->inputs[1],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+    }
 }
 void plate_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("plate tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(IsKeyDown(KEY_LEFT_ALT)){
         printf("plate tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-        //rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__remove_voxel);
+        rasterizePlane(tool->inputs[0],tool->inputs[1],tool->inputs[2],scene,app->current_color,app->current_color_index,scene__remove_voxel);
     } else {
         printf("plate tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-        //rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+        rasterizePlane(tool->inputs[0],tool->inputs[1],tool->inputs[2],scene,app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
 void volume_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("volume tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-    if(tool->num_inputs==1){
-        scene__add_voxel(&(app->construction_hints),tool->inputs[0],app->current_color,app->current_color_index);
-    } else if(tool->num_inputs==2){
+    if(tool->last_input_index==0){
+        scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
+    } else if(tool->last_input_index==1){
         rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
@@ -211,12 +218,12 @@ int main(int argc, char *argv[]) {
     multistep_tool__init(&shell_tool,2,shell_tool_acquire,shell_tool_finish);
     vxdi_multistep_tool_t structure_tool;
     multistep_tool__init(&structure_tool,2,structure_tool_acquire,structure_tool_finish);
-    vxdi_multistep_tool_t plate_tool;
-    multistep_tool__init(&plate_tool,3,plate_tool_acquire,plate_tool_finish);
     vxdi_multistep_tool_t line_tool;
     multistep_tool__init(&line_tool,2,line_tool_acquire,line_tool_finish);
     vxdi_multistep_tool_t volume_tool;
     multistep_tool__init(&volume_tool,2,volume_tool_acquire,volume_tool_finish);
+    vxdi_multistep_tool_t plate_tool;
+    multistep_tool__init(&plate_tool,3,plate_tool_acquire,plate_tool_finish);
     // Set window to be resizable
 
 
@@ -238,8 +245,8 @@ int main(int argc, char *argv[]) {
 
     // Example: Add a voxel to the scene
     // scene__add_voxel(&scene, (Vector3){0.0f, 0.0f, 0.0f}, RED,1);
-    voxel_t cursor={20,30,20,3};
-    voxel_t cursor2={20,30,20,2};
+    // voxel_t cursor={20,30,20,3};
+    // voxel_t cursor2={20,30,20,2};
 
     // SetCameraMode(camera, CAMERA_FREE); // Let Raylib handle camera controls
     
@@ -251,8 +258,8 @@ int main(int argc, char *argv[]) {
     InitWindow(app.screenWidth, app.screenHeight, "Raylib Voxel Scene");
     /// InitShadowMapping();
 
-    mut char status[500];
-    mut int ctrl,left_ctrl;
+    mut char status[1024];
+    // mut int ctrl,left_ctrl;
     mut char show_help=0;
     char window_should_close=0;
     Vector2 current_mouse_position=GetMousePosition();
@@ -262,9 +269,9 @@ int main(int argc, char *argv[]) {
 
 
 
-    printf(" loading buttons texture \n");
+    /// printf(" loading buttons texture \n");
     /// Texture2D buttons_tex=load_texture("buttons.svg");
-    printf(" got buttons texture \n");
+    /// printf(" got buttons texture \n");
 
     for (;!(WindowShouldClose() || window_should_close);) {
         if(IsKeyPressed(KEY_ESCAPE)){
@@ -320,18 +327,18 @@ int main(int argc, char *argv[]) {
                     model_point_int=model_point_next_int;
                     break;
             }
-            cursor.position=model_point_int;
-            cursor2.position=model_point_next_int;
+            // cursor.position=model_point_int;
+            // cursor2.position=model_point_next_int;
             int keyboard_wait_time;
             if( abs(keyboard_wait_time=vxdi_app_editor__InputMathExpr(&app))  ){
                 WaitTime(((float)keyboard_wait_time)/1000.0f);
                 continue;
             }
         
-            if(IsKeyPressed(KEY_LEFT_CONTROL)){ctrl=1;}
-            if(IsKeyReleased(KEY_LEFT_CONTROL)){ctrl=0;}
-            if(IsKeyPressed(KEY_RIGHT_CONTROL)){ctrl=1;}
-            if(IsKeyReleased(KEY_RIGHT_CONTROL)){ctrl=0;}
+            //// if(IsKeyPressed(KEY_LEFT_CONTROL)){ctrl=1;}
+            //// if(IsKeyReleased(KEY_LEFT_CONTROL)){ctrl=0;}
+            //// if(IsKeyPressed(KEY_RIGHT_CONTROL)){ctrl=1;}
+            //// if(IsKeyReleased(KEY_RIGHT_CONTROL)){ctrl=0;}
 
 
             if(IsKeyPressed(KEY_G)){
@@ -352,7 +359,7 @@ int main(int argc, char *argv[]) {
             
             orbit__control_camera(&orbiter);
 
-            snprintf(status,500,"num voxels: %d construction mode : %d, text_buffer %40s  voxels %d/%d temp file %s",scene.numVoxels,app.construction_mode,app.text_buffer,scene.numVoxels,MAX_VOXELS,scene.temp_filename);
+            snprintf(status,1024,"num voxels: %d construction mode : %d, text_buffer %100s  voxels %d/%d temp file %s",scene.numVoxels,app.construction_mode,app.text_buffer,scene.numVoxels,MAX_VOXELS,scene.temp_filename);
 
             BeginDrawing();
             // ClearBackground(RAYWHITE);
@@ -380,7 +387,7 @@ int main(int argc, char *argv[]) {
             
 
                 // Optionally, to cast a ray from the mouse:
-                Ray ray = GetMouseRay(current_mouse_position, camera);
+                // Ray ray = GetMouseRay(current_mouse_position, camera);
                 // You can then use Raylib functions to check for intersections, etc.
                 if(current_mouse_position.x>left_menu_sz_width && current_mouse_position.x<(app.screenWidth-70)){
                     DrawLine3D(
@@ -404,16 +411,23 @@ int main(int argc, char *argv[]) {
             EndMode3D();
 
 
+            for(int i=0;i<8;i++){
+                /// printf(" - mode button %d (%s)\n",i,construction_mode_names[i]);
+                DrawRectangle(app.screenWidth-70,32+64*i,62,62,(Color){255,255,255,255});
+                DrawText(construction_mode_names[i],app.screenWidth-60,32+64*i+48,14,GRAY);
+            }
+            DrawRectangle(app.screenWidth-70,(((int)(app.construction_mode))&0xFF)*64+32,64,64,(Color){128,255,255,128});
+
 
 
             if(IsKeyPressed(KEY_SPACE)){
                 scene__clear(&app.guides);
                 scene__clear(&app.construction_hints);
+                multistep_tool__reset(&voxel_tool);
                 multistep_tool__reset(&structure_tool);
-                multistep_tool__reset(&plate_tool);
                 multistep_tool__reset(&shell_tool);
                 multistep_tool__reset(&volume_tool);
-                multistep_tool__reset(&voxel_tool);
+                multistep_tool__reset(&plate_tool);
             }
             /// DrawFPS(10, 10);
 
@@ -432,12 +446,13 @@ int main(int argc, char *argv[]) {
                 if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
                     if(Y==0){
                         show_help=!show_help;
-                    } else {
+                    } else if ( Y < APP_CONSTRUCTION_MODE_NUM) {
                         app.construction_mode=(app_construction_mode_e)(Y+0x100);
+                    } else {
+                        printf("nonexistent construction mode %d\n",Y);
                     }
                 }
             }
-            DrawRectangle(app.screenWidth-70,(((int)(app.construction_mode))&0xFF)*64+32,64,64,(Color){128,255,255,128});
 
             //feed mouse events in function of the selected tool
             if (
@@ -562,6 +577,7 @@ int main(int argc, char *argv[]) {
             char coords[12];
             snprintf(coords,12,"%3d %3d %3d",(int)model_point_int.x,(int)model_point_int.y,(int)model_point_int.z);
             DrawText(coords, current_mouse_position.x+10, current_mouse_position.y-10, 20, BLACK);
+
 
             // Draw the shadow map texture
             DrawTextureRec(shadowMap.texture, (Rectangle){ 0, 0, shadowMap.texture.width, shadowMap.texture.height }, (Vector2){ 100, 1000 }, WHITE);
