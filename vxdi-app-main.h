@@ -289,7 +289,7 @@ int main(int argc, char *argv[]) {
         }
 
         if(1 || is_mouse_position_changed){
-            UpdateCamera(&camera, app.current_camera_projection );// Update camera position/movement
+            // UpdateCamera(&camera, app.current_camera_mode );// Update camera position/movement
             vxdi_app_editor__update(&app);
 
 
