@@ -9,6 +9,8 @@
 		"**/*.exe": true,
 	},
 	"files.associations": {
-		"random": "c"
+		"random": "c",
+		"vxdi-app-editor.h": "c",
+		"vxdi-app-multistep-tool-map.h": "c"
 	}
 }

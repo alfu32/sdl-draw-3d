@@ -1,6 +1,6 @@
 #ifndef __VXDI_RL_MATH_EXTRAS_H__
 #define __VXDI_RL_MATH_EXTRAS_H__
-#import <raylib.h>
+#include <raylib.h>
 
 Vector3 Vector3Floor(Vector3 v){
     return (Vector3){

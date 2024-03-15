@@ -10,10 +10,12 @@
 #include "vxdi-rl-models-extras.h"
 #include "vxdi-rl-math-extras.h"
 #include "vxdi-rl-ui-extras.h"
-#include "vxdi-app-multistep-tool.h"
 #include "vxdi-app-editor.h"
 #include "vxdi-app-voxel-rasterizers.h"
 #include "vxdi-lib-shadowmapping.h"
+#include "vxdi-app-multistep-tool.h"
+#include "vxdi-app-multistep-tool-map.h"
+
 
 
 typedef struct control_keys_s { char ctrl,alt,shift,left_alt,right_alt,left_shift,right_shift,left_ctrl,right_ctrl; } control_keys_t;
@@ -35,11 +37,27 @@ control_keys_t get_control_keys(){
 }
 
 
+void generic_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+    printf("generic tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+}
+void generic_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+    printf("generic tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+}
+
 void voxel_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("voxel tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
 }
 void voxel_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("voxel tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+
+    if(IsKeyDown(KEY_LEFT_ALT)){
+        printf("generic tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
+    } else {
+        printf("generic tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        scene__remove_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
+    }
 }
 
 void shell_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
@@ -145,18 +163,42 @@ int main(int argc, char *argv[]) {
     int left_menu_sz_width = 20 + color_btn_size*5;
     // Initialization
     //--------------------------------------------------------------------------------------
+
+    vxdi_tools_map_t tools;
+    vxdi_tools_map__init(&tools);
+
+    vxdi_multistep_tool_t help_tool;
+    multistep_tool__init(&help_tool,1,generic_tool_acquire,generic_tool_finish);
+    vxdi_tools_map__add(&tools,"help",&help_tool);
+
+    vxdi_multistep_tool_t select_objects_tool;
+    multistep_tool__init(&select_objects_tool,1,generic_tool_acquire,generic_tool_finish);
+    vxdi_tools_map__add(&tools,"select_objects",&select_objects_tool);
+
     vxdi_multistep_tool_t voxel_tool;
     multistep_tool__init(&voxel_tool,1,voxel_tool_acquire,voxel_tool_finish);
+    vxdi_tools_map__add(&tools,"voxel",&voxel_tool);
+
     vxdi_multistep_tool_t shell_tool;
     multistep_tool__init(&shell_tool,2,shell_tool_acquire,shell_tool_finish);
+    vxdi_tools_map__add(&tools,"shell",&shell_tool);
+
     vxdi_multistep_tool_t structure_tool;
     multistep_tool__init(&structure_tool,2,structure_tool_acquire,structure_tool_finish);
+    vxdi_tools_map__add(&tools,"structure",&structure_tool);
+
     vxdi_multistep_tool_t line_tool;
     multistep_tool__init(&line_tool,2,line_tool_acquire,line_tool_finish);
+    vxdi_tools_map__add(&tools,"line",&line_tool);
+
     vxdi_multistep_tool_t volume_tool;
     multistep_tool__init(&volume_tool,2,volume_tool_acquire,volume_tool_finish);
+    vxdi_tools_map__add(&tools,"volume",&volume_tool);
+
     vxdi_multistep_tool_t plate_tool;
     multistep_tool__init(&plate_tool,3,plate_tool_acquire,plate_tool_finish);
+    vxdi_tools_map__add(&tools,"plate",&plate_tool);
+
     // Set window to be resizable
 
 
@@ -258,7 +300,7 @@ int main(int argc, char *argv[]) {
 
             if(IsKeyPressed(KEY_G)){
                 scene__add_voxel(&app.guides,model_point_int,RED,0);
-                for(int i=1;i<10;i++){
+                for(int i=1;i<20;i++){
                     scene__add_voxel(&app.guides,(Vector3){model_point_int.x+(float)i,model_point_int.y,model_point_int.z},RED,0);
                     scene__add_voxel(&app.guides,(Vector3){model_point_int.x-(float)i,model_point_int.y,model_point_int.z},Fade(RED,0.5f),0);
                     scene__add_voxel(&app.guides,(Vector3){model_point_int.x,model_point_int.y+(float)i,model_point_int.z},GREEN,0);
