@@ -34,10 +34,10 @@ int orbit__control_camera(orbit_t* orbiter){
     float current_camera_dist = Vector3Length(Vector3Subtract(orbiter->camera->position,orbiter->camera->target));
 
     // Check for right mouse button pressed for orbiting
-    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && IsKeyDown(KEY_LEFT_CONTROL)) {
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && (IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL) || IsKeyDown(0x11) )) {
         orbiter->isOrbiting = true;
         orbiter->isPanning = false;
-    } else if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && IsKeyDown(KEY_LEFT_SHIFT)) {
+    } else if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT) || IsKeyDown(0x10))) {
         // Check for right mouse button pressed with Shift for panning
         orbiter->isPanning = true;
         orbiter->isOrbiting = false;
