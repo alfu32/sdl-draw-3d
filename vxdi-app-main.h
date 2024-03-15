@@ -2,11 +2,6 @@
 #include <stdio.h>
 #include <raylib.h>
 
-#define RAYGUI_IMPLEMENTATION
-/////////// #include "external/raygui.h"
-
-/////////// #include "external/raylib-nuklear.h"
-
 #include <raymath.h>
 #include "vxdi-app-voxel.h"
 #include "vxdi-app-scene.h"
@@ -143,68 +138,6 @@ void volume_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene
     
 }
 
-/// Image SDL_SurfaceToRaylibImage(SDL_Surface* surface) {
-///     Image image = {0};
-/// 
-///     if (surface == NULL) {
-///         return image; // Return an empty image structure if the input surface is NULL
-///     }
-/// 
-///     // Ensure the surface is locked before accessing the pixels
-///     if (!SDL_MUSTLOCK(surface) || SDL_LockSurface(surface) == 0) {
-///         // Initialize a Raylib Image with the surface's dimensions and pixel data
-///         // Note: We assume the pixel format is SDL_PIXELFORMAT_RGBA32 (Raylib's default)
-///         image.data = malloc(surface->w * surface->h * 4); // Allocate memory for pixels (4 bytes per pixel for RGBA)
-///         image.width = surface->w;
-///         image.height = surface->h;
-///         image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8; // This matches SDL_PIXELFORMAT_RGBA32
-///         image.mipmaps = 1; // Default to 1 mip level
-/// 
-///         // Copy pixel data from the SDL_Surface to the Raylib Image
-///         memcpy(image.data, surface->pixels, surface->w * surface->h * 4);
-/// 
-///         // Unlock the surface if it was locked
-///         if (SDL_MUSTLOCK(surface)) {
-///             SDL_UnlockSurface(surface);
-///         }
-///     }
-/// 
-///     return image;
-/// }
-
-////// Texture2D load_texture(const char* filename){
-////// 
-////// 
-//////         SDL_Surface* surface = IMG_Load(filename);
-//////         printf(" image loaded \n");
-//////         Texture2D texture ; // Convert Image to Texture2D
-////// 
-//////     if (surface == NULL) {
-//////         printf(" surface was null \n");
-//////         return texture; // Return an empty image structure if the input surface is NULL
-//////     }
-//////         printf(" surface was not null \n");
-////// 
-//////     Image image = {0};
-//////     // Ensure the surface is locked before accessing the pixels
-//////     // Initialize a Raylib Image with the surface's dimensions and pixel data
-//////     // Note: We assume the pixel format is SDL_PIXELFORMAT_RGBA32 (Raylib's default)
-//////     image.data = malloc(surface->w * surface->h * 4); // Allocate memory for pixels (4 bytes per pixel for RGBA)
-//////     image.width = surface->w;
-//////     image.height = surface->h;
-//////     image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8; // This matches SDL_PIXELFORMAT_RGBA32
-//////     image.mipmaps = 1; // Default to 1 mip level
-//////     printf(" image initialized \n");
-////// 
-//////     // Copy pixel data from the SDL_Surface to the Raylib Image
-//////     memcpy(image.data, surface->pixels, surface->w * surface->h * 4);
-//////     printf(" memory copied \n");
-//////     texture = LoadTextureFromImage(image); // Convert Image to Texture2D
-//////     printf(" texture image loaded \n");
-//////     SDL_FreeSurface(surface);
-//////     UnloadImage(image);
-//////     return texture;
-////// }
 
 int main(int argc, char *argv[]) {
     int color_btn_size=25;
@@ -243,11 +176,6 @@ int main(int argc, char *argv[]) {
 
     scene__load_model(&scene,scene.temp_filename);
 
-    // Example: Add a voxel to the scene
-    // scene__add_voxel(&scene, (Vector3){0.0f, 0.0f, 0.0f}, RED,1);
-    // voxel_t cursor={20,30,20,3};
-    // voxel_t cursor2={20,30,20,2};
-
     // SetCameraMode(camera, CAMERA_FREE); // Let Raylib handle camera controls
     
     orbit_t orbiter=orbit_init(&camera);
@@ -266,12 +194,6 @@ int main(int argc, char *argv[]) {
     Vector2 previous_mouse_position=current_mouse_position;
     char is_mouse_position_changed = 1;
     unsigned char dbg_move_number=0;
-
-
-
-    /// printf(" loading buttons texture \n");
-    /// Texture2D buttons_tex=load_texture("buttons.svg");
-    /// printf(" got buttons texture \n");
 
     for (;!(WindowShouldClose() || window_should_close);) {
         if(IsKeyPressed(KEY_ESCAPE)){
@@ -327,18 +249,11 @@ int main(int argc, char *argv[]) {
                     model_point_int=model_point_next_int;
                     break;
             }
-            // cursor.position=model_point_int;
-            // cursor2.position=model_point_next_int;
             int keyboard_wait_time;
             if( abs(keyboard_wait_time=vxdi_app_editor__InputMathExpr(&app))  ){
                 WaitTime(((float)keyboard_wait_time)/1000.0f);
                 continue;
             }
-        
-            //// if(IsKeyPressed(KEY_LEFT_CONTROL)){ctrl=1;}
-            //// if(IsKeyReleased(KEY_LEFT_CONTROL)){ctrl=0;}
-            //// if(IsKeyPressed(KEY_RIGHT_CONTROL)){ctrl=1;}
-            //// if(IsKeyReleased(KEY_RIGHT_CONTROL)){ctrl=0;}
 
 
             if(IsKeyPressed(KEY_G)){
@@ -362,8 +277,6 @@ int main(int argc, char *argv[]) {
             snprintf(status,1024,"num voxels: %d construction mode : %d, text_buffer %100s  voxels %d/%d temp file %s",scene.numVoxels,app.construction_mode,app.text_buffer,scene.numVoxels,MAX_VOXELS,scene.temp_filename);
 
             BeginDrawing();
-            // ClearBackground(RAYWHITE);
-            // DrawCircle(app.screenWidth/2,app.screenHeight/2,app.screenHeight/2.0f-10.0f,RED);
             ClearBackground(GRAY);
 
             BeginMode3D(camera);
@@ -380,15 +293,8 @@ int main(int argc, char *argv[]) {
                 DrawCubeWires(model_point_int, 1.0f, 1.0f, 1.0f, Fade(RED, 0.5f));
                 DrawCubeWires(model_point_next_int, 1.0f, 1.0f, 1.0f, Fade(GREEN, 0.5f));
                 
-                // rlPushMatrix(); // Push the current matrix to the stack
-                // rlTranslatef(0.5f, 0.5f, 0.5f); // Translate the grid
                 DrawGridAt((Vector3){0.0f,-0.5f,0.0f},33, 1.0f); // Draw a grid
-                // rlPopMatrix(); // Pop the matrix from the stack to revert the translation
-            
 
-                // Optionally, to cast a ray from the mouse:
-                // Ray ray = GetMouseRay(current_mouse_position, camera);
-                // You can then use Raylib functions to check for intersections, etc.
                 if(current_mouse_position.x>left_menu_sz_width && current_mouse_position.x<(app.screenWidth-70)){
                     DrawLine3D(
                         mouse_model.point,
@@ -433,8 +339,6 @@ int main(int argc, char *argv[]) {
 
 
             // draw and check buttons on the right side
-
-            // DrawTextureRec(buttons_tex, (Rectangle){0,0,64,448}, (Vector2){app.screenWidth-70,32}, WHITE);
 
             int Y=(int)((current_mouse_position.y-32)/64);
             // DrawRectangle(app.screenWidth-70,Y*64+32,64,64,(Color){128,255,255,128});
