@@ -44,6 +44,20 @@ void generic_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scen
     printf("generic tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
 }
 
+void help_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+    printf("help tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+}
+void help_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+    printf("help tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+}
+
+void select_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+    printf("select tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+}
+void select_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+    printf("select tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+}
+
 void voxel_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
     printf("voxel tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
@@ -168,11 +182,11 @@ int main(int argc, char *argv[]) {
     vxdi_tools_map__init(&tools);
 
     vxdi_multistep_tool_t help_tool;
-    multistep_tool__init(&help_tool,1,generic_tool_acquire,generic_tool_finish);
+    multistep_tool__init(&help_tool,1,help_tool_acquire,help_tool_finish);
     vxdi_tools_map__add(&tools,"help",&help_tool);
 
     vxdi_multistep_tool_t select_objects_tool;
-    multistep_tool__init(&select_objects_tool,1,generic_tool_acquire,generic_tool_finish);
+    multistep_tool__init(&select_objects_tool,1,select_tool_acquire,select_tool_finish);
     vxdi_tools_map__add(&tools,"select_objects",&select_objects_tool);
 
     vxdi_multistep_tool_t voxel_tool;

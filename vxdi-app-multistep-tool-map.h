@@ -18,7 +18,7 @@ typedef struct vxdi_tools_map_s {
     int last_tool_index;
 } vxdi_tools_map_t;
 
-void vxdi_tools_map__init(vxdi_tools_map_t* map) {
+int vxdi_tools_map__init(vxdi_tools_map_t* map) {
     if (map == NULL) {
         return; // Nothing to initialize
     }
@@ -28,45 +28,55 @@ void vxdi_tools_map__init(vxdi_tools_map_t* map) {
     map->tools_names = NULL;
     map->capacity = 0;
     map->size = 0;
-    map->current_tool_index = -1;
-    map->last_tool_index = -1;
+    map->current_tool_index = 0;
+    map->last_tool_index = 0;
+
+    return 0;
 }
 
 int vxdi_tools_map__add(vxdi_tools_map_t* map, const char* tool_name, vxdi_multistep_tool_t *tool) {
+        printf("// adding tool %s to the map\n",tool_name);
     if (map == NULL || tool_name == NULL || tool == NULL) {
-        return -1; // Invalid arguments
+        // Invalid arguments
+        printf("// ERR-1  Invalid arguments %s\n",tool_name);
+        return -1; 
     }
 
-    // Check if tool_name already exists
+    printf("// Check if %s tool_name already exists\n",tool_name);
     for (int i = 0; i < map->size; ++i) {
         if (strcmp(map->tools_names[i], tool_name) == 0) {
-            return -2; // Tool with same name already exists
+            // Tool with same name already exists
+            printf("// ERR-2  Tool with same name already exists %s\n",tool_name);
+            return -2;
         }
     }
 
-    // Resize arrays if necessary
+    printf("// Resize arrays %s if necessary\n",tool_name);
     if (map->size >= map->capacity) {
-        int new_capacity = map->capacity * 2;
+        int new_capacity = map->capacity?map->capacity * 2:2;
         map->tools = (vxdi_multistep_tool_t*)realloc(map->tools, new_capacity * sizeof(vxdi_multistep_tool_t));
         map->tools_names = (char**)realloc(map->tools_names, new_capacity * sizeof(char*));
         if (map->tools == NULL || map->tools_names == NULL) {
             // Memory allocation failed
+            printf("// ERR-3  Memory allocation for tool failed %s\n",tool_name);
             return -3;
         }
         map->capacity = new_capacity;
     }
 
-    // Add tool to arrays
+    printf("// Add tool %s to arrays\n",tool_name);
     map->tools[map->size] = *tool;
     map->tools_names[map->size] = strdup(tool_name);
     if (map->tools_names[map->size] == NULL) {
         // Memory allocation failed
+        printf("// ERR-3  Memory allocation for names failed %s\n",tool_name);
         return -3;
     }
     map->size++;
 
-    // Update last_tool_index
+    printf("// Update last_tool_index %s\n",tool_name);
     map->last_tool_index = map->size - 1;
+    printf("// Finished adding %s : capacity:%d,size:%d,index:%d,last:%d\n",tool_name,map->capacity,map->size,map->current_tool_index,map->last_tool_index);
 
     return 0; // Success
 }
