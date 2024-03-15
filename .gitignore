@@ -1,5 +1,7 @@
 zig-cache
 zig-out
 raylib
-build
 *.vxde
+libs
+!libs/opengl
+!libs/raylib

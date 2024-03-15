@@ -67,17 +67,23 @@ void scene__load_model(scene_t* scene, const char* filename) {
     }
 
     // Read the number of voxels first
-    fread(&scene->numVoxels, sizeof(int), 1, file);
+    size_t numread = fread(&scene->numVoxels, sizeof(int), 1, file);
+    if(numread == -1){
+        printf("error reading file %s\n",filename);
+    }
 
     // Ensure we do not exceed the array limit
     if (scene->numVoxels > sizeof(scene->voxels) / sizeof(voxel_t)) {
-        // printf("File contains more voxels than can be loaded.\n");
+        printf("File contains more voxels than can be loaded.\n");
         fclose(file);
         return;
     }
 
     // Read the voxels array
-    fread(scene->voxels, sizeof(voxel_t), scene->numVoxels, file);
+    numread = fread(scene->voxels, sizeof(voxel_t), scene->numVoxels, file);
+    if(numread == -1){
+        printf("error reading file %s\n",filename);
+    }
 
     fclose(file); // Close the file
 }
@@ -104,7 +110,7 @@ error_id scene__add_voxel(scene_t *scene, Vector3 position, Color material,unsig
     return 0; // Success
 }
 
-error_id scene__remove_voxel(scene_t *scene, Vector3 position) {
+error_id scene__remove_voxel(scene_t *scene, Vector3 position, Color material,unsigned int mat_id) {
     for (int i = 0; i < scene->numVoxels; i++) {
         float dist = Vector3DistanceSqr(scene->voxels[i].position,position);
         // printf("voxel %d is at %3.2f\n",i,dist);

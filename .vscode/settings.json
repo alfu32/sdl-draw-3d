@@ -1,32 +1,14 @@
 {
-    "files.associations": {
-        "system_error": "cpp",
-        "liblog.h": "c",
-        "math.h": "c",
-        "gl.h": "c",
-        "glu.h": "c",
-        "camera.h": "c",
-        "iterator": "c",
-        "voxel.h": "c",
-        "lib.h": "c",
-        "cmath": "c",
-        "raylib.h": "c",
-        "rlgl.h": "c",
-        "array": "c",
-        "compare": "c",
-        "functional": "c",
-        "tuple": "c",
-        "type_traits": "c",
-        "utility": "c",
-        "scene.h": "c",
-        "random": "c",
-        "raygui.h": "c",
-        "sdl.h": "c",
-        "deque": "c",
-        "string": "c",
-        "vector": "c",
-        "string_view": "c",
-        "raymath.h": "c",
-        "vxdi-lib-general.h": "c"
-    }
+	"files.exclude": {
+		"**/.git": true,
+		"**/.svn": true,
+		"**/.hg": true,
+		"**/CVS": true,
+		"**/.DS_Store": true,
+		"**/*.o": true,
+		"**/*.exe": true,
+	},
+	"files.associations": {
+		"random": "c"
+	}
 }
