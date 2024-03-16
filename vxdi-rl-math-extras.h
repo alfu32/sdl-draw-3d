@@ -1,6 +1,6 @@
 #ifndef __VXDI_RL_MATH_EXTRAS_H__
 #define __VXDI_RL_MATH_EXTRAS_H__
-#import <raylib.h>
+#include <raylib.h>
 
 Vector3 Vector3Floor(Vector3 v){
     return (Vector3){
@@ -37,5 +37,9 @@ void fillColorCircle(Color colors[360]) {
     }
 }
 
+int RectangleContains(Rectangle r,Vector2 v) {
+    return r.x<=v.x && v.x <= (r.x + r.width)
+        && r.y<=v.y && v.y <= (r.y + r.height);
+}
 
 #endif
