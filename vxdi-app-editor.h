@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <raylib.h>
+#include "vxdi-app-voxel.h"
 #include "vxdi-app-scene.h"
 
 typedef enum app_construction_mode_e{
@@ -61,25 +62,29 @@ typedef struct vxdi_app_editor_s {
     int screenWidth;
     int screenHeight;
 
+    Vector3 light_direction;
+    Camera3D camera;
+    scene_t scene;
+
     scene_t guides;
     scene_t construction_hints;
 
-    Vector3 light_direction;
-
     char text_buffer[100];
+
+    Vector2 current_mouse_position;
+    Vector2 previous_mouse_position;
+    char is_mouse_position_changed;
+
+    collision_t mouse_model;
+    Vector3 model_point_int;
+    Vector3 model_point_next_int;
 
 } vxdi_app_editor_t;
 
 // #define PI 3.14159265358979323846
 
 
-vxdi_app_editor_t vxdi_app_editor__setup(Camera3D* camera,Vector3 light_direction){
-    // Define the camera to look into our 3d world
-    camera->position = (Vector3){ 10.0f, 10.0f, 10.0f }; // Camera position
-    camera->target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
-    camera->up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
-    camera->fovy = 45.0f;                                // Camera field-of-view Y
-    camera->projection = CAMERA_PERSPECTIVE;             // Camera projection type
+vxdi_app_editor_t vxdi_app_editor__setup(Vector3 light_direction){
     
     scene_t guides;
     scene__init(&guides,0,light_direction);           // Camera projection type
@@ -87,6 +92,10 @@ vxdi_app_editor_t vxdi_app_editor__setup(Camera3D* camera,Vector3 light_directio
     scene_t construction_hints;
     scene__init(&construction_hints,0,light_direction);
     guides.temp_filename="construction_hints.vxde";
+
+    scene_t layer0;
+    scene__init(&layer0,1,light_direction);
+    layer0.temp_filename="temp.vxdi";
 
     vxdi_app_editor_t app = {
         .construction_mode=APP_CONSTRUCTION_MODE_VOXEL,
@@ -109,9 +118,19 @@ vxdi_app_editor_t vxdi_app_editor__setup(Camera3D* camera,Vector3 light_directio
         .screenHeight = 450,
         .light_direction = light_direction,
 
+        .scene=layer0,
         .guides=guides,
         .construction_hints=construction_hints,
+        .current_mouse_position=GetMousePosition(),
+        .previous_mouse_position=GetMousePosition(),
+        .is_mouse_position_changed=1,
     };
+    // Define the camera to look into our 3d world
+    app.camera.position = (Vector3){ 10.0f, 10.0f, 10.0f }; // Camera position
+    app.camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
+    app.camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
+    app.camera.fovy = 45.0f;                                // Camera field-of-view Y
+    app.camera.projection = CAMERA_PERSPECTIVE;             // Camera projection type
     fillColorCircle(app.colors);
 
     app.current_color=app.colors[4];

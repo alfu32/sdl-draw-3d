@@ -37,5 +37,9 @@ void fillColorCircle(Color colors[360]) {
     }
 }
 
+int RectangleContains(Rectangle r,Vector2 v) {
+    return r.x<=v.x && v.x <= (r.x + r.width)
+        && r.y<=v.y && v.y <= (r.y + r.height);
+}
 
 #endif
