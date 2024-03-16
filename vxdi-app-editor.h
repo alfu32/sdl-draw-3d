@@ -7,42 +7,8 @@
 #include "vxdi-app-voxel.h"
 #include "vxdi-app-scene.h"
 
-typedef enum app_construction_mode_e{
-    APP_CONSTRUCTION_MODE_HELP=0x100,
-    APP_CONSTRUCTION_MODE_SELECT,
-    APP_CONSTRUCTION_MODE_VOXEL,
-    APP_CONSTRUCTION_MODE_LINE,
-    APP_CONSTRUCTION_MODE_STRUCTURE,
-    APP_CONSTRUCTION_MODE_SHELL,
-    APP_CONSTRUCTION_MODE_VOLUME,
-    APP_CONSTRUCTION_MODE_PLATE,
-    APP_CONSTRUCTION_MODE_NUM=8,
-} app_construction_mode_e;
-
-const app_construction_mode_e construction_modes[APP_CONSTRUCTION_MODE_NUM] = {
-    APP_CONSTRUCTION_MODE_HELP,
-    APP_CONSTRUCTION_MODE_SELECT,
-    APP_CONSTRUCTION_MODE_VOXEL,
-    APP_CONSTRUCTION_MODE_LINE,
-    APP_CONSTRUCTION_MODE_STRUCTURE,
-    APP_CONSTRUCTION_MODE_SHELL,
-    APP_CONSTRUCTION_MODE_VOLUME,
-    APP_CONSTRUCTION_MODE_PLATE,
-};
-const char* const construction_mode_names[APP_CONSTRUCTION_MODE_NUM] = {
-    "_HELP",
-    "_SELECT",
-    "_VOXEL",
-    "_LINE",
-    "_STRUCTURE",
-    "_SHELL",
-    "_VOLUME",
-    "_PLATE",
-};
-
 
 typedef struct vxdi_app_editor_s {
-    app_construction_mode_e construction_mode;//=APP_CONSTRUCTION_MODE_VOLUME;
 
     Color current_color;//=GREEN;
     unsigned int current_color_index;//=GREEN;
@@ -98,7 +64,6 @@ vxdi_app_editor_t vxdi_app_editor__setup(Vector3 light_direction){
     layer0.temp_filename="temp.vxdi";
 
     vxdi_app_editor_t app = {
-        .construction_mode=APP_CONSTRUCTION_MODE_VOXEL,
 
         //.colors={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK},
         //.color_names={"WHITE","RED","ORANGE","YELLOW","GREEN","BLUE","MAGENTA","PINK","BLACK"},

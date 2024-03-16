@@ -327,7 +327,7 @@ int main(int argc, char *argv[]) {
             
             orbit__control_camera(&orbiter);
 
-            snprintf(status,1024,"num voxels: %d construction mode : %d, text_buffer %100s  voxels %d/%d temp file %s",app.scene.numVoxels,app.construction_mode,app.text_buffer,app.scene.numVoxels,MAX_VOXELS,app.scene.temp_filename);
+            snprintf(status,1024,"num voxels: %d construction mode : %s, text_buffer %100s  voxels %d/%d temp file %s",app.scene.numVoxels,tools.tools_names[tools.current_tool_index],app.text_buffer,app.scene.numVoxels,MAX_VOXELS,app.scene.temp_filename);
 
             BeginDrawing();
             ClearBackground(GRAY);
@@ -387,6 +387,7 @@ int main(int argc, char *argv[]) {
             if(IsKeyPressed(KEY_SPACE)){
                 scene__clear(&app.guides);
                 scene__clear(&app.construction_hints);
+                tools.current_tool_index=0;
                 multistep_tool__reset(&voxel_tool);
                 multistep_tool__reset(&structure_tool);
                 multistep_tool__reset(&shell_tool);
@@ -396,24 +397,9 @@ int main(int argc, char *argv[]) {
             /// DrawFPS(10, 10);
 
 
-            // draw and check buttons on the right side
-
-            int Y=(int)((app.current_mouse_position.y-32)/64);
-            // DrawRectangle(app.screenWidth-70,Y*64+32,64,64,(Color){128,255,255,128});
-            if(
-                app.current_mouse_position.x>(app.screenWidth-70)
-            ){
-                int Y=(int)((app.current_mouse_position.y-32)/64);
-                DrawRectangle(app.screenWidth-70,Y*64+32,64,64,(Color){128,255,255,128});
-                if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
-                    if(Y==0){
-                        show_help=!show_help;
-                    } else if ( Y < APP_CONSTRUCTION_MODE_NUM) {
-                        app.construction_mode=(app_construction_mode_e)(Y+0x100);
-                    } else {
-                        printf("nonexistent construction mode %d\n",Y);
-                    }
-                }
+            // draw and check tools buttons
+            if(IsKeyReleased(KEY_T)&&tools.last_tool_index>=2){
+                tools.current_tool_index=(tools.current_tool_index+1)%tools.last_tool_index;
             }
             vxdi_multistep_tool_t *current_tool = vxdi_app_editor__get_current(&tools);
             
@@ -431,84 +417,6 @@ int main(int argc, char *argv[]) {
                     multistep_tool__receive_moving_point(current_tool,&app,app.model_point_next_int);
                 }
             }
-
-            /////////////////////////////  //feed mouse events in function of the selected tool
-            /////////////////////////////  if (
-            /////////////////////////////      app.current_mouse_position.x>left_menu_sz_width && 
-            /////////////////////////////      app.current_mouse_position.x<(app.screenWidth-70) && 
-            /////////////////////////////      (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || app.is_mouse_position_changed) &&
-            /////////////////////////////      !IsKeyDown(KEY_LEFT_CONTROL) &&
-            /////////////////////////////      !IsKeyDown(KEY_LEFT_SHIFT)
-            /////////////////////////////  ){
-            /////////////////////////////      switch(app.construction_mode){
-            /////////////////////////////          case APP_CONSTRUCTION_MODE_HELP:
-            /////////////////////////////          break;
-            /////////////////////////////          case APP_CONSTRUCTION_MODE_SELECT:break;
-            /////////////////////////////          case APP_CONSTRUCTION_MODE_VOXEL:
-            /////////////////////////////              if (
-            /////////////////////////////                  app.current_mouse_position.x>left_menu_sz_width && 
-            /////////////////////////////                  app.current_mouse_position.x<(app.screenWidth-100) && 
-            /////////////////////////////                  IsMouseButtonPressed(MOUSE_BUTTON_LEFT) &&
-            /////////////////////////////                  !IsKeyDown(KEY_LEFT_CONTROL) &&
-            /////////////////////////////                  !IsKeyDown(KEY_LEFT_SHIFT)
-            /////////////////////////////              ){
-            /////////////////////////////                  if(IsKeyDown(KEY_LEFT_ALT)){
-            /////////////////////////////                      scene__remove_voxel(&app.scene,app.model_point_int,app.current_color,app.current_color_index);
-            /////////////////////////////                  } else {
-            /////////////////////////////                      scene__add_voxel(&app.scene,app.model_point_next_int,app.current_color,app.current_color_index);
-            /////////////////////////////                  }
-            /////////////////////////////              }
-            /////////////////////////////          break;
-            /////////////////////////////          case APP_CONSTRUCTION_MODE_LINE:
-            /////////////////////////////              if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-            /////////////////////////////                  printf("LINE tool click %d\n",APP_CONSTRUCTION_MODE_LINE);
-            /////////////////////////////                  multistep_tool__receive_point(&line_tool,&app,&app.scene,app.model_point_int);
-            /////////////////////////////              } else if(app.is_mouse_position_changed){
-            /////////////////////////////                  printf("LINE tool move[%d] %d\n",dbg_move_number,APP_CONSTRUCTION_MODE_LINE);
-            /////////////////////////////                  multistep_tool__receive_moving_point(&line_tool,&app,app.model_point_int);
-            /////////////////////////////              }
-            /////////////////////////////          break;
-            /////////////////////////////          case APP_CONSTRUCTION_MODE_STRUCTURE:
-            /////////////////////////////              if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-            /////////////////////////////                  printf("SHELL tool click %d\n",APP_CONSTRUCTION_MODE_STRUCTURE);
-            /////////////////////////////                  multistep_tool__receive_point(&structure_tool,&app,&app.scene,app.model_point_int);
-            /////////////////////////////              } else if(app.is_mouse_position_changed){
-            /////////////////////////////                  printf("SHELL tool move[%d] %d\n",dbg_move_number,APP_CONSTRUCTION_MODE_STRUCTURE);
-            /////////////////////////////                  multistep_tool__receive_moving_point(&structure_tool,&app,app.model_point_int);
-            /////////////////////////////              }
-            /////////////////////////////          break;
-            /////////////////////////////          case APP_CONSTRUCTION_MODE_SHELL:
-            /////////////////////////////              if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-            /////////////////////////////                  printf("SHELL tool click %d\n",APP_CONSTRUCTION_MODE_SHELL);
-            /////////////////////////////                  multistep_tool__receive_point(&shell_tool,&app,&app.scene,app.model_point_int);
-            /////////////////////////////              } else if(app.is_mouse_position_changed){
-            /////////////////////////////                  printf("SHELL tool move[%d] %d\n",dbg_move_number,APP_CONSTRUCTION_MODE_SHELL);
-            /////////////////////////////                  multistep_tool__receive_moving_point(&shell_tool,&app,app.model_point_int);
-            /////////////////////////////              }
-            /////////////////////////////          break;
-            /////////////////////////////          case APP_CONSTRUCTION_MODE_VOLUME:
-            /////////////////////////////              if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-            /////////////////////////////                  printf("VOLUME tool click %d\n",APP_CONSTRUCTION_MODE_VOLUME);
-            /////////////////////////////                  multistep_tool__receive_point(&volume_tool,&app,&app.scene,app.model_point_int);
-            /////////////////////////////              } else if(app.is_mouse_position_changed){
-            /////////////////////////////                  printf("VOLUME tool move[%d] %d\n",dbg_move_number,APP_CONSTRUCTION_MODE_VOLUME);
-            /////////////////////////////                  multistep_tool__receive_moving_point(&volume_tool,&app,app.model_point_int);
-            /////////////////////////////              }
-            /////////////////////////////          break;
-            /////////////////////////////          case APP_CONSTRUCTION_MODE_PLATE:
-            /////////////////////////////              if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-            /////////////////////////////                  printf("PLATE tool click %d\n",APP_CONSTRUCTION_MODE_PLATE);
-            /////////////////////////////                  multistep_tool__receive_point(&plate_tool,&app,&app.scene,app.model_point_int);
-            /////////////////////////////              } else if(app.is_mouse_position_changed){
-            /////////////////////////////                  printf("PLATE tool move[%d] %d\n",dbg_move_number,APP_CONSTRUCTION_MODE_PLATE);
-            /////////////////////////////                  multistep_tool__receive_moving_point(&plate_tool,&app,app.model_point_int);
-            /////////////////////////////              }
-            /////////////////////////////          break;
-            /////////////////////////////          default:
-            /////////////////////////////          window_should_close=1;
-            /////////////////////////////          break;
-            /////////////////////////////      }
-            /////////////////////////////  }
             // draw color pallete
             for(int ci=0;ci<24;ci+=1){
                 for(int lum=-1;lum<2;lum+=1){
@@ -551,7 +459,7 @@ int main(int argc, char *argv[]) {
             }
 
             DrawRectangle( 0, 0, app.screenWidth, 20, Fade(DARKGRAY, 0.95f));
-            DrawText(status     , app.screenWidth-300, 5, 10, (Color){200,200,200,255});
+            DrawText(status     , app.screenWidth-300, 5, 10, (Color){20,20,20,255});
             char coords[12];
             snprintf(coords,12,"%3d %3d %3d",(int)app.model_point_int.x,(int)app.model_point_int.y,(int)app.model_point_int.z);
             DrawText(coords, app.current_mouse_position.x+10, app.current_mouse_position.y-10, 20, BLACK);
