@@ -178,7 +178,7 @@ int main(int argc, char *argv[]) {
     // Initialization
     //--------------------------------------------------------------------------------------
 
-    vxdi_tools_map_t tools;
+    vxdi_tools_map_t tools={0};
     vxdi_tools_map__init(&tools);
 
     vxdi_multistep_tool_t help_tool;
@@ -240,7 +240,9 @@ int main(int argc, char *argv[]) {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
     printf(" -- Init Window \n");
-    InitWindow(app.screenWidth, app.screenHeight, "Raylib Voxel Scene");
+    char app_title[255];
+    snprintf(&app_title,255,"V0XD31-%s",app.scene.temp_filename);
+    InitWindow(app.screenWidth, app.screenHeight, app_title);
     /// InitShadowMapping();
 
     mut char status[1024];

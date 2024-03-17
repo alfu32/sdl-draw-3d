@@ -55,12 +55,15 @@ int vxdi_tools_map__add(vxdi_tools_map_t* map, const char* tool_name, vxdi_multi
     printf("// Add tool %s to arrays\n",tool_name);
     map->tools[map->last_tool_index+1] = *tool;
     map->tools_names[map->last_tool_index+1] = strdup(tool_name);
-    if (map->tools_names[map->last_tool_index] == NULL) {
+    if (map->tools_names[map->last_tool_index+1] == NULL) {
         // Memory allocation failed
         printf("// ERR-4  Memory allocation for names failed %s\n",tool_name);
         return -4;
     }
     map->last_tool_index++;
+    if(map->current_tool_index == -1){
+        map->current_tool_index=map->last_tool_index;
+    }
 
     printf("// Update last_tool_index %s\n",tool_name);
     printf("// Finished adding %s : capacity:%d,last_tool_index:%d,index:%d,last:%d\n",tool_name,TOOL_MAP_MAX_CAPACITY,map->last_tool_index,map->current_tool_index,map->last_tool_index);
