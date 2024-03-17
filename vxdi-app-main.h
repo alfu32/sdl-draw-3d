@@ -1,7 +1,7 @@
 
 #include <stdio.h>
 #include <raylib.h>
-#define LOG_DEBUG
+
 #include <raymath.h>
 #include "vxdi-app-voxel.h"
 #include "vxdi-app-scene.h"
@@ -209,6 +209,7 @@ int main(int argc, char *argv[]) {
     multistep_tool__init(&volume_tool,2,volume_tool_acquire,volume_tool_finish);
     vxdi_tools_map__add(&tools,"volume",&volume_tool);
 
+    printf(" -- plate_tool\n");
     vxdi_multistep_tool_t plate_tool;
     multistep_tool__init(&plate_tool,3,plate_tool_acquire,plate_tool_finish);
     vxdi_tools_map__add(&tools,"plate",&plate_tool);
@@ -218,11 +219,12 @@ int main(int argc, char *argv[]) {
 
     // DisableCursor();                    // Limit cursor to relative movement inside the window
 
+    printf(" -- SetExitKey\n");
     SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
     SetExitKey(KEY_Q); // Use KEY_NULL or 0 to disable
-
     printf(" -- vxdi_app_editor__setup\n");
-    vxdi_app_editor_t app=vxdi_app_editor__setup((Vector3){ 0.7f, -1.0f, 0.3f });
+    vxdi_app_editor_t app;
+    vxdi_app_editor__setup(&app,(Vector3){ 0.7f, -1.0f, 0.3f });
     if(argc >1) {
         app.scene.temp_filename = argv[1];
     }

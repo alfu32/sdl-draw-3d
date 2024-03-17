@@ -14,7 +14,7 @@ typedef struct vxdi_app_editor_s {
     Color current_color;//=GREEN;
     unsigned int current_color_index;//=GREEN;
     Color colors[360];//={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK}
-    //const char* color_names[9];//={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK}
+    const char* color_names[9];//={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK}
 
     CameraProjection current_camera_projection;
     unsigned int current_camera_projection_index;
@@ -51,7 +51,7 @@ typedef struct vxdi_app_editor_s {
 // #define PI 3.14159265358979323846
 
 
-vxdi_app_editor_t vxdi_app_editor__setup(Vector3 light_direction){
+int vxdi_app_editor__setup(vxdi_app_editor_t *app,Vector3 light_direction){
     LOG_D0("start");
     LOG_D0("guides");
     scene_t guides;
@@ -69,47 +69,71 @@ vxdi_app_editor_t vxdi_app_editor__setup(Vector3 light_direction){
     layer0.temp_filename="temp.vxdi";
 
     LOG_D0("vxdi_app_editor_t");
-    vxdi_app_editor_t app = {
+        app->current_color=GREEN;
+        app->current_color_index=4;
+        app->colors[0]=WHITE;
+        app->colors[1]=RED;
+        app->colors[2]=ORANGE;
+        app->colors[3]=YELLOW;
+        app->colors[4]=GREEN;
+        app->colors[5]=BLUE;
+        app->colors[6]=MAGENTA;
+        app->colors[7]=PINK;
+        app->colors[8]=BLACK;
+        app->color_names[0]="WHITE";
+        app->color_names[1]="RED";
+        app->color_names[2]="ORANGE";
+        app->color_names[3]="YELLOW";
+        app->color_names[4]="GREEN";
+        app->color_names[5]="BLUE";
+        app->color_names[6]="MAGENTA";
+        app->color_names[7]="PINK";
+        app->color_names[8]="BLACK";
 
-        //.colors={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK},
-        //.color_names={"WHITE","RED","ORANGE","YELLOW","GREEN","BLUE","MAGENTA","PINK","BLACK"},
 
+        app->current_camera_projection=CAMERA_PERSPECTIVE;
+        app->current_camera_projection_index=0;
+        app->camera_projections[0]=CAMERA_PERSPECTIVE;
+        app->camera_projections[1]=CAMERA_ORTHOGRAPHIC;
+        app->camera_projection_names[0]="PERSPECTIVE";
+        app->camera_projection_names[1]="ORTHOGRAPHIC";
 
-        .current_camera_projection=CAMERA_PERSPECTIVE,
-        .current_camera_projection_index=0,
-        .camera_projections={CAMERA_PERSPECTIVE,CAMERA_ORTHOGRAPHIC},
-        .camera_projection_names={"PERSPECTIVE","ORTHOGRAPHIC"},
+        app->current_camera_mode=CAMERA_FREE;
+        app->current_camera_mode_index=0;
+        app->camera_modes[0]=CAMERA_FREE;
+        app->camera_modes[1]=CAMERA_ORBITAL;
+        app->camera_modes[2]=CAMERA_FIRST_PERSON;
+        app->camera_modes[3]=CAMERA_THIRD_PERSON;
+        app->camera_mode_names[0]="FREE";
+        app->camera_mode_names[1]="ORBITAL";
+        app->camera_mode_names[2]="FIRST_PERSON";
+        app->camera_mode_names[3]="THIRD_PERSON";
 
-        .current_camera_mode=CAMERA_FREE,
-        .current_camera_mode_index=0,
-        .camera_modes={CAMERA_FREE,CAMERA_ORBITAL,CAMERA_FIRST_PERSON,CAMERA_THIRD_PERSON},
-        .camera_mode_names={"FREE","ORBITAL","FIRST_PERSON","ORBITAL","THIRD_PERSON"},
+        app->screenWidth = 1280;
+        app->screenHeight = 800;
+        app->light_direction = (Vector3){x:light_direction.x,y:light_direction.y,z:light_direction.z};
 
-        .screenWidth = 800,
-        .screenHeight = 450,
-        .light_direction = light_direction,
-
-        .scene=layer0,
-        .guides=guides,
-        .construction_hints=construction_hints,
-        .current_mouse_position=GetMousePosition(),
-        .previous_mouse_position=GetMousePosition(),
-        .is_mouse_position_changed=1,
-    };
+        app->scene=layer0;
+        app->guides=guides;
+        app->construction_hints=construction_hints;
+        //app->text_buffer=strdup("nothing");
+        app->current_mouse_position=GetMousePosition();
+        app->previous_mouse_position=GetMousePosition();
+        app->is_mouse_position_changed=1;
+        app->mouse_model=(collision_t){0};
+        app->model_point_int=(Vector3){0};
+        app->model_point_next_int=(Vector3){0};
     LOG_D0("camera");
     // Define the camera to look into our 3d world
-    app.camera.position = (Vector3){ 10.0f, 10.0f, 10.0f }; // Camera position
-    app.camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
-    app.camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
-    app.camera.fovy = 45.0f;                                // Camera field-of-view Y
-    app.camera.projection = CAMERA_PERSPECTIVE;             // Camera projection type
+    app->camera.position = (Vector3){ 10.0f, 10.0f, 10.0f }; // Camera position
+    app->camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
+    app->camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
+    app->camera.fovy = 45.0f;                                // Camera field-of-view Y
+    app->camera.projection = CAMERA_PERSPECTIVE;             // Camera projection type
     LOG_D0("fillColorCircle");
-    fillColorCircle(app.colors);
-
-    app.current_color=app.colors[4];
-    app.current_color_index=4;
+    fillColorCircle(app->colors);
     LOG_D0("return");
-    return app;
+    return 0;
 }
 
 int vxdi_app_editor__update(vxdi_app_editor_t* app){
