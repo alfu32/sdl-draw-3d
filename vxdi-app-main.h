@@ -1,7 +1,7 @@
 
 #include <stdio.h>
 #include <raylib.h>
-
+#define LOG_DEBUG
 #include <raymath.h>
 #include "vxdi-app-voxel.h"
 #include "vxdi-app-scene.h"

@@ -6,6 +6,7 @@
 #include <raylib.h>
 #include "vxdi-app-voxel.h"
 #include "vxdi-app-scene.h"
+#include "vxdi-lib-log.h"
 
 
 typedef struct vxdi_app_editor_s {
@@ -51,18 +52,23 @@ typedef struct vxdi_app_editor_s {
 
 
 vxdi_app_editor_t vxdi_app_editor__setup(Vector3 light_direction){
-    
+    LOG_D0("start");
+    LOG_D0("guides");
     scene_t guides;
+    
     scene__init(&guides,0,light_direction);           // Camera projection type
     guides.temp_filename="guides.vxde";
+    LOG_D0("construction_hints");
     scene_t construction_hints;
     scene__init(&construction_hints,0,light_direction);
     guides.temp_filename="construction_hints.vxde";
 
+    LOG_D0("layer0");
     scene_t layer0;
     scene__init(&layer0,1,light_direction);
     layer0.temp_filename="temp.vxdi";
 
+    LOG_D0("vxdi_app_editor_t");
     vxdi_app_editor_t app = {
 
         //.colors={WHITE,RED,ORANGE,YELLOW,GREEN,BLUE,MAGENTA,PINK,BLACK},
@@ -90,16 +96,19 @@ vxdi_app_editor_t vxdi_app_editor__setup(Vector3 light_direction){
         .previous_mouse_position=GetMousePosition(),
         .is_mouse_position_changed=1,
     };
+    LOG_D0("camera");
     // Define the camera to look into our 3d world
     app.camera.position = (Vector3){ 10.0f, 10.0f, 10.0f }; // Camera position
     app.camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
     app.camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
     app.camera.fovy = 45.0f;                                // Camera field-of-view Y
     app.camera.projection = CAMERA_PERSPECTIVE;             // Camera projection type
+    LOG_D0("fillColorCircle");
     fillColorCircle(app.colors);
 
     app.current_color=app.colors[4];
     app.current_color_index=4;
+    LOG_D0("return");
     return app;
 }
 
