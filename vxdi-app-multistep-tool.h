@@ -15,8 +15,8 @@ typedef struct vxdi_multistep_tool_s {
     vxdi_multistep_tool__mutate_vxdi_app_editor_fn on_point_aquired;
     vxdi_multistep_tool__mutate_vxdi_app_editor_fn on_point_move;
     vxdi_multistep_tool__mutate_vxdi_app_editor_fn on_finish;
-    size_t last_input_index;
-    size_t num_inputs;
+    unsigned long int last_input_index;
+    unsigned long int num_inputs;
     Vector3* inputs;
 } vxdi_multistep_tool_t;
 

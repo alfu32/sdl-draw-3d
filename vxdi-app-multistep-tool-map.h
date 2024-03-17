@@ -117,13 +117,6 @@ int vxdi_tools_map_test() {
     // Remove tool
     vxdi_tools_map__remove(&map, "Tool1");
 
-    // Cleanup
-    free(map.tools);
-    for (int i = 0; i < map.last_tool_index; ++i) {
-        free(map.tools_names[i]);
-    }
-    free(map.tools_names);
-
     return 0;
 }
 

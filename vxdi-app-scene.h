@@ -69,15 +69,16 @@ void scene__load_model(scene_t* scene, const char* filename) {
 
     // Read the number of voxels first
     printf("scene__load_model :: Error reading file %s the number of voxels first\n",filename);
-    size_t numread = fread(&scene->numVoxels, sizeof(int), 1, file);
+    long long numread = fread(&scene->numVoxels, sizeof(int), 1, file);
     if(numread == -1){
         printf("Error reading file %s the number of voxels first\n",filename);
     }
 
-    printf("scene__load_model :: %s Ensure we do not exceed the array limit. (numread:%llu,numVoxels:%d,counted:%llu,)\n",filename,numread,scene->numVoxels , sizeof(scene->voxels) / sizeof(voxel_t));
+    long long int num_voxels = sizeof(scene->voxels) / sizeof(voxel_t);
+    printf("scene__load_model :: %s Ensure we do not exceed the array limit. (numread:%lld,numVoxels:%d,counted:%lld,)\n",filename,numread,scene->numVoxels , num_voxels);
     // Ensure we do not exceed the array limit
     if (scene->numVoxels > sizeof(scene->voxels) / sizeof(voxel_t)) {
-        printf("File %s contains  more voxels than can be loaded. (%llu)\n",filename,numread);
+        printf("File %s contains  more voxels than can be loaded. (%lld)\n",filename,numread);
         fclose(file);
         return;
     }
