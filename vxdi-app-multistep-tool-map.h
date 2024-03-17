@@ -20,7 +20,7 @@ typedef struct vxdi_tools_map_s {
 
 int vxdi_tools_map__init(vxdi_tools_map_t* map) {
     if (map == NULL) {
-        return; // Nothing to initialize
+        return -1; // Nothing to initialize
     }
     
     // Initialize members

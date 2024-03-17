@@ -38,44 +38,44 @@ control_keys_t get_control_keys(){
 
 
 void generic_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("aquire: generic tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("aquire: generic tool : got point number [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
 }
 void generic_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("finish generic tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("finish generic tool : got last point [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
 }
 
 void help_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("aquire: help tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("aquire: help tool : got point number [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
 }
 void help_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("finish help tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("finish help tool : got last point [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
 }
 
 void select_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("aquire: select tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("aquire: select tool : got point number [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
 }
 void select_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("finish select tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("finish select tool : got last point [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
 }
 
 void voxel_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("aquire: voxel tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("aquire: voxel tool : got point number [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
     scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
 }
 void voxel_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("finish voxel tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("finish voxel tool : got last point [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
 
     if(IsKeyDown(KEY_LEFT_ALT)){
-        printf("finish voxel tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        printf("finish voxel tool : removing [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
         scene__remove_voxel(&(app->scene),point,app->current_color,app->current_color_index);
     } else {
-        printf("finish voxel tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        printf("finish voxel tool : adding [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
         scene__add_voxel(&(app->scene),point,app->current_color,app->current_color_index);
     }
 }
 
 void shell_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("aquire: shell tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("aquire: shell tool : got point number [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->last_input_index==0){
         scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
     } else if(tool->last_input_index==1){
@@ -83,18 +83,18 @@ void shell_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene
     }
 }
 void shell_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("finish shell tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("finish shell tool : got last point [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
     
     if(IsKeyDown(KEY_LEFT_ALT)){
-        printf("shell tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        printf("shell tool : removing [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
         rasterizeHollowCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__remove_voxel);
     } else {
-        printf("shell tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        printf("shell tool : adding [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
         rasterizeHollowCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
 void line_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("aquire: line tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("aquire: line tool : got point number [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->last_input_index==0){
         scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
     } else if(tool->last_input_index==1){
@@ -102,17 +102,17 @@ void line_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_
     }
 }
 void line_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("finish line tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("finish line tool : got last point [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
     if(IsKeyDown(KEY_LEFT_ALT)){
-        printf("line tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        printf("line tool : removing [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
         rasterizeLine(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__remove_voxel);
     } else {
-        printf("line tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        printf("line tool : adding [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
         rasterizeLine(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
 void structure_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("aquire: structure tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("aquire: structure tool : got point number [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->last_input_index==0){
         scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
     } else if(tool->last_input_index==1){
@@ -120,18 +120,18 @@ void structure_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,s
     }
 }
 void structure_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("finish structure tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("finish structure tool : got last point [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
     if(IsKeyDown(KEY_LEFT_ALT)){
-        printf("plate tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        printf("plate tool : removing [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
         rasterizeStructureCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__remove_voxel);
     } else {
-        printf("plate tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        printf("plate tool : adding [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
         rasterizeStructureCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
     }
     rasterizeStructureCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,IsKeyPressed(KEY_LEFT_ALT)?scene__remove_voxel:scene__add_voxel);
 }
 void plate_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("aquire: plate tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("aquire: plate tool : got point number [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->last_input_index==0){
         rasterizePlane(point,point,point,scene,app->current_color,app->current_color_index,scene__add_voxel);
     } else if(tool->last_input_index==1){
@@ -141,17 +141,17 @@ void plate_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene
     }
 }
 void plate_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("finish plate tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("finish plate tool : got last point [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
     if(IsKeyDown(KEY_LEFT_ALT)){
-        printf("plate tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        printf("plate tool : removing [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
         rasterizePlane(tool->inputs[0],tool->inputs[1],tool->inputs[2],scene,app->current_color,app->current_color_index,scene__remove_voxel);
     } else {
-        printf("plate tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        printf("plate tool : adding [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
         rasterizePlane(tool->inputs[0],tool->inputs[1],tool->inputs[2],scene,app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
 void volume_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("aquire: volume tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("aquire: volume tool : got point number [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->last_input_index==0){
         scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
     } else if(tool->last_input_index==1){
@@ -159,12 +159,12 @@ void volume_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scen
     }
 }
 void volume_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
-    printf("finish volume tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    printf("finish volume tool : got last point [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
     if(IsKeyDown(KEY_LEFT_ALT)){
-        printf("volume tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        printf("volume tool : removing [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
         rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__remove_voxel);
     } else {
-        printf("volume tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        printf("volume tool : adding [%llu/%llu]\n",tool->last_input_index,tool->num_inputs);
         rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
     }
     
@@ -221,21 +221,25 @@ int main(int argc, char *argv[]) {
     SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
     SetExitKey(KEY_Q); // Use KEY_NULL or 0 to disable
 
-    
+    printf(" -- setup app \n");
     vxdi_app_editor_t app=vxdi_app_editor__setup((Vector3){ 0.7f, -1.0f, 0.3f });
     if(argc >1) {
         app.scene.temp_filename = argv[1];
     }
 
+    printf(" -- setup app \n");
     scene__load_model(&app.scene,app.scene.temp_filename);
 
     // SetCameraMode(app.camera, CAMERA_FREE); // Let Raylib handle app.camera controls
     
+
+    printf(" -- setup orbiter \n");
     orbit_t orbiter=orbit_init(&app.camera);
 
 
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
+    printf(" -- Init Window \n");
     InitWindow(app.screenWidth, app.screenHeight, "Raylib Voxel Scene");
     /// InitShadowMapping();
 
@@ -248,6 +252,7 @@ int main(int argc, char *argv[]) {
     app.is_mouse_position_changed = 1;
     unsigned char dbg_move_number=0;
 
+    printf(" -- Starting Loop %d \n",window_should_close);
     for (;!(WindowShouldClose() || window_should_close);) {
         if(IsKeyPressed(KEY_ESCAPE)){
             // do nothing
