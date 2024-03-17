@@ -1,12 +1,17 @@
 #!/bin/bash
 
+TAG=$1
+if [[ "$TAG" == "" ]];then
+    TAG="$(git describe --tags --abbrev=0)"
+fi
 
-TAG=$(git describe --tags --abbrev=0)
-COMMIT_HASH=$(git rev-parse HEAD)
+if [[ "$TAG" == "" ]];then
+    TAG=$(git rev-parse HEAD)
+fi
+
 DATE=$(date +%Y%m%d)
 
 echo "          TAG: $TAG"
-echo "  COMMIT_HASH: $COMMIT_HASH"
 echo "         DATE: $DATE"
 
 ls -la build

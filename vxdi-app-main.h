@@ -241,7 +241,7 @@ int main(int argc, char *argv[]) {
 
     printf(" -- Init Window \n");
     char app_title[255];
-    snprintf(&app_title,255,"V0XD31-%s",app.scene.temp_filename);
+    snprintf(app_title,255,"V0XD31-%s",app.scene.temp_filename);
     InitWindow(app.screenWidth, app.screenHeight, app_title);
     /// InitShadowMapping();
 
