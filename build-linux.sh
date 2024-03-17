@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 TAG=$(git describe --tags --abbrev=0)
 COMMIT_HASH=$(git rev-parse HEAD)
 DATE=$(date +%Y%m%d)

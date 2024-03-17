@@ -8,12 +8,11 @@
 
 
 #define INITIAL_CAPACITY 10
+#define TOOL_MAP_MAX_CAPACITY 100
 
 typedef struct vxdi_tools_map_s {
-    vxdi_multistep_tool_t *tools;
-    char **tools_names;
-    int capacity;
-    int size;
+    vxdi_multistep_tool_t tools[TOOL_MAP_MAX_CAPACITY];
+    char * tools_names[TOOL_MAP_MAX_CAPACITY];
     int current_tool_index;
     int last_tool_index;
 } vxdi_tools_map_t;
@@ -24,12 +23,8 @@ int vxdi_tools_map__init(vxdi_tools_map_t* map) {
     }
     
     // Initialize members
-    map->tools = NULL;
-    map->tools_names = NULL;
-    map->capacity = 0;
-    map->size = 0;
-    map->current_tool_index = 0;
-    map->last_tool_index = 0;
+    map->current_tool_index = -1;
+    map->last_tool_index = -1;
 
     return 0;
 }
@@ -43,7 +38,7 @@ int vxdi_tools_map__add(vxdi_tools_map_t* map, const char* tool_name, vxdi_multi
     }
 
     printf("// Check if %s tool_name already exists\n",tool_name);
-    for (int i = 0; i < map->size; ++i) {
+    for (int i = 0; i < map->last_tool_index; ++i) {
         if (strcmp(map->tools_names[i], tool_name) == 0) {
             // Tool with same name already exists
             printf("// ERR-2  Tool with same name already exists %s\n",tool_name);
@@ -52,70 +47,36 @@ int vxdi_tools_map__add(vxdi_tools_map_t* map, const char* tool_name, vxdi_multi
     }
 
     printf("// Resize arrays %s if necessary\n",tool_name);
-    if (map->size >= map->capacity) {
-        int new_capacity = map->capacity?map->capacity * 2:2;
-        map->tools = (vxdi_multistep_tool_t*)realloc(map->tools, new_capacity * sizeof(vxdi_multistep_tool_t));
-        map->tools_names = (char**)realloc(map->tools_names, new_capacity * sizeof(char*));
-        if (map->tools == NULL || map->tools_names == NULL) {
-            // Memory allocation failed
+    if ((map->last_tool_index + 1) >= TOOL_MAP_MAX_CAPACITY) {
             printf("// ERR-3  Memory allocation for tool failed %s\n",tool_name);
             return -3;
-        }
-        map->capacity = new_capacity;
     }
 
     printf("// Add tool %s to arrays\n",tool_name);
-    map->tools[map->size] = *tool;
-    map->tools_names[map->size] = strdup(tool_name);
-    if (map->tools_names[map->size] == NULL) {
+    map->tools[map->last_tool_index+1] = *tool;
+    map->tools_names[map->last_tool_index+1] = strdup(tool_name);
+    if (map->tools_names[map->last_tool_index] == NULL) {
         // Memory allocation failed
-        printf("// ERR-3  Memory allocation for names failed %s\n",tool_name);
-        return -3;
+        printf("// ERR-4  Memory allocation for names failed %s\n",tool_name);
+        return -4;
     }
-    map->size++;
+    map->last_tool_index++;
 
     printf("// Update last_tool_index %s\n",tool_name);
-    map->last_tool_index = map->size - 1;
-    printf("// Finished adding %s : capacity:%d,size:%d,index:%d,last:%d\n",tool_name,map->capacity,map->size,map->current_tool_index,map->last_tool_index);
+    printf("// Finished adding %s : capacity:%d,last_tool_index:%d,index:%d,last:%d\n",tool_name,TOOL_MAP_MAX_CAPACITY,map->last_tool_index,map->current_tool_index,map->last_tool_index);
 
     return 0; // Success
 }
 
 int vxdi_tools_map__remove(vxdi_tools_map_t* map, const char* tool_name) {
-    if (map == NULL || tool_name == NULL) {
-        return -1; // Invalid arguments
-    }
-
-    int found_index = -1;
-    // Find tool by name
-    for (int i = 0; i < map->size; ++i) {
-        if (strcmp(map->tools_names[i], tool_name) == 0) {
-            found_index = i;
-            break;
-        }
-    }
-
-    if (found_index == -1) {
-        return -2; // Tool not found
-    }
-
-    // Free memory for tool name
-    free(map->tools_names[found_index]);
-    
-    // Shift elements to fill the gap
-    for (int i = found_index; i < map->size - 1; ++i) {
-        map->tools[i] = map->tools[i + 1];
-        map->tools_names[i] = map->tools_names[i + 1];
-    }
-
-    // Update size
-    map->size--;
+    // Update last_tool_index
+    map->last_tool_index--;
 
     return 0; // Success
 }
 
 int vxdi_tools_map__select(vxdi_tools_map_t* map, int tool_index) {
-    if (map == NULL || tool_index < 0 || tool_index >= map->size) {
+    if (map == NULL || tool_index < 0 || tool_index >= map->last_tool_index) {
         return -1; // Invalid arguments
     }
 
@@ -124,7 +85,7 @@ int vxdi_tools_map__select(vxdi_tools_map_t* map, int tool_index) {
 }
 
 vxdi_multistep_tool_t * vxdi_app_editor__get_current(vxdi_tools_map_t* map) {
-    if (map == NULL || map->size == 0 || map->current_tool_index < 0 || map->current_tool_index >= map->size) {
+    if (map == NULL || map->last_tool_index == 0 || map->current_tool_index < 0 || map->current_tool_index >= map->last_tool_index) {
         return NULL; // Invalid arguments or no current tool selected
     }
 
@@ -134,10 +95,7 @@ vxdi_multistep_tool_t * vxdi_app_editor__get_current(vxdi_tools_map_t* map) {
 int vxdi_tools_map_test() {
     // Example usage
     vxdi_tools_map_t map;
-    map.tools = (vxdi_multistep_tool_t*)malloc(INITIAL_CAPACITY * sizeof(vxdi_multistep_tool_t));
-    map.tools_names = (char**)malloc(INITIAL_CAPACITY * sizeof(char*));
-    map.capacity = INITIAL_CAPACITY;
-    map.size = 0;
+    map.last_tool_index = 0;
     map.current_tool_index = -1;
     map.last_tool_index = -1;
 
@@ -161,7 +119,7 @@ int vxdi_tools_map_test() {
 
     // Cleanup
     free(map.tools);
-    for (int i = 0; i < map.size; ++i) {
+    for (int i = 0; i < map.last_tool_index; ++i) {
         free(map.tools_names[i]);
     }
     free(map.tools_names);

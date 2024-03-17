@@ -221,13 +221,13 @@ int main(int argc, char *argv[]) {
     SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
     SetExitKey(KEY_Q); // Use KEY_NULL or 0 to disable
 
-    printf(" -- setup app \n");
+    printf(" -- vxdi_app_editor__setup\n");
     vxdi_app_editor_t app=vxdi_app_editor__setup((Vector3){ 0.7f, -1.0f, 0.3f });
     if(argc >1) {
         app.scene.temp_filename = argv[1];
     }
 
-    printf(" -- setup app \n");
+    printf(" -- scene__load_model\n");
     scene__load_model(&app.scene,app.scene.temp_filename);
 
     // SetCameraMode(app.camera, CAMERA_FREE); // Let Raylib handle app.camera controls
