@@ -14,6 +14,7 @@
 		"vxdi-app-multistep-tool-map.h": "c",
 		"vxdi-app-scene.h": "c",
 		"vxdi-app-voxel.h": "c",
-		"vxdi-app-multistep-tool.h": "c"
+		"vxdi-app-multistep-tool.h": "c",
+		"sstream": "c"
 	}
 }

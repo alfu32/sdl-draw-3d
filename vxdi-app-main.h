@@ -178,46 +178,46 @@ int main(int argc, char *argv[]) {
     // Initialization
     //--------------------------------------------------------------------------------------
 
-    vxdi_tools_map_t tools={0};
-    vxdi_tools_map__init(&tools);
+    vxdi_tools_map_t *tools=(vxdi_tools_map_t*)malloc(sizeof(vxdi_tools_map_t));
+    vxdi_tools_map__init(tools);
 
     vxdi_multistep_tool_t select_objects_tool;
     multistep_tool__init(&select_objects_tool,1,select_tool_acquire,select_tool_finish);
-    vxdi_tools_map__add(&tools,"select_objects",&select_objects_tool);
+    vxdi_tools_map__add(tools,"select_objects",&select_objects_tool);
 
     vxdi_multistep_tool_t voxel_tool;
     multistep_tool__init(&voxel_tool,1,voxel_tool_acquire,voxel_tool_finish);
-    vxdi_tools_map__add(&tools,"voxel",&voxel_tool);
+    vxdi_tools_map__add(tools,"voxel",&voxel_tool);
 
     vxdi_multistep_tool_t shell_tool;
     multistep_tool__init(&shell_tool,2,shell_tool_acquire,shell_tool_finish);
-    vxdi_tools_map__add(&tools,"shell",&shell_tool);
+    vxdi_tools_map__add(tools,"shell",&shell_tool);
 
     vxdi_multistep_tool_t structure_tool;
     multistep_tool__init(&structure_tool,2,structure_tool_acquire,structure_tool_finish);
-    vxdi_tools_map__add(&tools,"structure",&structure_tool);
+    vxdi_tools_map__add(tools,"structure",&structure_tool);
 
     vxdi_multistep_tool_t line_tool;
     multistep_tool__init(&line_tool,2,line_tool_acquire,line_tool_finish);
-    vxdi_tools_map__add(&tools,"line",&line_tool);
+    vxdi_tools_map__add(tools,"line",&line_tool);
 
     vxdi_multistep_tool_t volume_tool;
     multistep_tool__init(&volume_tool,2,volume_tool_acquire,volume_tool_finish);
-    vxdi_tools_map__add(&tools,"volume",&volume_tool);
+    vxdi_tools_map__add(tools,"volume",&volume_tool);
 
     printf(" -- plate_tool\n");
     vxdi_multistep_tool_t plate_tool;
     multistep_tool__init(&plate_tool,3,plate_tool_acquire,plate_tool_finish);
-    vxdi_tools_map__add(&tools,"plate",&plate_tool);
+    vxdi_tools_map__add(tools,"plate",&plate_tool);
 
     printf(" -- plane_tool\n");
     vxdi_multistep_tool_t plane_tool;
     multistep_tool__init(&plane_tool,3,plate_tool_acquire,plate_tool_finish);
-    vxdi_tools_map__add(&tools,"plane",&plane_tool);
+    vxdi_tools_map__add(tools,"plane",&plane_tool);
 
     vxdi_multistep_tool_t help_tool;
     multistep_tool__init(&help_tool,1,help_tool_acquire,help_tool_finish);
-    vxdi_tools_map__add(&tools,"help",&help_tool);
+    vxdi_tools_map__add(tools,"help",&help_tool);
 
     // Set window to be resizable
 
@@ -341,13 +341,12 @@ int main(int argc, char *argv[]) {
             
             orbit__control_camera(&orbiter);
 
-            snprintf(status,1024,"voxels: %d/10000 mode : %s[%d/%d] (%llx) ->%lu, text %s file %s",
+            snprintf(status,1024,"voxels: %d/10000 mode : %s[%d/%d] %lu, text %s file %s",
                 app.scene.numVoxels,
-                tools.tools_names[tools.current_tool_index],
-                tools.current_tool_index,
-                tools.last_tool_index,
-                &(tools.tools[tools.current_tool_index]),
-                tools.tools[tools.current_tool_index].last_input_index,
+                tools->tools_names[tools->current_tool_index],
+                tools->current_tool_index,
+                tools->last_tool_index,
+                tools->tools[tools->current_tool_index]->last_input_index,
                 app.text_buffer,
                 app.scene.temp_filename
             );
@@ -369,7 +368,7 @@ int main(int argc, char *argv[]) {
                 DrawCubeWires(app.model_point_int, 1.0f, 1.0f, 1.0f, Fade(RED, 0.5f));
                 DrawCubeWires(app.model_point_next_int, 1.0f, 1.0f, 1.0f, Fade(GREEN, 0.5f));
                 
-                DrawGridAt((Vector3){0.0f,-0.5f,0.0f},33, 1.0f); // Draw a grid
+                DrawGridAt((Vector3){-0.5f,-0.5f,-0.5f},33, 1.0f); // Draw a grid
 
                 if(app.current_mouse_position.x>left_menu_sz_width && app.current_mouse_position.x<(app.screenWidth-70)){
                     DrawLine3D(
@@ -392,16 +391,19 @@ int main(int argc, char *argv[]) {
                 }
             EndMode3D();
 
-            for(int i=0;i<=tools.last_tool_index;i++) {
+            for(int i=0;i<=tools->last_tool_index;i++) {
+                char itext[20]; // Make sure the array is large enough to hold the converted string
+                sprintf(itext, "%d", i);
                 Vector2 a={app.screenWidth-70,32+64*i};
                 Rectangle r={a.x,a.y,62,62};
-                DrawRectangleRec(r,(Color){225,225,225,255});
-                DrawText(tools.tools_names[i],r.x+4,r.y+46,14,GRAY);
-                if(i==tools.current_tool_index){
+                DrawRectangleRec(r,(Color){200,200,200,255});
+                DrawText(itext,r.x+50,r.y+16,14,BLACK);
+                DrawText(tools->tools_names[i],r.x+6,r.y+46,14,BLACK);
+                if(i==tools->current_tool_index){
                     DrawRectangle(a.x,a.y,6,62,(Color){96,160,160,255});
                 }
                 if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && RectangleContains(r,app.current_mouse_position)) {
-                    tools.current_tool_index=i;
+                    vxdi_tools_map__select(tools,i);
                 }
             }
 
@@ -410,7 +412,7 @@ int main(int argc, char *argv[]) {
             if(IsKeyPressed(KEY_SPACE)){
                 scene__clear(&app.guides);
                 scene__clear(&app.construction_hints);
-                tools.current_tool_index=0;
+                tools->current_tool_index=0;
                 multistep_tool__reset(&voxel_tool);
                 multistep_tool__reset(&structure_tool);
                 multistep_tool__reset(&shell_tool);
@@ -421,11 +423,12 @@ int main(int argc, char *argv[]) {
 
 
             // draw and check tools buttons
-            if(IsKeyReleased(KEY_T)&&tools.last_tool_index>=2){
-                tools.current_tool_index=(tools.current_tool_index+1)%tools.last_tool_index;
+            if(IsKeyReleased(KEY_T) ){
+                vxdi_tools_map__next( tools );
+                printf("\rsetting current tool : %d/%d     //////  ",tools->current_tool_index,tools->last_tool_index);
             }
-            printf("\rgetting current tool : %d/%d     //////  ",tools.current_tool_index,tools.last_tool_index);
-            vxdi_multistep_tool_t *current_tool = vxdi_app_editor__get_current(&tools);
+            printf("\rgetting current tool : %d/%d     //////  ",tools->current_tool_index,tools->last_tool_index);
+            vxdi_multistep_tool_t *current_tool = vxdi_app_editor__get_current(tools);
             
             if (
                 app.current_mouse_position.x>left_menu_sz_width && 
@@ -522,7 +525,7 @@ int main(int argc, char *argv[]) {
     }
     // De-Initialization
     //--------------------------------------------------------------------------------------
-    multistep_tool__deinit(&voxel_tool);
+    vxdi_tools_map__deinit(tools);
 
     UnloadShader(depthShader); // Unload shader
     UnloadShader(shadowShader); // Unload shader

@@ -7,12 +7,11 @@
 #include "vxdi-app-multistep-tool.h"
 
 
-#define INITIAL_CAPACITY 10
 #define TOOL_MAP_MAX_CAPACITY 100
 
 typedef struct vxdi_tools_map_s {
-    vxdi_multistep_tool_t tools[TOOL_MAP_MAX_CAPACITY];
-    char * tools_names[TOOL_MAP_MAX_CAPACITY];
+    vxdi_multistep_tool_t* tools[TOOL_MAP_MAX_CAPACITY];
+    char* tools_names[TOOL_MAP_MAX_CAPACITY];
     int current_tool_index;
     int last_tool_index;
 } vxdi_tools_map_t;
@@ -25,6 +24,10 @@ int vxdi_tools_map__init(vxdi_tools_map_t* map) {
     // Initialize members
     map->current_tool_index = -1;
     map->last_tool_index = -1;
+    for(int i=0;i<TOOL_MAP_MAX_CAPACITY;i++){
+        map->tools[i]=NULL;
+        map->tools_names[i]=NULL;
+    }
 
     return 0;
 }
@@ -53,7 +56,7 @@ int vxdi_tools_map__add(vxdi_tools_map_t* map, const char* tool_name, vxdi_multi
     }
 
     printf("// Add tool %s to arrays at %d\n",tool_name,map->last_tool_index+1);
-    map->tools[map->last_tool_index+1] = *tool;
+    map->tools[map->last_tool_index+1] = tool;
     map->tools_names[map->last_tool_index+1] = strdup(tool_name);
     if (map->tools_names[map->last_tool_index+1] == NULL) {
         // Memory allocation failed
@@ -78,12 +81,25 @@ int vxdi_tools_map__remove(vxdi_tools_map_t* map, const char* tool_name) {
     return 0; // Success
 }
 
-int vxdi_tools_map__select(vxdi_tools_map_t* map, int tool_index) {
-    if (map == NULL || tool_index < 0 || tool_index >= map->last_tool_index) {
+int vxdi_tools_map__next(vxdi_tools_map_t* map) {
+    if (map == NULL) {
         return -1; // Invalid arguments
     }
 
-    map->current_tool_index = tool_index;
+    map->current_tool_index = (map->current_tool_index+1) % (  map->last_tool_index + 1);
+    return 0; // Success
+}
+int vxdi_tools_map__select(vxdi_tools_map_t* map, int new_value) {
+    if (map == NULL) {
+        return -1; // Invalid arguments
+    }
+    if(new_value<0){
+        map->current_tool_index = 0;
+    }else {
+        map->current_tool_index = (new_value) % (map->last_tool_index + 1);
+
+    }
+
     return 0; // Success
 }
 
@@ -92,7 +108,20 @@ vxdi_multistep_tool_t * vxdi_app_editor__get_current(vxdi_tools_map_t* map) {
         return NULL; // Invalid arguments or no current tool selected
     }
 
-    return &map->tools[map->current_tool_index];
+    return map->tools[map->current_tool_index];
+}
+int vxdi_tools_map__deinit(vxdi_tools_map_t* map) {
+    if (map == NULL || map->last_tool_index == 0 || map->current_tool_index < 0 || map->current_tool_index >= map->last_tool_index) {
+        return -1; // Invalid arguments or no current tool selected
+    }
+
+    for(int i=0;i<=map->last_tool_index;i++){
+        multistep_tool__deinit(map->tools[i]);
+    }
+    for(int i=0;i<=map->last_tool_index;i++){
+        free(map->tools_names[i]);
+    }
+    return 0;
 }
 
 int vxdi_tools_map_test() {

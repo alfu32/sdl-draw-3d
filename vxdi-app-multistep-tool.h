@@ -27,6 +27,9 @@ int multistep_tool__init(vxdi_multistep_tool_t* tool,int num_inputs,vxdi_multist
     if(tool->inputs == 0) {
         return -1;
     }
+    for(int i=0;i<num_inputs;i++){
+        tool->inputs[i]=(Vector3){0,0,0};
+    }
     tool->on_point_aquired=on_point_aquired_fn;
     tool->on_finish=on_finish_fn;
     return 0;
@@ -51,8 +54,9 @@ int multistep_tool__receive_moving_point(vxdi_multistep_tool_t* tool,vxdi_app_ed
     printf("tool receiving moving point \n");
     
     // tool->inputs[tool->last_input_index] = point;
-    printf("tool clearing construction_hints\n");
+    printf("tool clearing construction_hints START\n");
     scene__clear(&(app->construction_hints));
+    printf("tool clearing construction_hints DONE\n");
 
     printf("checking last input index and number of inputs last_input_index:%lu == num_inputs:%lu\n",tool->last_input_index,tool->num_inputs);
     if((tool->last_input_index) < tool->num_inputs) {
