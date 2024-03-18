@@ -35,7 +35,7 @@ void InitShadowMapping(Vector3 light_direction,Vector3 light_target) {
     shadowCamera.projection = CAMERA_FREE | CAMERA_ORTHOGRAPHIC;                   // Camera mode type
     // Setup orthogonal projection matrix for the shadow map (light's perspective)
     float left = -50.0f, right = 50.0f, bottom = -50.0f, top = 50.0f;
-    float nearVal = 1.0f, farVal = 250.0f;
+    float nearVal = 1.0f, farVal = 100.0f;
     lightProjection = MatrixOrtho(left, right, bottom, top, nearVal, farVal);
 
     lightView = MatrixLookAt(shadowCamera.position, shadowCamera.target, (Vector3){ 0.0f, 1.0f, 0.0f });

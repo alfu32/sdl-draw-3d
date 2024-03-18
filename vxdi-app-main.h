@@ -378,8 +378,9 @@ int main(int argc, char *argv[]) {
                         SetShaderValueMatrix(depthShader, GetShaderLocation(depthShader, "model"), modelMatrix);
 
                         // Assuming 'app.camera' is your camera object used for rendering the scene
-                        Matrix projectionMatrix = MatrixPerspective(app.camera.fovy, 1.0, 1.0, 200.0);
-                        // SetShaderValueMatrix(shadowShader, GetShaderLocation(shadowShader, "projection"), projectionMatrix);
+                        float aspectRatio = (float)GetScreenWidth() / (float)GetScreenHeight();
+                        Matrix projectionMatrix = MatrixPerspective(app.camera.fovy * DEG2RAD, aspectRatio, 0.01f, 1000.0f);
+                        SetShaderValueMatrix(shadowShader, GetShaderLocation(shadowShader, "projection"), projectionMatrix);
                         SetShaderValueMatrix(shadowShader, GetShaderLocation(shadowShader, "model"), modelMatrix);
                         SetShaderValueMatrix(shadowShader, GetShaderLocation(shadowShader, "lightSpaceMatrix"), lightSpaceMatrix);
                         SetShaderValueMatrix(shadowShader, GetShaderLocation(shadowShader, "view"), GetCameraMatrix(app.camera));
