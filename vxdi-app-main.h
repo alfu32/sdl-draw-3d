@@ -245,7 +245,8 @@ int main(int argc, char *argv[]) {
     char app_title[255];
     snprintf(app_title,255,"V0XD31-%s",app.scene.temp_filename);
     InitWindow(app.screenWidth, app.screenHeight, app_title);
-    /// InitShadowMapping();
+
+    InitShadowMapping(app.light_direction,(Vector3){0,0,0});
 
     mut char status[1024];
     // mut int ctrl,left_ctrl;
@@ -276,11 +277,6 @@ int main(int argc, char *argv[]) {
             // UpdateCamera(&app.camera, app.current_camera_mode );// Update app.camera position/movement
             vxdi_app_editor__update(&app);
 
-
-            // 1. First pass, from light's perspective
-            // BeginShadowPass();
-            //     RenderModelWithShadows(&app.scene, app.camera, depthShader); // Use depth shader
-            // EndShadowPass();
 
             app.mouse_model=scene__get_intersections(app.camera,&app.scene);
             if(app.mouse_model.collision_hit == COLLISION_HIT_PLANE || app.mouse_model.collision_hit == COLLISION_HIT_NONE) {
@@ -345,149 +341,187 @@ int main(int argc, char *argv[]) {
                 app.text_buffer,
                 app.scene.temp_filename
             );
-
-            BeginDrawing();
-            ClearBackground(GRAY);
-
-            BeginMode3D(app.camera);
-
-                /// BeginScenePass();
-                ///    RenderModelWithShadows(&app.scene, app.camera, shadowShader); // Use shadow shader
-                ///    // Render the scene
-                ///    // 
-                /// EndScenePass();
-                scene__render(&app.scene,0);
-                scene__render(&app.guides,1);
-                scene__render(&app.construction_hints,2);
-
-                DrawCubeWires(app.model_point_int, 1.0f, 1.0f, 1.0f, Fade(RED, 0.5f));
-                DrawCubeWires(app.model_point_next_int, 1.0f, 1.0f, 1.0f, Fade(GREEN, 0.5f));
-                
-                DrawGridAt((Vector3){-0.5f,-0.5f,-0.5f},33, 1.0f); // Draw a grid
-
-                if(app.current_mouse_position.x>left_menu_sz_width && app.current_mouse_position.x<(app.screenWidth-70)){
-                    DrawLine3D(
-                        app.mouse_model.point,
-                        Vector3Add(
-                            app.mouse_model.point,
-                            (Vector3){
-                                app.mouse_model.normal.x*1,
-                                app.mouse_model.normal.y*1,
-                                app.mouse_model.normal.z*1,
-                            }
-                        ),
-                        (Color){
-                                app.mouse_model.normal.x*255,
-                                app.mouse_model.normal.y*255,
-                                app.mouse_model.normal.z*255,
-                                255,
-                        });
-                    DrawSphereEx(app.mouse_model.point,.1f,3,5,BLUE);
-                }
-            EndMode3D();
-
-            for(int i=0;i<=tools->last_tool_index;i++) {
-                char itext[20]; // Make sure the array is large enough to hold the converted string
-                sprintf(itext, "%d", i);
-                Vector2 a={app.screenWidth-70,32+64*i};
-                Rectangle r={a.x,a.y,62,62};
-                DrawRectangleRec(r,(Color){200,200,200,255});
-                DrawText(itext,r.x+50,r.y+16,14,BLACK);
-                DrawText(tools->tools_names[i],r.x+6,r.y+46,14,BLACK);
-                if(i==tools->current_tool_index){
-                    DrawRectangle(a.x,a.y,6,62,(Color){96,160,160,255});
-                }
-                if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && RectangleContains(r,app.current_mouse_position)) {
-                    vxdi_tools_map__select(tools,i);
-                }
-            }
-
-
-
-            if(IsKeyPressed(KEY_SPACE)){
-                scene__clear(&app.guides);
-                scene__clear(&app.construction_hints);
-                tools->current_tool_index=0;
-                for(int i=0;i<=tools->last_tool_index;i++){
-                    multistep_tool__reset(tools->tools[i]);
-                }
-            }
-            /// DrawFPS(10, 10);
-
-
-            // draw and check tools buttons
-            if(IsKeyReleased(KEY_T) ){
-                vxdi_tools_map__next( tools );
-                printf("\rsetting current tool : %d/%d     //////  ",tools->current_tool_index,tools->last_tool_index);
-            }
             
-            if (
-                app.current_mouse_position.x>left_menu_sz_width && 
-                app.current_mouse_position.x<(app.screenWidth-70)
-            ){
+            SetShaderValueTexture(shadowShader, GetShaderLocation(shadowShader, "shadowMap"), shadowMap.texture);
+            Vector3 lightColorValue = {1.0f, 1.0f, 1.0f}; // Example white light
+            SetShaderValue(shadowShader, GetShaderLocation(shadowShader, "lightColor"), &lightColorValue, SHADER_UNIFORM_VEC3);
+
+            Vector3 objectColorValue = {1.0f, 1.0f, 1.0f}; // Example object color (also white here)
+            SetShaderValue(shadowShader, GetShaderLocation(shadowShader, "objectColor"), &objectColorValue, SHADER_UNIFORM_VEC3);
+            
+            BeginDrawing();{
+                ClearBackground(GRAY);
+
+                // Setup model matrix
+                Matrix modelMatrix = MatrixTranslate(app.camera.position.x, app.camera.position.y, app.camera.position.z);
+                // 1. First pass, from light's perspective
+                Matrix lightSpaceMatrix = MatrixMultiply(lightView, lightProjection);
+
+                BeginTextureMode(shadowMap);{
+                    BeginMode3D(shadowCamera);{
+                        ClearBackground((Color){127,127,127,127}); // Important to clear to BLACK (0, 0, 0, 255)
+                        BeginShaderMode(depthShader);;{
+                            SetShaderValueMatrix(depthShader, GetShaderLocation(depthShader, "lightSpaceMatrix"), lightSpaceMatrix);
+                        //    DrawCube((Vector3){0,-1.05,0},400,0.05f,400,WHITE);
+                            scene__render(&app.scene,0);
+                        }EndShaderMode();
+                    }EndMode3D();
+                }EndTextureMode();
+
+                BeginMode3D(app.camera);{
+                
+
+                    scene__render(&app.scene,0);
+                    
+                    BeginShaderMode(shadowShader);{
+                        // Setup model matrix
+                        SetShaderValueMatrix(depthShader, GetShaderLocation(depthShader, "model"), modelMatrix);
+
+                        // Assuming 'app.camera' is your camera object used for rendering the scene
+                        Matrix projectionMatrix = MatrixPerspective(app.camera.fovy, 1.0, 1.0, 200.0);
+                        // SetShaderValueMatrix(shadowShader, GetShaderLocation(shadowShader, "projection"), projectionMatrix);
+                        SetShaderValueMatrix(shadowShader, GetShaderLocation(shadowShader, "model"), modelMatrix);
+                        SetShaderValueMatrix(shadowShader, GetShaderLocation(shadowShader, "lightSpaceMatrix"), lightSpaceMatrix);
+                        SetShaderValueMatrix(shadowShader, GetShaderLocation(shadowShader, "view"), GetCameraMatrix(app.camera));
+
+                        DrawCube((Vector3){0,-1.05,0},400,0.05f,400,WHITE);
+                        scene__render(&app.scene,0);
+                    }EndShaderMode();
+
+
+                    DrawCube(shadowCamera.position,2,2,2,YELLOW);
+                    DrawLine3D(shadowCamera.position,shadowCamera.target,GREEN);
+                    scene__render(&app.guides,1);
+                    scene__render(&app.construction_hints,2);
+
+                    DrawCubeWires(app.model_point_int, 1.0f, 1.0f, 1.0f, Fade(RED, 0.5f));
+                    DrawCubeWires(app.model_point_next_int, 1.0f, 1.0f, 1.0f, Fade(GREEN, 0.5f));
+                    
+                    DrawGridAt((Vector3){-0.5f,-0.5f,-0.5f},33, 1.0f); // Draw a grid
+
+                    if(app.current_mouse_position.x>left_menu_sz_width && app.current_mouse_position.x<(app.screenWidth-70)){
+                        DrawLine3D(
+                            app.mouse_model.point,
+                            Vector3Add(
+                                app.mouse_model.point,
+                                (Vector3){
+                                    app.mouse_model.normal.x*1,
+                                    app.mouse_model.normal.y*1,
+                                    app.mouse_model.normal.z*1,
+                                }
+                            ),
+                            (Color){
+                                    app.mouse_model.normal.x*255,
+                                    app.mouse_model.normal.y*255,
+                                    app.mouse_model.normal.z*255,
+                                    255,
+                            });
+                        DrawSphereEx(app.mouse_model.point,.1f,3,5,BLUE);
+                    }
+                }EndMode3D();
+                DrawTextureRec(shadowMap.texture, (Rectangle){ 0, 0, shadowMap.texture.width, -shadowMap.texture.height }, (Vector2){ 0, 0 }, WHITE);
+                for(int i=0;i<=tools->last_tool_index;i++) {
+                    char itext[20]; // Make sure the array is large enough to hold the converted string
+                    sprintf(itext, "%d", i);
+                    Vector2 a={app.screenWidth-70,32+64*i};
+                    Rectangle r={a.x,a.y,62,62};
+                    DrawRectangleRec(r,(Color){200,200,200,255});
+                    DrawText(itext,r.x+50,r.y+16,14,BLACK);
+                    DrawText(tools->tools_names[i],r.x+6,r.y+46,14,BLACK);
+                    if(i==tools->current_tool_index){
+                        DrawRectangle(a.x,a.y,6,62,(Color){96,160,160,255});
+                    }
+                    if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && RectangleContains(r,app.current_mouse_position)) {
+                        vxdi_tools_map__select(tools,i);
+                    }
+                }
+
+
+
+                if(IsKeyPressed(KEY_SPACE)){
+                    scene__clear(&app.guides);
+                    scene__clear(&app.construction_hints);
+                    tools->current_tool_index=0;
+                    for(int i=0;i<=tools->last_tool_index;i++){
+                        multistep_tool__reset(tools->tools[i]);
+                    }
+                }
+                /// DrawFPS(10, 10);
+
+
+                // draw and check tools buttons
+                if(IsKeyReleased(KEY_T) ){
+                    vxdi_tools_map__next( tools );
+                    printf("\rsetting current tool : %d/%d     //////  ",tools->current_tool_index,tools->last_tool_index);
+                }
+                
                 if (
-                    (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) || IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)) &&
-                    !IsKeyDown(KEY_LEFT_CONTROL) &&
-                    !IsKeyDown(KEY_LEFT_SHIFT) 
-                ) {
-                    multistep_tool__receive_point(vxdi_app_editor__get_current(tools),&app,&app.scene,app.model_point_next_int);
-                } else if(app.is_mouse_position_changed ){
-                    multistep_tool__receive_moving_point(vxdi_app_editor__get_current(tools),&app,app.model_point_next_int);
+                    app.current_mouse_position.x>left_menu_sz_width && 
+                    app.current_mouse_position.x<(app.screenWidth-70)
+                ){
+                    if (
+                        (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) || IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)) &&
+                        !IsKeyDown(KEY_LEFT_CONTROL) &&
+                        !IsKeyDown(KEY_LEFT_SHIFT) 
+                    ) {
+                        multistep_tool__receive_point(vxdi_app_editor__get_current(tools),&app,&app.scene,app.model_point_next_int);
+                    } else if(app.is_mouse_position_changed ){
+                        multistep_tool__receive_moving_point(vxdi_app_editor__get_current(tools),&app,app.model_point_next_int);
+                    }
                 }
-            }
-            // draw color pallete
-            for(int ci=0;ci<24;ci+=1){
-                for(int lum=-1;lum<2;lum+=1){
-                    Vector2 pos = {20+color_btn_size+color_btn_spacing+lum*(color_btn_size+color_btn_spacing), (color_btn_size+color_btn_spacing)+ci*color_btn_size};
-                    Color cl=ColorBrightness(app.colors[ci*15],((float)lum*5.0f)/10.0f);
+                // draw color pallete
+                for(int ci=0;ci<24;ci+=1){
+                    for(int lum=-1;lum<2;lum+=1){
+                        Vector2 pos = {20+color_btn_size+color_btn_spacing+lum*(color_btn_size+color_btn_spacing), (color_btn_size+color_btn_spacing)+ci*color_btn_size};
+                        Color cl=ColorBrightness(app.colors[ci*15],((float)lum*5.0f)/10.0f);
+                        if (ext_SquareButton(pos,(color_btn_size-color_btn_spacing)/2,cl) && app.current_mouse_position.x<left_menu_sz_width) {
+                            app.current_color = cl;
+                            app.current_color_index = ci*10 + lum+1;
+                            // goto start;
+                        }
+                        if(app.current_color_index == ci*10 + lum+1){
+                            DrawRectangleLines(pos.x-color_btn_size/2,pos.y-color_btn_size/2,color_btn_size,color_btn_size,WHITE);
+                        }
+                    }
+                }
+                for(int lum=0;lum<24;lum+=1){
+                    Vector2 pos = {20+3*(color_btn_size+color_btn_spacing), (color_btn_size+color_btn_spacing)+lum*color_btn_size};
+                    Color cl=ColorFromHSV(0,0,(lum+1)/24.0f);
                     if (ext_SquareButton(pos,(color_btn_size-color_btn_spacing)/2,cl) && app.current_mouse_position.x<left_menu_sz_width) {
                         app.current_color = cl;
-                        app.current_color_index = ci*10 + lum+1;
+                        app.current_color_index = 0xFFFF+lum;
                         // goto start;
                     }
-                    if(app.current_color_index == ci*10 + lum+1){
+                    if(app.current_color_index == 0xFFFF+lum){
                         DrawRectangleLines(pos.x-color_btn_size/2,pos.y-color_btn_size/2,color_btn_size,color_btn_size,WHITE);
                     }
                 }
-            }
-            for(int lum=0;lum<24;lum+=1){
-                Vector2 pos = {20+3*(color_btn_size+color_btn_spacing), (color_btn_size+color_btn_spacing)+lum*color_btn_size};
-                Color cl=ColorFromHSV(0,0,(lum+1)/24.0f);
-                if (ext_SquareButton(pos,(color_btn_size-color_btn_spacing)/2,cl) && app.current_mouse_position.x<left_menu_sz_width) {
-                    app.current_color = cl;
-                    app.current_color_index = 0xFFFF+lum;
-                    // goto start;
+                // draw color pallete
+                for(int ci=0;ci<24;ci+=1){
+                        Vector2 pos = {20+4*(color_btn_size+color_btn_spacing), (color_btn_size+color_btn_spacing)+ci*color_btn_size};
+                        Color cl=Fade(app.colors[ci*15],0.2f);
+                        if (ext_SquareButton(pos,(color_btn_size-color_btn_spacing)/2,cl) && app.current_mouse_position.x<left_menu_sz_width) {
+                            app.current_color = cl;
+                            app.current_color_index = ci*0x100;
+                            // goto start;
+                        }
+                        if(app.current_color_index == ci*0x100){
+                            DrawRectangleLines(pos.x-color_btn_size/2,pos.y-color_btn_size/2,color_btn_size,color_btn_size,WHITE);
+                        }
                 }
-                if(app.current_color_index == 0xFFFF+lum){
-                    DrawRectangleLines(pos.x-color_btn_size/2,pos.y-color_btn_size/2,color_btn_size,color_btn_size,WHITE);
-                }
-            }
-            // draw color pallete
-            for(int ci=0;ci<24;ci+=1){
-                    Vector2 pos = {20+4*(color_btn_size+color_btn_spacing), (color_btn_size+color_btn_spacing)+ci*color_btn_size};
-                    Color cl=Fade(app.colors[ci*15],0.2f);
-                    if (ext_SquareButton(pos,(color_btn_size-color_btn_spacing)/2,cl) && app.current_mouse_position.x<left_menu_sz_width) {
-                        app.current_color = cl;
-                        app.current_color_index = ci*0x100;
-                        // goto start;
-                    }
-                    if(app.current_color_index == ci*0x100){
-                        DrawRectangleLines(pos.x-color_btn_size/2,pos.y-color_btn_size/2,color_btn_size,color_btn_size,WHITE);
-                    }
-            }
 
-            DrawRectangle( 0, 0, app.screenWidth, 20, Fade(DARKGRAY, 0.95f));
-            DrawText(status     , 20, 3, 14, (Color){20,20,20,255});
-            char coords[12];
-            snprintf(coords,12,"%3d %3d %3d",(int)app.model_point_int.x,(int)app.model_point_int.y,(int)app.model_point_int.z);
-            DrawText(coords, app.current_mouse_position.x+10, app.current_mouse_position.y-10, 20, BLACK);
+                DrawRectangle( 0, 0, app.screenWidth, 20, Fade(DARKGRAY, 0.95f));
+                DrawText(status     , 20, 3, 14, (Color){20,20,20,255});
+                char coords[12];
+                snprintf(coords,12,"%3d %3d %3d",(int)app.model_point_int.x,(int)app.model_point_int.y,(int)app.model_point_int.z);
+                DrawText(coords, app.current_mouse_position.x+10, app.current_mouse_position.y-10, 20, BLACK);
 
 
-            // Draw the shadow map texture
-            DrawTextureRec(shadowMap.texture, (Rectangle){ 0, 0, shadowMap.texture.width, shadowMap.texture.height }, (Vector2){ 100, 1000 }, WHITE);
-            /// DrawFPS(10, 10);
+                // Draw the shadow map texture
+                DrawTextureRec(shadowMap.texture, (Rectangle){ 0, 0, shadowMap.texture.width, shadowMap.texture.height }, (Vector2){ 100, 1000 }, WHITE);
+                /// DrawFPS(10, 10);
 
-            EndDrawing();
+            }EndDrawing();
 
         }/** endif mouse cursor changed */
 

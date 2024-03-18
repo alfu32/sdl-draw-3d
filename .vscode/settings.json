@@ -15,6 +15,9 @@
 		"vxdi-app-scene.h": "c",
 		"vxdi-app-voxel.h": "c",
 		"vxdi-app-multistep-tool.h": "c",
-		"sstream": "c"
+		"sstream": "c",
+		"gl.h": "c",
+		"raylib.h": "c",
+		"raymath.h": "c"
 	}
 }
