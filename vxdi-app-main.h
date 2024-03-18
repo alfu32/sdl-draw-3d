@@ -37,135 +37,135 @@ control_keys_t get_control_keys(){
 }
 
 
-void generic_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void generic_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("aquire: generic tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
 }
-void generic_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void generic_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("finish generic tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
 }
 
-void help_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void help_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("aquire: help tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
 }
-void help_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void help_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("finish help tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
 }
 
-void select_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void select_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("aquire: select tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
 }
-void select_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void select_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("finish select tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
 }
 
-void voxel_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void voxel_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("aquire: voxel tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-    scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
+    //scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
 }
-void voxel_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void voxel_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("finish voxel tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
 
     if(IsKeyDown(KEY_LEFT_ALT)){
         printf("finish voxel tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-        scene__remove_voxel(&(app->scene),point,app->current_color,app->current_color_index);
+        scene__remove_voxel(&(app->scene),app->model_point_int,app->current_color,app->current_color_index);
     } else {
         printf("finish voxel tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-        scene__add_voxel(&(app->scene),point,app->current_color,app->current_color_index);
+        scene__add_voxel(&(app->scene),app->model_point_next_int,app->current_color,app->current_color_index);
     }
 }
 
-void shell_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void shell_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("aquire: shell tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->last_input_index==0){
         scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
     } else if(tool->last_input_index==1){
-        rasterizeHollowCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+        rasterizeHollowCube(tool->inputs[0],point,&(app->construction_hints),app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
-void shell_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void shell_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("finish shell tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     
     if(IsKeyDown(KEY_LEFT_ALT)){
         printf("shell tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-        rasterizeHollowCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__remove_voxel);
+        rasterizeHollowCube(tool->inputs[0],point,&(app->scene),app->current_color,app->current_color_index,scene__remove_voxel);
     } else {
         printf("shell tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-        rasterizeHollowCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+        rasterizeHollowCube(tool->inputs[0],point,&(app->scene),app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
-void line_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void line_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("aquire: line tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->last_input_index==0){
         scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
     } else if(tool->last_input_index==1){
-        rasterizeLine(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+        rasterizeLine(tool->inputs[0],point,&(app->construction_hints),app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
-void line_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void line_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("finish line tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(IsKeyDown(KEY_LEFT_ALT)){
         printf("line tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-        rasterizeLine(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__remove_voxel);
+        rasterizeLine(tool->inputs[0],point,&(app->scene),app->current_color,app->current_color_index,scene__remove_voxel);
     } else {
         printf("line tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-        rasterizeLine(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+        rasterizeLine(tool->inputs[0],point,&(app->scene),app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
-void structure_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void structure_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("aquire: structure tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->last_input_index==0){
         scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
     } else if(tool->last_input_index==1){
-        rasterizeStructureCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+        rasterizeStructureCube(tool->inputs[0],point,&(app->construction_hints),app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
-void structure_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void structure_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("finish structure tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(IsKeyDown(KEY_LEFT_ALT)){
         printf("plate tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-        rasterizeStructureCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__remove_voxel);
+        rasterizeStructureCube(tool->inputs[0],tool->inputs[1],&(app->scene),app->current_color,app->current_color_index,scene__remove_voxel);
     } else {
         printf("plate tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-        rasterizeStructureCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+        rasterizeStructureCube(tool->inputs[0],tool->inputs[1],&(app->scene),app->current_color,app->current_color_index,scene__add_voxel);
     }
-    rasterizeStructureCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,IsKeyPressed(KEY_LEFT_ALT)?scene__remove_voxel:scene__add_voxel);
+    rasterizeStructureCube(tool->inputs[0],point,&(app->scene),app->current_color,app->current_color_index,IsKeyPressed(KEY_LEFT_ALT)?scene__remove_voxel:scene__add_voxel);
 }
-void plate_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void plate_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("aquire: plate tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->last_input_index==0){
-        rasterizePlane(point,point,point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+        rasterizePlane(point,point,point,&(app->construction_hints),app->current_color,app->current_color_index,scene__add_voxel);
     } else if(tool->last_input_index==1){
-        rasterizePlane(tool->inputs[0],point,point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+        rasterizePlane(tool->inputs[0],point,point,&(app->construction_hints),app->current_color,app->current_color_index,scene__add_voxel);
     } else if(tool->last_input_index==2){
-        rasterizePlane(tool->inputs[0],tool->inputs[1],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+        rasterizePlane(tool->inputs[0],tool->inputs[1],point,&(app->construction_hints),app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
-void plate_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void plate_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("finish plate tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(IsKeyDown(KEY_LEFT_ALT)){
         printf("plate tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-        rasterizePlane(tool->inputs[0],tool->inputs[1],tool->inputs[2],scene,app->current_color,app->current_color_index,scene__remove_voxel);
+        rasterizePlane(tool->inputs[0],tool->inputs[1],tool->inputs[2],&(app->scene),app->current_color,app->current_color_index,scene__remove_voxel);
     } else {
         printf("plate tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-        rasterizePlane(tool->inputs[0],tool->inputs[1],tool->inputs[2],scene,app->current_color,app->current_color_index,scene__add_voxel);
+        rasterizePlane(tool->inputs[0],tool->inputs[1],tool->inputs[2],&(app->scene),app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
-void volume_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void volume_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("aquire: volume tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->last_input_index==0){
         scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
     } else if(tool->last_input_index==1){
-        rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+        rasterizeSolidCube(tool->inputs[0],point,&(app->construction_hints),app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
-void volume_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,scene_t* scene,Vector3 point){
+void volume_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("finish volume tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(IsKeyDown(KEY_LEFT_ALT)){
         printf("volume tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-        rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__remove_voxel);
+        rasterizeSolidCube(tool->inputs[0],tool->inputs[1],&(app->scene),app->current_color,app->current_color_index,scene__remove_voxel);
     } else {
         printf("volume tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
-        rasterizeSolidCube(tool->inputs[0],point,scene,app->current_color,app->current_color_index,scene__add_voxel);
+        rasterizeSolidCube(tool->inputs[0],tool->inputs[1],&(app->scene),app->current_color,app->current_color_index,scene__add_voxel);
     }
     
 }
@@ -178,65 +178,73 @@ int main(int argc, char *argv[]) {
     // Initialization
     //--------------------------------------------------------------------------------------
 
-    vxdi_tools_map_t tools;
-    vxdi_tools_map__init(&tools);
-
-    vxdi_multistep_tool_t help_tool;
-    multistep_tool__init(&help_tool,1,help_tool_acquire,help_tool_finish);
-    vxdi_tools_map__add(&tools,"help",&help_tool);
+    vxdi_tools_map_t *tools=(vxdi_tools_map_t*)malloc(sizeof(vxdi_tools_map_t));
+    vxdi_tools_map__init(tools);
 
     vxdi_multistep_tool_t select_objects_tool;
     multistep_tool__init(&select_objects_tool,1,select_tool_acquire,select_tool_finish);
-    vxdi_tools_map__add(&tools,"select_objects",&select_objects_tool);
+    vxdi_tools_map__add(tools,"select_objects",&select_objects_tool);
 
     vxdi_multistep_tool_t voxel_tool;
     multistep_tool__init(&voxel_tool,1,voxel_tool_acquire,voxel_tool_finish);
-    vxdi_tools_map__add(&tools,"voxel",&voxel_tool);
+    vxdi_tools_map__add(tools,"voxel",&voxel_tool);
 
     vxdi_multistep_tool_t shell_tool;
     multistep_tool__init(&shell_tool,2,shell_tool_acquire,shell_tool_finish);
-    vxdi_tools_map__add(&tools,"shell",&shell_tool);
+    vxdi_tools_map__add(tools,"shell",&shell_tool);
 
     vxdi_multistep_tool_t structure_tool;
     multistep_tool__init(&structure_tool,2,structure_tool_acquire,structure_tool_finish);
-    vxdi_tools_map__add(&tools,"structure",&structure_tool);
+    vxdi_tools_map__add(tools,"structure",&structure_tool);
 
     vxdi_multistep_tool_t line_tool;
     multistep_tool__init(&line_tool,2,line_tool_acquire,line_tool_finish);
-    vxdi_tools_map__add(&tools,"line",&line_tool);
+    vxdi_tools_map__add(tools,"line",&line_tool);
 
     vxdi_multistep_tool_t volume_tool;
     multistep_tool__init(&volume_tool,2,volume_tool_acquire,volume_tool_finish);
-    vxdi_tools_map__add(&tools,"volume",&volume_tool);
+    vxdi_tools_map__add(tools,"volume",&volume_tool);
 
+    printf(" -- plate_tool\n");
     vxdi_multistep_tool_t plate_tool;
     multistep_tool__init(&plate_tool,3,plate_tool_acquire,plate_tool_finish);
-    vxdi_tools_map__add(&tools,"plate",&plate_tool);
+    vxdi_tools_map__add(tools,"plane",&plate_tool);
+
+    vxdi_multistep_tool_t help_tool;
+    multistep_tool__init(&help_tool,1,help_tool_acquire,help_tool_finish);
+    vxdi_tools_map__add(tools,"help",&help_tool);
 
     // Set window to be resizable
 
 
     // DisableCursor();                    // Limit cursor to relative movement inside the window
 
+    printf(" -- SetExitKey\n");
     SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
     SetExitKey(KEY_Q); // Use KEY_NULL or 0 to disable
-
-    
-    vxdi_app_editor_t app=vxdi_app_editor__setup((Vector3){ 0.7f, -1.0f, 0.3f });
+    printf(" -- vxdi_app_editor__setup\n");
+    vxdi_app_editor_t app;
+    vxdi_app_editor__setup(&app,(Vector3){ 0.7f, -1.0f, 0.3f });
     if(argc >1) {
         app.scene.temp_filename = argv[1];
     }
 
+    printf(" -- scene__load_model\n");
     scene__load_model(&app.scene,app.scene.temp_filename);
 
     // SetCameraMode(app.camera, CAMERA_FREE); // Let Raylib handle app.camera controls
     
+
+    printf(" -- setup orbiter \n");
     orbit_t orbiter=orbit_init(&app.camera);
 
 
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
-    InitWindow(app.screenWidth, app.screenHeight, "Raylib Voxel Scene");
+    printf(" -- Init Window \n");
+    char app_title[255];
+    snprintf(app_title,255,"V0XD31-%s",app.scene.temp_filename);
+    InitWindow(app.screenWidth, app.screenHeight, app_title);
     /// InitShadowMapping();
 
     mut char status[1024];
@@ -248,6 +256,7 @@ int main(int argc, char *argv[]) {
     app.is_mouse_position_changed = 1;
     unsigned char dbg_move_number=0;
 
+    printf(" -- Starting Loop %d \n",window_should_close);
     for (;!(WindowShouldClose() || window_should_close);) {
         if(IsKeyPressed(KEY_ESCAPE)){
             // do nothing
@@ -327,7 +336,15 @@ int main(int argc, char *argv[]) {
             
             orbit__control_camera(&orbiter);
 
-            snprintf(status,1024,"num voxels: %d construction mode : %s, text_buffer %100s  voxels %d/%d temp file %s",app.scene.numVoxels,tools.tools_names[tools.current_tool_index],app.text_buffer,app.scene.numVoxels,MAX_VOXELS,app.scene.temp_filename);
+            snprintf(status,1024,"voxels: %d/10000 mode : %s[%d/%d] %lu, text %s file %s",
+                app.scene.numVoxels,
+                tools->tools_names[tools->current_tool_index],
+                tools->current_tool_index,
+                tools->last_tool_index,
+                tools->tools[tools->current_tool_index]->last_input_index,
+                app.text_buffer,
+                app.scene.temp_filename
+            );
 
             BeginDrawing();
             ClearBackground(GRAY);
@@ -346,7 +363,7 @@ int main(int argc, char *argv[]) {
                 DrawCubeWires(app.model_point_int, 1.0f, 1.0f, 1.0f, Fade(RED, 0.5f));
                 DrawCubeWires(app.model_point_next_int, 1.0f, 1.0f, 1.0f, Fade(GREEN, 0.5f));
                 
-                DrawGridAt((Vector3){0.0f,-0.5f,0.0f},33, 1.0f); // Draw a grid
+                DrawGridAt((Vector3){-0.5f,-0.5f,-0.5f},33, 1.0f); // Draw a grid
 
                 if(app.current_mouse_position.x>left_menu_sz_width && app.current_mouse_position.x<(app.screenWidth-70)){
                     DrawLine3D(
@@ -369,16 +386,19 @@ int main(int argc, char *argv[]) {
                 }
             EndMode3D();
 
-            for(int i=0;i<=tools.last_tool_index;i++) {
+            for(int i=0;i<=tools->last_tool_index;i++) {
+                char itext[20]; // Make sure the array is large enough to hold the converted string
+                sprintf(itext, "%d", i);
                 Vector2 a={app.screenWidth-70,32+64*i};
                 Rectangle r={a.x,a.y,62,62};
-                DrawRectangleRec(r,(Color){225,225,225,255});
-                DrawText(tools.tools_names[i],r.x+4,r.y+46,14,GRAY);
-                if(i==tools.current_tool_index){
+                DrawRectangleRec(r,(Color){200,200,200,255});
+                DrawText(itext,r.x+50,r.y+16,14,BLACK);
+                DrawText(tools->tools_names[i],r.x+6,r.y+46,14,BLACK);
+                if(i==tools->current_tool_index){
                     DrawRectangle(a.x,a.y,6,62,(Color){96,160,160,255});
                 }
                 if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && RectangleContains(r,app.current_mouse_position)) {
-                    tools.current_tool_index=i;
+                    vxdi_tools_map__select(tools,i);
                 }
             }
 
@@ -387,21 +407,19 @@ int main(int argc, char *argv[]) {
             if(IsKeyPressed(KEY_SPACE)){
                 scene__clear(&app.guides);
                 scene__clear(&app.construction_hints);
-                tools.current_tool_index=0;
-                multistep_tool__reset(&voxel_tool);
-                multistep_tool__reset(&structure_tool);
-                multistep_tool__reset(&shell_tool);
-                multistep_tool__reset(&volume_tool);
-                multistep_tool__reset(&plate_tool);
+                tools->current_tool_index=0;
+                for(int i=0;i<=tools->last_tool_index;i++){
+                    multistep_tool__reset(tools->tools[i]);
+                }
             }
             /// DrawFPS(10, 10);
 
 
             // draw and check tools buttons
-            if(IsKeyReleased(KEY_T)&&tools.last_tool_index>=2){
-                tools.current_tool_index=(tools.current_tool_index+1)%tools.last_tool_index;
+            if(IsKeyReleased(KEY_T) ){
+                vxdi_tools_map__next( tools );
+                printf("\rsetting current tool : %d/%d     //////  ",tools->current_tool_index,tools->last_tool_index);
             }
-            vxdi_multistep_tool_t *current_tool = vxdi_app_editor__get_current(&tools);
             
             if (
                 app.current_mouse_position.x>left_menu_sz_width && 
@@ -412,9 +430,9 @@ int main(int argc, char *argv[]) {
                     !IsKeyDown(KEY_LEFT_CONTROL) &&
                     !IsKeyDown(KEY_LEFT_SHIFT) 
                 ) {
-                    multistep_tool__receive_point(current_tool,&app,&app.scene,app.model_point_next_int);
+                    multistep_tool__receive_point(vxdi_app_editor__get_current(tools),&app,&app.scene,app.model_point_next_int);
                 } else if(app.is_mouse_position_changed ){
-                    multistep_tool__receive_moving_point(current_tool,&app,app.model_point_next_int);
+                    multistep_tool__receive_moving_point(vxdi_app_editor__get_current(tools),&app,app.model_point_next_int);
                 }
             }
             // draw color pallete
@@ -459,7 +477,7 @@ int main(int argc, char *argv[]) {
             }
 
             DrawRectangle( 0, 0, app.screenWidth, 20, Fade(DARKGRAY, 0.95f));
-            DrawText(status     , app.screenWidth-300, 5, 10, (Color){20,20,20,255});
+            DrawText(status     , 20, 3, 14, (Color){20,20,20,255});
             char coords[12];
             snprintf(coords,12,"%3d %3d %3d",(int)app.model_point_int.x,(int)app.model_point_int.y,(int)app.model_point_int.z);
             DrawText(coords, app.current_mouse_position.x+10, app.current_mouse_position.y-10, 20, BLACK);
@@ -498,7 +516,7 @@ int main(int argc, char *argv[]) {
     }
     // De-Initialization
     //--------------------------------------------------------------------------------------
-    multistep_tool__deinit(&voxel_tool);
+    vxdi_tools_map__deinit(tools);
 
     UnloadShader(depthShader); // Unload shader
     UnloadShader(shadowShader); // Unload shader

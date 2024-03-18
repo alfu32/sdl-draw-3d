@@ -55,11 +55,6 @@ typedef int (*voxel_operator_fn)(scene_t*,Vector3,Color,unsigned int);
 
 // Function to rasterize a rectangular plate given three points
 Vector3* rasterizeSolidCube(Vector3 a, Vector3 b, scene_t* scene, Color material, unsigned int material_id,voxel_operator_fn operator) {
-    // Calculate the differences between points
-    float dx = b.x - a.x;
-    float dy = b.y - a.y;
-    float dz = b.z - a.z;
-    Vector3 ab=(Vector3){dx,dy,dz};
 
     int cx0=min(a.x,b.x);
     int cy0=min(a.y,b.y);
@@ -78,18 +73,7 @@ Vector3* rasterizeSolidCube(Vector3 a, Vector3 b, scene_t* scene, Color material
     return 0;
 }
 Vector3* rasterizeHollowCube(Vector3 a, Vector3 b, scene_t* scene, Color material, unsigned int material_id,voxel_operator_fn operator) {
-    // Calculate the differences between points
-    float dx = b.x - a.x;
-    float dy = b.y - a.y;
-    float dz = b.z - a.z;
-    Vector3 ab=(Vector3){dx,dy,dz};
 
-    int cx0=min(a.x,b.x);
-    int cy0=min(a.y,b.y);
-    int cz0=min(a.z,b.z);
-    int cx1=max(a.x,b.x);
-    int cy1=max(a.y,b.y);
-    int cz1=max(a.z,b.z);
     rasterizeSolidCube((Vector3){a.x,a.y,a.z},(Vector3){a.x,b.y,b.z},scene,material,material_id,operator);
     rasterizeSolidCube((Vector3){b.x,a.y,a.z},(Vector3){b.x,b.y,b.z},scene,material,material_id,operator);
 
@@ -103,17 +87,7 @@ Vector3* rasterizeHollowCube(Vector3 a, Vector3 b, scene_t* scene, Color materia
 }
 Vector3* rasterizeStructureCube(Vector3 a, Vector3 b, scene_t* scene, Color material, unsigned int material_id,voxel_operator_fn operator) {
     // Calculate the differences between points
-    float dx = b.x - a.x;
-    float dy = b.y - a.y;
-    float dz = b.z - a.z;
-    Vector3 ab=(Vector3){dx,dy,dz};
 
-    int cx0=min(a.x,b.x);
-    int cy0=min(a.y,b.y);
-    int cz0=min(a.z,b.z);
-    int cx1=max(a.x,b.x);
-    int cy1=max(a.y,b.y);
-    int cz1=max(a.z,b.z);
     rasterizeSolidCube(a, (Vector3){b.x, a.y, a.z},scene,material,material_id,operator);
     rasterizeSolidCube(a, (Vector3){a.x, b.y, a.z},scene,material,material_id,operator);
     rasterizeSolidCube((Vector3){b.x, a.y, a.z}, (Vector3){b.x, b.y, a.z},scene,material,material_id,operator);
@@ -140,7 +114,6 @@ int add_to_map(scene_t * scene,Vector3 p,Color c,unsigned int id){
 // Function to rasterize a rectangular plate given three points
 Vector3* rasterizePlane(Vector3 a, Vector3 b,  Vector3 c, scene_t* scene, Color material, unsigned int material_id,voxel_operator_fn operator) {
     // Calculate the differences between points
-    Vector3 ab=(Vector3){b.x-a.x,b.y-a.y,b.z-a.z};
     Vector3 ac=(Vector3){c.x-a.x,c.y-a.y,c.z-a.z};
     scene_t *s1 = (scene_t*)malloc(sizeof(scene_t));
     scene__init(s1,false,(Vector3){1,1,1});

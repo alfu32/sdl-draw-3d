@@ -45,7 +45,6 @@ int vsxdi_shadowmap_test_main(void) {
     /// SetCameraMode(camera, CAMERA_FREE); // Set a free camera mode
 
     scene_t scene; // Load your model
-    Vector3 modelPosition = { 0.0f, 0.0f, 0.0f };   // Set model position
 
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------

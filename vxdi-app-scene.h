@@ -60,21 +60,25 @@ void scene__save_model(scene_t* scene, const char* filename) {
 }
 
 void scene__load_model(scene_t* scene, const char* filename) {
+    printf("scene__load_model :: opening file %s for reading.\n",filename);
     FILE* file = fopen(filename, "rb"); // Open the file for reading in binary mode
     if (file == NULL) {
-        // printf("Error opening file for reading.\n");
+        printf("Error opening file %s for reading.\n",filename);
         return;
     }
 
     // Read the number of voxels first
-    size_t numread = fread(&scene->numVoxels, sizeof(int), 1, file);
+    printf("scene__load_model :: Error reading file %s the number of voxels first\n",filename);
+    long long numread = fread(&scene->numVoxels, sizeof(int), 1, file);
     if(numread == -1){
-        printf("error reading file %s\n",filename);
+        printf("Error reading file %s the number of voxels first\n",filename);
     }
 
+    long long int num_voxels = sizeof(scene->voxels) / sizeof(voxel_t);
+    printf("scene__load_model :: %s Ensure we do not exceed the array limit. (numread:%lld,numVoxels:%d,counted:%lld,)\n",filename,numread,scene->numVoxels , num_voxels);
     // Ensure we do not exceed the array limit
     if (scene->numVoxels > sizeof(scene->voxels) / sizeof(voxel_t)) {
-        printf("File contains more voxels than can be loaded.\n");
+        printf("File %s contains  more voxels than can be loaded. (%lld)\n",filename,numread);
         fclose(file);
         return;
     }
@@ -82,7 +86,7 @@ void scene__load_model(scene_t* scene, const char* filename) {
     // Read the voxels array
     numread = fread(scene->voxels, sizeof(voxel_t), scene->numVoxels, file);
     if(numread == -1){
-        printf("error reading file %s\n",filename);
+        printf("error reading file %s to the voxels array\n",filename);
     }
 
     fclose(file); // Close the file
@@ -189,8 +193,6 @@ collision_t scene__ray_intersect_point(scene_t *scene,Ray* ray) {
 
 collision_t scene__get_intersections(Camera camera,scene_t* scene){
     Ray ray = { 0 };                    // Picking line ray
-    int screenWidth = GetScreenWidth();
-    int screenHeight = GetScreenHeight();
 
     ray = GetMouseRay(GetMousePosition(), camera);
     collision_t result=scene__ray_intersect_point(scene,&ray);
