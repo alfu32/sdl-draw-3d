@@ -208,12 +208,7 @@ int main(int argc, char *argv[]) {
     printf(" -- plate_tool\n");
     vxdi_multistep_tool_t plate_tool;
     multistep_tool__init(&plate_tool,3,plate_tool_acquire,plate_tool_finish);
-    vxdi_tools_map__add(tools,"plate",&plate_tool);
-
-    printf(" -- plane_tool\n");
-    vxdi_multistep_tool_t plane_tool;
-    multistep_tool__init(&plane_tool,3,plate_tool_acquire,plate_tool_finish);
-    vxdi_tools_map__add(tools,"plane",&plane_tool);
+    vxdi_tools_map__add(tools,"plane",&plate_tool);
 
     vxdi_multistep_tool_t help_tool;
     multistep_tool__init(&help_tool,1,help_tool_acquire,help_tool_finish);
@@ -413,11 +408,9 @@ int main(int argc, char *argv[]) {
                 scene__clear(&app.guides);
                 scene__clear(&app.construction_hints);
                 tools->current_tool_index=0;
-                multistep_tool__reset(&voxel_tool);
-                multistep_tool__reset(&structure_tool);
-                multistep_tool__reset(&shell_tool);
-                multistep_tool__reset(&volume_tool);
-                multistep_tool__reset(&plate_tool);
+                for(int i=0;i<=tools->last_tool_index;i++){
+                    multistep_tool__reset(tools->tools[i]);
+                }
             }
             /// DrawFPS(10, 10);
 
@@ -427,8 +420,6 @@ int main(int argc, char *argv[]) {
                 vxdi_tools_map__next( tools );
                 printf("\rsetting current tool : %d/%d     //////  ",tools->current_tool_index,tools->last_tool_index);
             }
-            printf("\rgetting current tool : %d/%d     //////  ",tools->current_tool_index,tools->last_tool_index);
-            vxdi_multistep_tool_t *current_tool = vxdi_app_editor__get_current(tools);
             
             if (
                 app.current_mouse_position.x>left_menu_sz_width && 
@@ -439,9 +430,9 @@ int main(int argc, char *argv[]) {
                     !IsKeyDown(KEY_LEFT_CONTROL) &&
                     !IsKeyDown(KEY_LEFT_SHIFT) 
                 ) {
-                    multistep_tool__receive_point(current_tool,&app,&app.scene,app.model_point_next_int);
+                    multistep_tool__receive_point(vxdi_app_editor__get_current(tools),&app,&app.scene,app.model_point_next_int);
                 } else if(app.is_mouse_position_changed ){
-                    multistep_tool__receive_moving_point(current_tool,&app,app.model_point_next_int);
+                    multistep_tool__receive_moving_point(vxdi_app_editor__get_current(tools),&app,app.model_point_next_int);
                 }
             }
             // draw color pallete

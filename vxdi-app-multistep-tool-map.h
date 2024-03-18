@@ -104,14 +104,14 @@ int vxdi_tools_map__select(vxdi_tools_map_t* map, int new_value) {
 }
 
 vxdi_multistep_tool_t * vxdi_app_editor__get_current(vxdi_tools_map_t* map) {
-    if (map == NULL || map->last_tool_index == 0 || map->current_tool_index < 0 || map->current_tool_index >= map->last_tool_index) {
+    if (map == NULL ) {
         return NULL; // Invalid arguments or no current tool selected
     }
 
     return map->tools[map->current_tool_index];
 }
 int vxdi_tools_map__deinit(vxdi_tools_map_t* map) {
-    if (map == NULL || map->last_tool_index == 0 || map->current_tool_index < 0 || map->current_tool_index >= map->last_tool_index) {
+    if (map == NULL ) {
         return -1; // Invalid arguments or no current tool selected
     }
 
