@@ -46,13 +46,13 @@ int vxdi_tools_map__add(vxdi_tools_map_t* map, const char* tool_name, vxdi_multi
         }
     }
 
-    printf("// Resize arrays %s if necessary\n",tool_name);
+    printf("// check array size for %s if necessary\n",tool_name);
     if ((map->last_tool_index + 1) >= TOOL_MAP_MAX_CAPACITY) {
-            printf("// ERR-3  Memory allocation for tool failed %s\n",tool_name);
+            printf("// ERR-3  Cannot register %s at %d, not enough space in memory\n",tool_name,map->last_tool_index);
             return -3;
     }
 
-    printf("// Add tool %s to arrays\n",tool_name);
+    printf("// Add tool %s to arrays at %d\n",tool_name,map->last_tool_index+1);
     map->tools[map->last_tool_index+1] = *tool;
     map->tools_names[map->last_tool_index+1] = strdup(tool_name);
     if (map->tools_names[map->last_tool_index+1] == NULL) {
@@ -65,8 +65,8 @@ int vxdi_tools_map__add(vxdi_tools_map_t* map, const char* tool_name, vxdi_multi
         map->current_tool_index=map->last_tool_index;
     }
 
-    printf("// Update last_tool_index %s\n",tool_name);
-    printf("// Finished adding %s : capacity:%d,last_tool_index:%d,index:%d,last:%d\n",tool_name,TOOL_MAP_MAX_CAPACITY,map->last_tool_index,map->current_tool_index,map->last_tool_index);
+    printf("// Updated last_tool_index %s\n",tool_name);
+    printf("// Finished adding %s : map{capacity:%d,last_tool_index:%d,index:%d,last:%d}\n",tool_name,TOOL_MAP_MAX_CAPACITY,map->last_tool_index,map->current_tool_index,map->last_tool_index);
 
     return 0; // Success
 }

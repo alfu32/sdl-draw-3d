@@ -181,10 +181,6 @@ int main(int argc, char *argv[]) {
     vxdi_tools_map_t tools={0};
     vxdi_tools_map__init(&tools);
 
-    vxdi_multistep_tool_t help_tool;
-    multistep_tool__init(&help_tool,1,help_tool_acquire,help_tool_finish);
-    vxdi_tools_map__add(&tools,"help",&help_tool);
-
     vxdi_multistep_tool_t select_objects_tool;
     multistep_tool__init(&select_objects_tool,1,select_tool_acquire,select_tool_finish);
     vxdi_tools_map__add(&tools,"select_objects",&select_objects_tool);
@@ -218,6 +214,10 @@ int main(int argc, char *argv[]) {
     vxdi_multistep_tool_t plane_tool;
     multistep_tool__init(&plane_tool,3,plate_tool_acquire,plate_tool_finish);
     vxdi_tools_map__add(&tools,"plane",&plane_tool);
+
+    vxdi_multistep_tool_t help_tool;
+    multistep_tool__init(&help_tool,1,help_tool_acquire,help_tool_finish);
+    vxdi_tools_map__add(&tools,"help",&help_tool);
 
     // Set window to be resizable
 
@@ -424,6 +424,7 @@ int main(int argc, char *argv[]) {
             if(IsKeyReleased(KEY_T)&&tools.last_tool_index>=2){
                 tools.current_tool_index=(tools.current_tool_index+1)%tools.last_tool_index;
             }
+            printf("\rgetting current tool : %d/%d     //////  ",tools.current_tool_index,tools.last_tool_index);
             vxdi_multistep_tool_t *current_tool = vxdi_app_editor__get_current(&tools);
             
             if (
