@@ -18,6 +18,7 @@
 		"sstream": "c",
 		"gl.h": "c",
 		"raylib.h": "c",
-		"raymath.h": "c"
+		"raymath.h": "c",
+		"rlights.h": "c"
 	}
 }
