@@ -139,7 +139,7 @@ int scene__render_voxel(scene_t *scene,voxel_t* voxel) {
     return 0; 
 }
 
-int scene__render(scene_t *scene,int type) {
+int scene__render(scene_t *scene,unsigned int type) {
     // Simplified: Iterate through all voxels and render them
     for (int i = 0; i < scene->numVoxels; i++) {
         //Vector3 pos = Vector3Add(scene->voxels[i].position,(Vector3){-0.5f, -0.5f, -0.5f});
@@ -158,6 +158,15 @@ int scene__render(scene_t *scene,int type) {
                 // DrawCube(vox.position, 1.0f, 1.0f, 1.0f, Fade(vox.material_color,0.5f));
                 voxel__draw_shaded(&vox,&(scene->light_direction));
                 DrawCubeWires(vox.position, 1.0f, 1.0f, 1.0f, DARKGRAY);
+                break;
+            case 3:
+                DrawCube(vox.position, 1.0f, 1.0f, 1.0f, GRAY);
+                break;
+            case 4:
+                DrawCube(vox.position, 1.0f, 1.0f, 1.0f, vox.material_color);
+                break;
+            default:
+                DrawCube(vox.position, 1.0f, 1.0f, 1.0f, GetColor(type));
                 break;
         }
     }
