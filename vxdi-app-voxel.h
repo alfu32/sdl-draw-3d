@@ -94,8 +94,8 @@ void voxel__draw_shaded(voxel_t *voxel, vxdi_light_t *light) {
         DrawTriangleStrip3D(&vertices[4], 4, ColorBrightness(voxel->material_color,n.x*light->light_strength));//voxel->material_color);// Back face
         DrawTriangleStrip3D(&vertices[8], 4, ColorBrightness(voxel->material_color,-n.y*light->shadow_strength));// Top face
         DrawTriangleStrip3D(&vertices[12], 4, ColorBrightness(voxel->material_color,n.y*light->light_strength));// Bottom face
-        DrawTriangleStrip3D(&vertices[16], 4, ColorBrightness(voxel->material_color,-n.z*light->shadow_strength));// Left face
-        DrawTriangleStrip3D(&vertices[20], 4, ColorBrightness(voxel->material_color,n.z*light->light_strength));// Right face
+        DrawTriangleStrip3D(&vertices[16], 4, ColorBrightness(voxel->material_color,n.z*light->light_strength));// Left face
+        DrawTriangleStrip3D(&vertices[20], 4, ColorBrightness(voxel->material_color,-n.z*light->shadow_strength));// Right face
     // Draw each face of the cube with shaded colors
 }
 // Function to draw a plane with specified vertices and color

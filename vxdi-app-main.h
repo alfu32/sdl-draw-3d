@@ -12,9 +12,17 @@
 #include "vxdi-rl-ui-extras.h"
 #include "vxdi-app-editor.h"
 #include "vxdi-app-voxel-rasterizers.h"
-#include "vxdi-lib-shadowmapping.h"
 #include "vxdi-app-multistep-tool.h"
 #include "vxdi-app-multistep-tool-map.h"
+#include "vxdi-lib-shadowmapping.h"
+
+#define SHADOWMAP_RESOLUTION 512
+
+#if defined(PLATFORM_DESKTOP)
+#define GLSL_VERSION            330
+#else   // PLATFORM_ANDROID, PLATFORM_WEB
+#define GLSL_VERSION            120
+#endif
 
 
 
@@ -38,28 +46,28 @@ control_keys_t get_control_keys(){
 
 
 void generic_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
-    printf("aquire: generic tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    /// printf("aquire: generic tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
 }
 void generic_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("finish generic tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
 }
 
 void help_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
-    printf("aquire: help tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    /// printf("aquire: help tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
 }
 void help_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("finish help tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
 }
 
 void select_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
-    printf("aquire: select tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    /// printf("aquire: select tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
 }
 void select_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("finish select tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
 }
 
 void voxel_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
-    printf("aquire: voxel tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    /// printf("aquire: voxel tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     //scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
 }
 void voxel_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
@@ -75,7 +83,7 @@ void voxel_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector
 }
 
 void shell_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
-    printf("aquire: shell tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    /// printf("aquire: shell tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->last_input_index==0){
         scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
     } else if(tool->last_input_index==1){
@@ -94,7 +102,7 @@ void shell_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector
     }
 }
 void line_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
-    printf("aquire: line tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    /// printf("aquire: line tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->last_input_index==0){
         scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
     } else if(tool->last_input_index==1){
@@ -112,7 +120,7 @@ void line_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3
     }
 }
 void structure_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
-    printf("aquire: structure tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    /// printf("aquire: structure tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->last_input_index==0){
         scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
     } else if(tool->last_input_index==1){
@@ -131,7 +139,7 @@ void structure_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Ve
     rasterizeStructureCube(tool->inputs[0],point,&(app->scene),app->current_color,app->current_color_index,IsKeyPressed(KEY_LEFT_ALT)?scene__remove_voxel:scene__add_voxel);
 }
 void plate_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
-    printf("aquire: plate tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    /// printf("aquire: plate tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->last_input_index==0){
         rasterizePlane(point,point,point,&(app->construction_hints),app->current_color,app->current_color_index,scene__add_voxel);
     } else if(tool->last_input_index==1){
@@ -151,7 +159,7 @@ void plate_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector
     }
 }
 void volume_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
-    printf("aquire: volume tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    /// printf("aquire: volume tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->last_input_index==0){
         scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
     } else if(tool->last_input_index==1){
@@ -170,6 +178,8 @@ void volume_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vecto
     
 }
 
+RenderTexture2D LoadShadowmapRenderTexture(int width, int height);
+void UnloadShadowmapRenderTexture(RenderTexture2D target);
 
 int main(int argc, char *argv[]) {
     int color_btn_size=25;
@@ -244,9 +254,45 @@ int main(int argc, char *argv[]) {
     printf(" -- Init Window \n");
     char app_title[255];
     snprintf(app_title,255,"V0XD31-%s",app.scene.temp_filename);
+
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
+    // Shadows are a HUGE topic, and this example shows an extremely simple implementation of the shadowmapping algorithm,
+    // which is the industry standard for shadows. This algorithm can be extended in a ridiculous number of ways to improve
+    // realism and also adapt it for different scenes. This is pretty much the simplest possible implementation.
     InitWindow(app.screenWidth, app.screenHeight, app_title);
 
-    InitShadowMapping(app.light_direction,(Vector3){0,0,0});
+    
+    
+    Shader localShadowShader = LoadShader(TextFormat("assets/shaders/depth.vs", GLSL_VERSION),
+                                     TextFormat("assets/shaders/depth.fs", GLSL_VERSION));
+    localShadowShader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(localShadowShader, "viewPos");
+    Vector3 lightDir = Vector3Normalize(app.light_direction);
+    Color lightColor = WHITE;
+    Vector4 lightColorNormalized = ColorNormalize(lightColor);
+    int lightDirLoc = GetShaderLocation(localShadowShader, "lightDir");
+    int lightColLoc = GetShaderLocation(localShadowShader, "lightColor");
+    SetShaderValue(localShadowShader, lightDirLoc, &lightDir, SHADER_UNIFORM_VEC3);
+    SetShaderValue(localShadowShader, lightColLoc, &lightColorNormalized, SHADER_UNIFORM_VEC4);
+    int ambientLoc = GetShaderLocation(localShadowShader, "ambient");
+    float ambient[4] = {0.1f, 0.1f, 0.1f, 1.0f};
+    SetShaderValue(localShadowShader, ambientLoc, ambient, SHADER_UNIFORM_VEC4);
+    int lightVPLoc = GetShaderLocation(localShadowShader, "lightVP");
+    int shadowMapLoc = GetShaderLocation(localShadowShader, "shadowMap");
+    int shadowMapResolution = SHADOWMAP_RESOLUTION;
+    SetShaderValue(localShadowShader, GetShaderLocation(localShadowShader, "shadowMapResolution"), &shadowMapResolution, SHADER_UNIFORM_INT);
+
+
+    RenderTexture2D shadowMapTexture = LoadShadowmapRenderTexture(SHADOWMAP_RESOLUTION, SHADOWMAP_RESOLUTION);
+    // For the shadowmapping algorithm, we will be rendering everything from the light's point of view
+    Camera3D lightCam = (Camera3D){ 0 };
+    lightCam.position = Vector3Scale(lightDir, -25.0f);
+    lightCam.target = Vector3Zero();
+    // Use an orthographic projection for directional lights
+    lightCam.projection = CAMERA_ORTHOGRAPHIC;
+    lightCam.up = (Vector3){ 0.0f, 1.0f, 0.0f };
+    lightCam.fovy = 40.0f;
+
+
 
     mut char status[1024];
     // mut int ctrl,left_ctrl;
@@ -259,6 +305,7 @@ int main(int argc, char *argv[]) {
 
     printf(" -- Starting Loop %d \n",window_should_close);
     for (;!(WindowShouldClose() || window_should_close);) {
+        float dt = GetFrameTime();
         if(IsKeyPressed(KEY_ESCAPE)){
             // do nothing
         }
@@ -330,6 +377,9 @@ int main(int argc, char *argv[]) {
             if (IsKeyPressed('Z')) orbiter=orbit_init(&app.camera);
             
             
+            Vector3 cameraPos = app.camera.position;
+            SetShaderValue(localShadowShader, localShadowShader.locs[SHADER_LOC_VECTOR_VIEW], &cameraPos, SHADER_UNIFORM_VEC3);
+
             orbit__control_camera(&orbiter);
 
             snprintf(status,1024,"voxels: %d/10000 mode : %s[%d/%d] %lu, text %s file %s",
@@ -342,56 +392,66 @@ int main(int argc, char *argv[]) {
                 app.scene.temp_filename
             );
             
-            SetShaderValueTexture(shadowShader, GetShaderLocation(shadowShader, "shadowMap"), shadowMap.texture);
-            Vector3 lightColorValue = {1.0f, 1.0f, 1.0f}; // Example white light
-            SetShaderValue(shadowShader, GetShaderLocation(shadowShader, "lightColor"), &lightColorValue, SHADER_UNIFORM_VEC3);
-
-            Vector3 objectColorValue = {1.0f, 1.0f, 1.0f}; // Example object color (also white here)
-            SetShaderValue(shadowShader, GetShaderLocation(shadowShader, "objectColor"), &objectColorValue, SHADER_UNIFORM_VEC3);
             
-            BeginDrawing();{
-                ClearBackground(GRAY);
-
-                // Setup model matrix
-                Matrix modelMatrix = MatrixTranslate(app.camera.position.x, app.camera.position.y, app.camera.position.z);
-                // 1. First pass, from light's perspective
-                Matrix lightSpaceMatrix = MatrixMultiply(lightView, lightProjection);
-
-                BeginTextureMode(shadowMap);{
-                    BeginMode3D(shadowCamera);{
-                        ClearBackground((Color){127,127,127,127}); // Important to clear to BLACK (0, 0, 0, 255)
-                        BeginShaderMode(depthShader);;{
-                            SetShaderValueMatrix(depthShader, GetShaderLocation(depthShader, "lightSpaceMatrix"), lightSpaceMatrix);
-                        //    DrawCube((Vector3){0,-1.05,0},400,0.05f,400,WHITE);
-                            scene__render(&app.scene,0);
-                        }EndShaderMode();
+            const float cameraSpeed = 0.025f;
+            if (IsKeyDown(KEY_LEFT))
+            {
+                if (lightDir.x < 0.6f)
+                    lightDir.x += cameraSpeed * 60.0f * dt;
+            }
+            if (IsKeyDown(KEY_RIGHT))
+            {
+                if (lightDir.x > -0.6f)
+                    lightDir.x -= cameraSpeed * 60.0f * dt;
+            }
+            if (IsKeyDown(KEY_UP))
+            {
+                if (lightDir.z < 0.6f)
+                    lightDir.z += cameraSpeed * 60.0f * dt;
+            }
+            if (IsKeyDown(KEY_DOWN))
+            {
+                if (lightDir.z > -0.6f)
+                    lightDir.z -= cameraSpeed * 60.0f * dt;
+            }
+            lightDir = Vector3Normalize(lightDir);
+            lightCam.position = Vector3Scale(lightDir, -25.0f);
+            SetShaderValue(localShadowShader, lightDirLoc, &lightDir, SHADER_UNIFORM_VEC3);
+            
+            BeginDrawing();
+                // Record the light matrices for future use!
+                Matrix lightView;
+                Matrix lightProj;
+                BeginTextureMode(shadowMapTexture);{
+                    ClearBackground(RAYWHITE);
+                    BeginMode3D(lightCam);{
+                        lightView = rlGetMatrixModelview();
+                        lightProj = rlGetMatrixProjection();
+                        // lightView = GetCameraMatrix(lightCam);
+                        // lightProj = GetCameraMatrix(app.camera);
+                        scene__render(&app.scene,0);
+                        scene__render(&app.guides,1);
+                        scene__render(&app.construction_hints,2);
                     }EndMode3D();
                 }EndTextureMode();
 
-                BeginMode3D(app.camera);{
+                Matrix lightViewProj = MatrixMultiply(lightView, lightProj);
+
+                ClearBackground(GRAY);
+
+                SetShaderValueMatrix(localShadowShader, lightVPLoc, lightViewProj);
+
+                rlEnableShader(localShadowShader.id);
+                int slot = 10; // Can be anything 0 to 15, but 0 will probably be taken up
+                rlActiveTextureSlot(10);
+                rlEnableTexture(shadowMapTexture.depth.id);
+                rlSetUniform(shadowMapLoc, &slot, SHADER_UNIFORM_INT, 1);
+
+                BeginMode3D(app.camera);
                 
-
                     scene__render(&app.scene,0);
-                    
-                    BeginShaderMode(shadowShader);{
-                        // Setup model matrix
-                        SetShaderValueMatrix(depthShader, GetShaderLocation(depthShader, "model"), modelMatrix);
-
-                        // Assuming 'app.camera' is your camera object used for rendering the scene
-                        float aspectRatio = (float)GetScreenWidth() / (float)GetScreenHeight();
-                        Matrix projectionMatrix = MatrixPerspective(app.camera.fovy * DEG2RAD, aspectRatio, 0.01f, 1000.0f);
-                        SetShaderValueMatrix(shadowShader, GetShaderLocation(shadowShader, "projection"), projectionMatrix);
-                        SetShaderValueMatrix(shadowShader, GetShaderLocation(shadowShader, "model"), modelMatrix);
-                        SetShaderValueMatrix(shadowShader, GetShaderLocation(shadowShader, "lightSpaceMatrix"), lightSpaceMatrix);
-                        SetShaderValueMatrix(shadowShader, GetShaderLocation(shadowShader, "view"), GetCameraMatrix(app.camera));
-
-                        DrawCube((Vector3){0,-1.05,0},400,0.05f,400,WHITE);
-                        scene__render(&app.scene,0);
-                    }EndShaderMode();
-
-
-                    DrawCube(shadowCamera.position,2,2,2,YELLOW);
-                    DrawLine3D(shadowCamera.position,shadowCamera.target,GREEN);
+                    DrawCube(lightCam.position,2,2,2,YELLOW);
+                    DrawLine3D(lightCam.position,lightCam.target,GREEN);
                     scene__render(&app.guides,1);
                     scene__render(&app.construction_hints,2);
 
@@ -419,8 +479,10 @@ int main(int argc, char *argv[]) {
                             });
                         DrawSphereEx(app.mouse_model.point,.1f,3,5,BLUE);
                     }
-                }EndMode3D();
-                DrawTextureRec(shadowMap.texture, (Rectangle){ 0, 0, shadowMap.texture.width, -shadowMap.texture.height }, (Vector2){ 0, 0 }, WHITE);
+                EndMode3D();
+
+                DrawTextureRec(shadowMapTexture.depth, (Rectangle){ 0, 0, shadowMapTexture.depth.width, -shadowMapTexture.depth.height }, (Vector2){ 0, 0 }, WHITE);
+                
                 for(int i=0;i<=tools->last_tool_index;i++) {
                     char itext[20]; // Make sure the array is large enough to hold the converted string
                     sprintf(itext, "%d", i);
@@ -519,10 +581,10 @@ int main(int argc, char *argv[]) {
 
 
                 // Draw the shadow map texture
-                DrawTextureRec(shadowMap.texture, (Rectangle){ 0, 0, shadowMap.texture.width, shadowMap.texture.height }, (Vector2){ 100, 1000 }, WHITE);
+                DrawTextureRec(shadowMapTexture.depth, (Rectangle){ 0, 0, shadowMapTexture.depth.width, shadowMapTexture.depth.height }, (Vector2){ 100, 1000 }, WHITE);
                 /// DrawFPS(10, 10);
 
-            }EndDrawing();
+            EndDrawing();
 
         }/** endif mouse cursor changed */
 
@@ -553,11 +615,57 @@ int main(int argc, char *argv[]) {
     //--------------------------------------------------------------------------------------
     vxdi_tools_map__deinit(tools);
 
-    UnloadShader(depthShader); // Unload shader
-    UnloadShader(shadowShader); // Unload shader
-    UnloadRenderTexture(shadowMap); // Unload render texture
+    
+    UnloadShader(localShadowShader);
+    UnloadShadowmapRenderTexture(shadowMapTexture);
     CloseWindow();
     /// scene__save_model(&app.scene,"temp.vxde");
 
     return 0;
+}
+
+
+
+RenderTexture2D LoadShadowmapRenderTexture(int width, int height)
+{
+    RenderTexture2D target = { 0 };
+
+    target.id = rlLoadFramebuffer(width,height); // Load an empty framebuffer
+    target.texture.width = width;
+    target.texture.height = height;
+
+    if (target.id > 0)
+    {
+        rlEnableFramebuffer(target.id);
+
+        // Create depth texture
+        // We don't need a color texture for the shadowmap
+        target.depth.id = rlLoadTextureDepth(width, height, false);
+        target.depth.width = width;
+        target.depth.height = height;
+        target.depth.format = 19;       //DEPTH_COMPONENT_24BIT?
+        target.depth.mipmaps = 1;
+
+        // Attach depth texture to FBO
+        rlFramebufferAttach(target.id, target.depth.id, RL_ATTACHMENT_DEPTH, RL_ATTACHMENT_TEXTURE2D, 0);
+
+        // Check if fbo is complete with attachments (valid)
+        if (rlFramebufferComplete(target.id)) TRACELOG(LOG_INFO, "FBO: [ID %i] Framebuffer object created successfully", target.id);
+
+        rlDisableFramebuffer();
+    }
+    else TRACELOG(LOG_WARNING, "FBO: Framebuffer object can not be created");
+
+    return target;
+}
+
+// Unload shadowmap render texture from GPU memory (VRAM)
+void UnloadShadowmapRenderTexture(RenderTexture2D target)
+{
+    if (target.id > 0)
+    {
+        // NOTE: Depth texture/renderbuffer is automatically
+        // queried and deleted before deleting framebuffer
+        rlUnloadFramebuffer(target.id);
+    }
 }
