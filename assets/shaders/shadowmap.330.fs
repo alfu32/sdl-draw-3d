@@ -35,7 +35,7 @@ void main()
     vec3 lightDot = vec3(0.0);
     vec3 normal = normalize(fragNormal);
     vec3 viewD = normalize(viewPos - fragPosition);
-    vec3 specular = vec3(0.0);
+    vec3 specular = vec3(0.1,0.1,0.1);
 
     vec3 l = -lightDir;
 

@@ -29,7 +29,7 @@ typedef struct vxdi_app_editor_s {
     int screenWidth;
     int screenHeight;
 
-    Vector3 light_direction;
+    Camera3D light;
     Camera3D camera;
     scene_t scene;
 
@@ -67,6 +67,14 @@ int vxdi_app_editor__setup(vxdi_app_editor_t *app,Vector3 light_direction){
     scene_t layer0;
     scene__init(&layer0,1,light_direction);
     layer0.temp_filename="temp.vxdi";
+
+    Camera3D lightCam = (Camera3D){ 0 };
+    lightCam.position = Vector3Scale(light_direction, -25.0f);
+    lightCam.target = Vector3Zero();
+    // Use an orthographic projection for directional lights
+    lightCam.projection = CAMERA_ORTHOGRAPHIC;
+    lightCam.up = (Vector3){ 0.0f, 1.0f, 0.0f };
+    lightCam.fovy = 40.0f;
 
     LOG_D0("vxdi_app_editor_t");
         app->current_color=GREEN;
@@ -111,7 +119,7 @@ int vxdi_app_editor__setup(vxdi_app_editor_t *app,Vector3 light_direction){
 
         app->screenWidth = 1280;
         app->screenHeight = 800;
-        app->light_direction = (Vector3){x:light_direction.x,y:light_direction.y,z:light_direction.z};
+        app->light = lightCam;
 
         app->scene=layer0;
         app->guides=guides;

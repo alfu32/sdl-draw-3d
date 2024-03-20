@@ -23,7 +23,10 @@ typedef struct {
     char is_persisted;
     vxdi_light_t light_direction;
     const char* temp_filename;
+    BoundingBox bounds;
 } scene_t;
+void bounding_box__reset(BoundingBox *target);
+void bounding_box__add(BoundingBox *target, BoundingBox *source);
 
 void scene__init(scene_t *scene,char is_persisted,Vector3 light_direction) {
     scene->is_persisted=is_persisted;
@@ -41,6 +44,7 @@ void scene__init(scene_t *scene,char is_persisted,Vector3 light_direction) {
     scene->colormap[6]=MAGENTA;
     scene->colormap[7]=PINK;
     scene->colormap[8]=BLACK;
+    bounding_box__reset(&scene->bounds);
 }
 
 void scene__save_model(scene_t* scene, const char* filename) {
@@ -88,6 +92,11 @@ void scene__load_model(scene_t* scene, const char* filename) {
     if(numread == -1){
         printf("error reading file %s to the voxels array\n",filename);
     }
+    bounding_box__reset(&scene->bounds);
+    for (int i = 0; i < scene->numVoxels; i++) {
+        BoundingBox bb=voxel__get_bounding_box(&scene->voxels[i]);
+        bounding_box__add(&scene->bounds,&bb);
+    }
 
     fclose(file); // Close the file
 }
@@ -102,6 +111,31 @@ int scene__voxel_at_position(const scene_t *scene, Vector3 position) {
     return 0; // Voxel does not exist
 }
 
+void bounding_box__reset(BoundingBox *target) {
+    target->min.x = FLT_MAX;
+    target->min.y = FLT_MAX;
+    target->min.z = FLT_MAX;
+    target->max.x = FLT_MIN;
+    target->max.y = FLT_MIN;
+    target->max.z = FLT_MIN;
+}
+void bounding_box__add(BoundingBox *target, BoundingBox *source) {
+    // Expand the target bounding box to include the source bounding box
+    target->min.x = fminf(target->min.x, source->min.x);
+    target->min.y = fminf(target->min.y, source->min.y);
+    target->min.z = fminf(target->min.z, source->min.z);
+    
+    target->max.x = fmaxf(target->max.x, source->max.x);
+    target->max.y = fmaxf(target->max.y, source->max.y);
+    target->max.z = fmaxf(target->max.z, source->max.z);
+}
+
+void DrawBoundingBox(BoundingBox box,Color color) {
+    Vector3 center=Vector3Scale(Vector3Add(box.max,box.min),0.5f);//(Vector3){(box.max.x+box.min.x)/2,(box.max.y+box.min.y)/2,(box.max.z+box.min.z)/2};
+    Vector3 sz=Vector3Subtract(box.max,box.min);
+    DrawCubeWiresV(center,sz,color);
+}
+
 error_id scene__add_voxel(scene_t *scene, Vector3 position, Color material,unsigned int mat_id) {
     if (scene->numVoxels >= MAX_VOXELS) {
         return -1; // Error: Scene is full
@@ -109,23 +143,30 @@ error_id scene__add_voxel(scene_t *scene, Vector3 position, Color material,unsig
     if(!scene__voxel_at_position(scene,position)){
         voxel_t newVoxel = {position.x, position.y, position.z, mat_id,material};
         scene->voxels[scene->numVoxels++] = newVoxel;
+        BoundingBox bb = voxel__get_bounding_box(&newVoxel);
+        bounding_box__add(&scene->bounds,&bb);
     }
     if(scene->is_persisted){scene__save_model(scene,scene->temp_filename);}
     return 0; // Success
 }
 
 error_id scene__remove_voxel(scene_t *scene, Vector3 position, Color material,unsigned int mat_id) {
+    bounding_box__reset(&scene->bounds);
+    char was_removed=0;
     for (int i = 0; i < scene->numVoxels; i++) {
         float dist = Vector3DistanceSqr(scene->voxels[i].position,position);
         // printf("voxel %d is at %3.2f\n",i,dist);
-        if ( dist<0.75) {
+        if ( !was_removed && dist<0.75) {
             // Move the last voxel to the current position and decrease count
             scene->voxels[i] = scene->voxels[--scene->numVoxels];
-            return 0; // Success
+            was_removed = 1; // Success
+        } else {
+            BoundingBox bb = voxel__get_bounding_box(&scene->voxels[i]);
+            bounding_box__add(&scene->bounds,&bb);
         }
     }
     if(scene->is_persisted){scene__save_model(scene,scene->temp_filename);}
-    return -1; // Error: Voxel not found
+    return 0; // Error: Voxel not found
 }
 
 int scene__clear(scene_t* self){
