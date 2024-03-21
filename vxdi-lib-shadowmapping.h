@@ -15,6 +15,8 @@ typedef struct shadow_mapper_s {
     Matrix lightProjection, lightView;
     int shadowMapWidth;
     int shadowMapHeight;
+    float size;
+    Vector3 direction;
 } shadow_mapper_t;
 
 
@@ -28,9 +30,38 @@ void BeginScenePass(shadow_mapper_t* m);
 void EndScenePass(shadow_mapper_t* m);
 void RenderModelWithShadows(shadow_mapper_t* m,Camera3D* camera, Shader* shader) ;
 
+
+// Function to draw a rectangle plane with position and normal
+void draw_rectangle_plane(Vector3 position, Vector3 normal, float width, float height, Color color) {
+    // Calculate the tangent vector perpendicular to the normal and the up vector (y-axis)
+    Vector3 tangent = Vector3RotateByAxisAngle(Vector3CrossProduct(normal, (Vector3){0, 1, 0}),normal,45*DEG2RAD);
+
+    // Normalize tangent vector
+    tangent = Vector3Normalize(tangent);
+
+    // Calculate the bitangent vector perpendicular to the normal and tangent
+    Vector3 bitangent = Vector3CrossProduct(normal, tangent);
+
+    // Normalize bitangent vector
+    bitangent = Vector3Normalize(bitangent);
+    // Calculate the four vertices of the rectangle plane
+    Vector3 vertices[] = {
+        Vector3Add(position, Vector3Scale(tangent, width / 2)),
+        Vector3Add(position, Vector3Scale(bitangent, height / 2)),
+        Vector3Add(position, Vector3Scale(tangent, -width / 2)),
+        Vector3Add(position, Vector3Scale(bitangent, -height / 2)),
+        Vector3Add(position, Vector3Scale(tangent, width / 2)),
+        Vector3Add(position, Vector3Scale(bitangent, height / 2)),
+    };
+
+    // Draw the rectangle using a triangle fan
+    DrawTriangleStrip3D(vertices, 6, color);
+}
+
+
 void InitShadowMapping(shadow_mapper_t* m) {
-    m->shadowMapWidth = 1024;
-    m->shadowMapHeight = 1024;
+    m->shadowMapWidth = 256;
+    m->shadowMapHeight = 256;
     m->shadowMap = LoadRenderTexture(m->shadowMapWidth, m->shadowMapHeight);
     m->depthShader = LoadShader("assets/shaders/depth.vs", "assets/shaders/depth.fs");
     m->shadowShader = LoadShader("assets/shaders/shadow.vs", "assets/shaders/shadow.fs");
@@ -53,15 +84,21 @@ void InitShadowMapping(shadow_mapper_t* m) {
 }
 
 void SetLight(shadow_mapper_t* m,Camera3D light,BoundingBox bounds){
+    Vector3 bb_center=Vector3Scale(Vector3Add(bounds.max,bounds.min),0.5f);
+    Vector3 size= Vector3Subtract(bounds.max,bounds.min);
+    float radius=Vector3Length(size)/2;
+    float left = -radius, right = radius, bottom = -radius, top = radius;
+    float nearVal = 1.0f, farVal = radius+1;
+    Vector3 direction=Vector3Normalize(Vector3Subtract(light.target,light.position));
+    m->direction=direction;
+    m->size=radius;
     m->shadowCamera=(Camera3D){};
-    m->shadowCamera.position = light.position; // Camera position
-    m->shadowCamera.target = light.target;      // Camera looking at point
+    m->shadowCamera.position = Vector3Add(bb_center,Vector3Scale(direction, -farVal)); // Camera position
+    m->shadowCamera.target = Vector3Add(bb_center,Vector3Scale(direction, farVal ));      // Camera looking at point
     m->shadowCamera.up = light.up;          // Camera up vector (rotation towards target)
     m->shadowCamera.fovy = light.fovy;                                // Camera field-of-view Y
     m->shadowCamera.projection = light.projection;                   // Camera mode type
     // Setup orthogonal projection matrix for the shadow map (light's perspective)
-    float left = -50.0f, right = 50.0f, bottom = -50.0f, top = 50.0f;
-    float nearVal = 1.0f, farVal = 100.0f;
     m->lightProjection = MatrixOrtho(left, right, bottom, top, nearVal, farVal);
 
     m->lightView = MatrixLookAt(m->shadowCamera.position, m->shadowCamera.target, (Vector3){ 0.0f, 1.0f, 0.0f });
@@ -91,6 +128,9 @@ void EndScenePass(shadow_mapper_t* m) {
     EndShaderMode();
     DrawCube(m->shadowCamera.position,2,2,2,YELLOW);
     DrawLine3D(m->shadowCamera.position,m->shadowCamera.target,GREEN);
+    DrawCube(Vector3Scale(m->direction,15.0f),0.5,0.5,0.5,YELLOW);
+    draw_rectangle_plane(m->shadowCamera.position,m->direction,2*m->size,2*m->size,Fade(GREEN,0.2f));
+    draw_rectangle_plane(m->shadowCamera.target,m->direction,2*m->size,2*m->size,Fade(GREEN,0.2f));
 }
 
 void RenderModelWithShadows(shadow_mapper_t* m,Camera3D* camera, Shader* shader) {
@@ -98,10 +138,12 @@ void RenderModelWithShadows(shadow_mapper_t* m,Camera3D* camera, Shader* shader)
     if (shader->id == m->shadowShader.id) {
         // Setup model matrix
         Matrix modelMatrix = MatrixTranslate(camera->position.x, camera->position.y, camera->position.z);
-        SetShaderValueMatrix(*shader, GetShaderLocation(*shader, "model"), modelMatrix);
+        SetShaderValueMatrix(*shader, GetShaderLocation(*shader, "matModel"), modelMatrix);
     }
     if (shader->id == m->shadowShader.id) {
         // Pass additional uniforms if needed (for shadowShader)
+        Matrix modelMatrix = MatrixTranslate(camera->position.x, camera->position.y, camera->position.z);
+        SetShaderValueMatrix(*shader, GetShaderLocation(*shader, "matModel"), modelMatrix);
         SetShaderValueMatrix(m->shadowShader, GetShaderLocation(m->shadowShader, "view"), GetCameraMatrix(*camera));
         // Assuming 'camera' is your scene's camera and its view matrix is updated elsewhere
     }

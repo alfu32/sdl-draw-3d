@@ -405,12 +405,12 @@ int main(int argc, char *argv[]) {
                 BeginScenePass(&shadow_mapper);
                     RenderModelWithShadows(&shadow_mapper, &app.camera, &shadow_mapper.shadowShader); // Use shadow shader
                     scene__render(&app.scene,0);
-                    scene__render(&app.guides,1);
-                    scene__render(&app.construction_hints,2);
                 EndScenePass(&shadow_mapper);
                     scene__render(&app.scene,0);
-                    DrawCube(app.light.position,2,2,2,YELLOW);
-                    DrawLine3D(app.light.position,app.light.target,GREEN);
+                    scene__render(&app.guides,1);
+                    scene__render(&app.construction_hints,2);
+                    // DrawCube(app.light.position,2,2,2,YELLOW);
+                    // DrawLine3D(app.light.position,app.light.target,GREEN);
                     DrawCube(Vector3Scale(Vector3Normalize(Vector3Subtract(app.light.position,app.light.target)),15.0f),0.5,0.5,0.5,YELLOW);
 
                     DrawCubeWires(app.model_point_int, 1.0f, 1.0f, 1.0f, Fade(RED, 0.5f));
@@ -443,7 +443,7 @@ int main(int argc, char *argv[]) {
                     }
                 EndMode3D();
 
-                // DrawTextureRec(shadow_mapper.shadowMap.depth, (Rectangle){ 0, 0, shadow_mapper.shadowMap.depth.width, -shadow_mapper.shadowMap.depth.height }, (Vector2){ 0, 0 }, WHITE);
+                DrawTextureRec(shadow_mapper.shadowMap.depth, (Rectangle){ 0, 0, shadow_mapper.shadowMap.depth.width, -shadow_mapper.shadowMap.depth.height }, (Vector2){ 0, 0 }, WHITE);
                 
                 for(int i=0;i<=tools->last_tool_index;i++) {
                     char itext[20]; // Make sure the array is large enough to hold the converted string
