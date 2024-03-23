@@ -55,9 +55,32 @@ void draw_rectangle_plane(Vector3 position, Vector3 normal, float width, float h
     };
 
     // Draw the rectangle using a triangle fan
-    DrawTriangleStrip3D(vertices, 6, color);
-}
+    // DrawTriangleStrip3D(vertices, 6, color);
+    DrawLine3D(vertices[0],vertices[1],color);
+    DrawLine3D(vertices[1],vertices[2],color);
+    DrawLine3D(vertices[2],vertices[3],color);
+    DrawLine3D(vertices[3],vertices[0],color);
 
+    for( int x = -(int)(width/2) ; x<(int)(width/2);x+=1){
+        for( int y = -(int)(height/2) ; y<(int)(height/2);y+=1){
+            Vector3 basex = Vector3Scale(tangent, x);
+            Vector3 basey = Vector3Scale(bitangent, y);
+            Vector3 basex1 = Vector3Scale(tangent, x+1);
+            Vector3 basey1 = Vector3Scale(bitangent, y+1);
+            Vector3 corners[] = {
+                Vector3Add(position, Vector3Add(basex,basey)),
+                Vector3Add(position, Vector3Add(basex,basey1)),
+                Vector3Add(position, Vector3Add(basex1,basey1)),
+                Vector3Add(position, Vector3Add(basex1,basey)),
+            };
+            DrawLine3D(corners[0],corners[1],color);
+            DrawLine3D(corners[1],corners[2],color);
+            DrawLine3D(corners[2],corners[3],color);
+            DrawLine3D(corners[3],corners[0],color);
+        }
+    }
+
+}
 
 void InitShadowMapping(shadow_mapper_t* m) {
     m->shadowMapWidth = 256;

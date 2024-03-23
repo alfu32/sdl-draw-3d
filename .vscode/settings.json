@@ -20,9 +20,6 @@
 		"raylib.h": "c",
 		"raymath.h": "c",
 		"rlights.h": "c",
-		"array": "c",
-		"string_view": "c",
-		"initializer_list": "c",
-		"utility": "c"
+		"*.m": "c"
 	}
 }
