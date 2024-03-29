@@ -110,7 +110,7 @@ void SetLight(shadow_mapper_t* m,Camera3D light,BoundingBox bounds){
 
 void BeginShadowPass(shadow_mapper_t* m) {
     BeginTextureMode(m->shadowMap);
-    ClearBackground(DARKGRAY); // Important to clear to BLACK (0, 0, 0, 255)
+    ClearBackground((Color){0,0,0,127}); // Important to clear to BLACK (0, 0, 0, 255)
     BeginShaderMode(m->depthShader);
 }
 
@@ -124,11 +124,54 @@ void BeginScenePass(shadow_mapper_t* m) {
     // Additional scene setup can go here
 }
 
+Matrix getShadowCameraMatrix(shadow_mapper_t* m) {
+    Vector3 dir = Vector3Normalize(Vector3Subtract(m->shadowCamera.position,m->shadowCamera.target));
+    Vector3 up = Vector3Normalize((Vector3){0,1,0});
+
+    // Calculate right vector
+    Vector3 right = Vector3CrossProduct(up, dir);
+
+    // Re-calculate up vector to ensure orthogonality
+    up = Vector3CrossProduct(dir, right);
+
+    // Normalize all vectors
+    right = Vector3Normalize(right);
+    dir = Vector3Normalize(dir); // Should already be normalized, but ensuring
+    up = Vector3Normalize(up);
+
+    Matrix rotationMatrix = MatrixIdentity();
+    rotationMatrix.m0 = right.x; rotationMatrix.m1 = right.y; rotationMatrix.m2 = right.z;
+    rotationMatrix.m4 = up.x;    rotationMatrix.m5 = up.y;    rotationMatrix.m6 = up.z;
+    rotationMatrix.m8 = dir.x;   rotationMatrix.m9 = dir.y;   rotationMatrix.m10 = dir.z;
+    return rotationMatrix;
+}
+
 void EndScenePass(shadow_mapper_t* m) {
     EndShaderMode();
     DrawCube(m->shadowCamera.position,2,2,2,YELLOW);
     DrawLine3D(m->shadowCamera.position,m->shadowCamera.target,GREEN);
     DrawCube(Vector3Scale(m->direction,15.0f),0.5,0.5,0.5,YELLOW);
+    Matrix rx = getShadowCameraMatrix(m);
+    float matrix[16] = { rx.m0, rx.m1, rx.m2, rx.m3,
+                         rx.m4, rx.m5, rx.m6, rx.m7,
+                         rx.m8, rx.m9, rx.m10, rx.m11,
+                         rx.m12, rx.m13, rx.m14, rx.m15 };
+    rlPushMatrix();
+        rlMultMatrixf(matrix); // Apply the rotation
+        rlTranslatef(
+            -m->size/2,
+            m->size/2,
+            0
+        );
+        // rlTranslatef(
+        //     m->shadowCamera.position.x/2 + m->shadowCamera.target.x/2,
+        //     m->shadowCamera.position.y/2 + m->shadowCamera.target.y/2,
+        //     m->shadowCamera.position.z/2 + m->shadowCamera.target.z/2
+        // );
+        rlScalef(1, 1, 1);
+        DrawCubeWires((Vector3){0,0,0},m->size,m->size,Vector3Distance(m->shadowCamera.position,m->shadowCamera.target),GREEN);
+    rlPopMatrix();
+
     draw_rectangle_plane(m->shadowCamera.position,m->direction,2*m->size,2*m->size,Fade(GREEN,0.2f));
     draw_rectangle_plane(m->shadowCamera.target,m->direction,2*m->size,2*m->size,Fade(GREEN,0.2f));
 }
