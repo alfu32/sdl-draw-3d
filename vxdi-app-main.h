@@ -514,7 +514,12 @@ int main(int argc, char *argv[]) {
                     }
                 EndMode3D();
 
-                DrawTextureRec(shm.shadowMapTexture.depth, (Rectangle){ 0, 0, -shm.shadowMapTexture.depth.width, -shm.shadowMapTexture.depth.height }, (Vector2){ 0, 0 }, WHITE);
+                DrawTextureRec(
+                    shm.shadowMapTexture.depth, 
+                    (Rectangle){ 0, 0, -shm.shadowMapTexture.depth.width, -shm.shadowMapTexture.depth.height },
+                    (Vector2){ 120, 20 },
+                    WHITE
+                );
                 
                 for(int i=0;i<=tools->last_tool_index;i++) {
                     char itext[20]; // Make sure the array is large enough to hold the converted string
