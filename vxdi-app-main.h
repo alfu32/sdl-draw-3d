@@ -205,10 +205,10 @@ typedef struct shadowmapper_s {
 
 int shadowmapper__init(shadowmapper_t* sm,Vector3 initLightDir) {
 
-    sm->cameraSpeed = 0.025f;
+    sm->cameraSpeed = 0.05f;
     
-    sm->localShadowShader = LoadShader(TextFormat("assets/shaders/depth.vs", GLSL_VERSION),
-                                     TextFormat("assets/shaders/depth.fs", GLSL_VERSION));
+    sm->localShadowShader = LoadShader(TextFormat("assets/shaders/shadowmap.%d.vs", GLSL_VERSION),
+                                     TextFormat("assets/shaders/shadowmap.%d.fs", GLSL_VERSION));
     sm->localShadowShader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(sm->localShadowShader, "viewPos");
     sm->lightDir = Vector3Normalize(initLightDir);
     sm->lightColor = WHITE;
