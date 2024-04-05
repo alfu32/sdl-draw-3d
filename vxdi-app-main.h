@@ -181,6 +181,95 @@ void volume_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vecto
 RenderTexture2D LoadShadowmapRenderTexture(int width, int height);
 void UnloadShadowmapRenderTexture(RenderTexture2D target);
 
+typedef struct shadowmapper_s {
+    float cameraSpeed;
+    Shader localShadowShader;
+    Camera3D lightCam;
+    Vector3 lightDir;
+    Color lightColor;
+    Vector4 lightColorNormalized;
+    int lightDirLoc;
+    int lightColLoc;
+    int ambientLoc;
+    float ambient[4];
+    int lightVPLoc;
+    int shadowMapLoc;
+    int shadowMapResolution;
+
+    Matrix lightView;
+    Matrix lightProj;
+    Matrix lightViewProj;
+
+    RenderTexture2D shadowMapTexture;
+} shadowmapper_t;
+
+int shadowmapper__init(shadowmapper_t* sm,Vector3 initLightDir) {
+
+    sm->cameraSpeed = 0.025f;
+    
+    sm->localShadowShader = LoadShader(TextFormat("assets/shaders/depth.vs", GLSL_VERSION),
+                                     TextFormat("assets/shaders/depth.fs", GLSL_VERSION));
+    sm->localShadowShader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(sm->localShadowShader, "viewPos");
+    sm->lightDir = Vector3Normalize(initLightDir);
+    sm->lightColor = WHITE;
+    sm->lightColorNormalized = ColorNormalize(sm->lightColor);
+    sm->lightDirLoc = GetShaderLocation(sm->localShadowShader, "lightDir");
+    sm->lightColLoc = GetShaderLocation(sm->localShadowShader, "lightColor");
+    SetShaderValue(sm->localShadowShader, sm->lightDirLoc, &(sm->lightDir), SHADER_UNIFORM_VEC3);
+    SetShaderValue(sm->localShadowShader, sm->lightColLoc, &(sm->lightColorNormalized), SHADER_UNIFORM_VEC4);
+    sm->ambientLoc = GetShaderLocation(sm->localShadowShader, "ambient");
+    sm->ambient[0] = 1.0f;
+    sm->ambient[1] = 1.0f;
+    sm->ambient[2] = 1.0f;
+    sm->ambient[3] = 1.0f;
+    SetShaderValue(sm->localShadowShader, sm->ambientLoc, sm->ambient, SHADER_UNIFORM_VEC4);
+    sm->lightVPLoc = GetShaderLocation(sm->localShadowShader, "lightVP");
+    sm->shadowMapLoc = GetShaderLocation(sm->localShadowShader, "shadowMap");
+    sm->shadowMapResolution = SHADOWMAP_RESOLUTION;
+    SetShaderValue(sm->localShadowShader, GetShaderLocation(sm->localShadowShader, "shadowMapResolution"), &(sm->shadowMapResolution), SHADER_UNIFORM_INT);
+
+
+    sm->shadowMapTexture = LoadShadowmapRenderTexture(SHADOWMAP_RESOLUTION, SHADOWMAP_RESOLUTION);
+    // For the shadowmapping algorithm, we will be rendering everything from the light's point of view
+    sm->lightCam = (Camera3D){ 0 };
+    sm->lightCam.position = Vector3Scale(sm->lightDir, -25.0f);
+    sm->lightCam.target = Vector3Zero();
+    // Use an orthographic projection for directional lights
+    sm->lightCam.projection = CAMERA_ORTHOGRAPHIC;
+    sm->lightCam.up = (Vector3){ 0.0f, 1.0f, 0.0f };
+    sm->lightCam.fovy = 40.0f;
+
+    return 0;
+}
+
+int shadowmapper__orbit_control_lights(shadowmapper_t* sh,float frameTime) {
+    if (IsKeyDown(KEY_LEFT))
+    {
+        if (sh->lightDir.x < 0.6f)
+            sh->lightDir.x += sh->cameraSpeed * 60.0f * frameTime;
+    }
+    if (IsKeyDown(KEY_RIGHT))
+    {
+        if (sh->lightDir.x > -0.6f)
+            sh->lightDir.x -= sh->cameraSpeed * 60.0f * frameTime;
+    }
+    if (IsKeyDown(KEY_UP))
+    {
+        if (sh->lightDir.z < 0.6f)
+            sh->lightDir.z += sh->cameraSpeed * 60.0f * frameTime;
+    }
+    if (IsKeyDown(KEY_DOWN))
+    {
+        if (sh->lightDir.z > -0.6f)
+            sh->lightDir.z -= sh->cameraSpeed * 60.0f * frameTime;
+    }
+    sh->lightDir = Vector3Normalize(sh->lightDir);
+    sh->lightCam.position = Vector3Scale(sh->lightDir, -25.0f);
+    SetShaderValue(sh->localShadowShader, sh->lightDirLoc, &sh->lightDir, SHADER_UNIFORM_VEC3);
+
+    return 0;    
+}
+
 int main(int argc, char *argv[]) {
     int color_btn_size=25;
     int color_btn_spacing=1;
@@ -260,38 +349,9 @@ int main(int argc, char *argv[]) {
     // which is the industry standard for shadows. This algorithm can be extended in a ridiculous number of ways to improve
     // realism and also adapt it for different scenes. This is pretty much the simplest possible implementation.
     InitWindow(app.screenWidth, app.screenHeight, app_title);
-
     
-    
-    Shader localShadowShader = LoadShader(TextFormat("assets/shaders/depth.vs", GLSL_VERSION),
-                                     TextFormat("assets/shaders/depth.fs", GLSL_VERSION));
-    localShadowShader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(localShadowShader, "viewPos");
-    Vector3 lightDir = Vector3Normalize(app.light_direction);
-    Color lightColor = WHITE;
-    Vector4 lightColorNormalized = ColorNormalize(lightColor);
-    int lightDirLoc = GetShaderLocation(localShadowShader, "lightDir");
-    int lightColLoc = GetShaderLocation(localShadowShader, "lightColor");
-    SetShaderValue(localShadowShader, lightDirLoc, &lightDir, SHADER_UNIFORM_VEC3);
-    SetShaderValue(localShadowShader, lightColLoc, &lightColorNormalized, SHADER_UNIFORM_VEC4);
-    int ambientLoc = GetShaderLocation(localShadowShader, "ambient");
-    float ambient[4] = {0.1f, 0.1f, 0.1f, 1.0f};
-    SetShaderValue(localShadowShader, ambientLoc, ambient, SHADER_UNIFORM_VEC4);
-    int lightVPLoc = GetShaderLocation(localShadowShader, "lightVP");
-    int shadowMapLoc = GetShaderLocation(localShadowShader, "shadowMap");
-    int shadowMapResolution = SHADOWMAP_RESOLUTION;
-    SetShaderValue(localShadowShader, GetShaderLocation(localShadowShader, "shadowMapResolution"), &shadowMapResolution, SHADER_UNIFORM_INT);
-
-
-    RenderTexture2D shadowMapTexture = LoadShadowmapRenderTexture(SHADOWMAP_RESOLUTION, SHADOWMAP_RESOLUTION);
-    // For the shadowmapping algorithm, we will be rendering everything from the light's point of view
-    Camera3D lightCam = (Camera3D){ 0 };
-    lightCam.position = Vector3Scale(lightDir, -25.0f);
-    lightCam.target = Vector3Zero();
-    // Use an orthographic projection for directional lights
-    lightCam.projection = CAMERA_ORTHOGRAPHIC;
-    lightCam.up = (Vector3){ 0.0f, 1.0f, 0.0f };
-    lightCam.fovy = 40.0f;
-
+    shadowmapper_t shm;
+    shadowmapper__init(&shm,app.light_direction);
 
 
     mut char status[1024];
@@ -378,7 +438,7 @@ int main(int argc, char *argv[]) {
             
             
             Vector3 cameraPos = app.camera.position;
-            SetShaderValue(localShadowShader, localShadowShader.locs[SHADER_LOC_VECTOR_VIEW], &cameraPos, SHADER_UNIFORM_VEC3);
+            SetShaderValue(shm.localShadowShader, shm.localShadowShader.locs[SHADER_LOC_VECTOR_VIEW], &cameraPos, SHADER_UNIFORM_VEC3);
 
             orbit__control_camera(&orbiter);
 
@@ -391,67 +451,40 @@ int main(int argc, char *argv[]) {
                 app.text_buffer,
                 app.scene.temp_filename
             );
-            
-            
-            const float cameraSpeed = 0.025f;
-            if (IsKeyDown(KEY_LEFT))
-            {
-                if (lightDir.x < 0.6f)
-                    lightDir.x += cameraSpeed * 60.0f * dt;
-            }
-            if (IsKeyDown(KEY_RIGHT))
-            {
-                if (lightDir.x > -0.6f)
-                    lightDir.x -= cameraSpeed * 60.0f * dt;
-            }
-            if (IsKeyDown(KEY_UP))
-            {
-                if (lightDir.z < 0.6f)
-                    lightDir.z += cameraSpeed * 60.0f * dt;
-            }
-            if (IsKeyDown(KEY_DOWN))
-            {
-                if (lightDir.z > -0.6f)
-                    lightDir.z -= cameraSpeed * 60.0f * dt;
-            }
-            lightDir = Vector3Normalize(lightDir);
-            lightCam.position = Vector3Scale(lightDir, -25.0f);
-            SetShaderValue(localShadowShader, lightDirLoc, &lightDir, SHADER_UNIFORM_VEC3);
+            shadowmapper__orbit_control_lights(&shm,dt);
             
             BeginDrawing();
                 // Record the light matrices for future use!
-                Matrix lightView;
-                Matrix lightProj;
-                BeginTextureMode(shadowMapTexture);{
-                    ClearBackground(RAYWHITE);
-                    BeginMode3D(lightCam);{
-                        lightView = rlGetMatrixModelview();
-                        lightProj = rlGetMatrixProjection();
-                        // lightView = GetCameraMatrix(lightCam);
-                        // lightProj = GetCameraMatrix(app.camera);
+                BeginTextureMode(shm.shadowMapTexture);{
+                    ClearBackground((Color){0,0,0,255});
+                    BeginMode3D(shm.lightCam);{
+                        shm.lightView = rlGetMatrixModelview();
+                        shm.lightProj = rlGetMatrixProjection();
+                        // shm.lightView = GetCameraMatrix(shm.lightCam);
+                        // shm.lightProj = GetCameraMatrix(app.camera);
                         scene__render(&app.scene,0);
                         scene__render(&app.guides,1);
                         scene__render(&app.construction_hints,2);
                     }EndMode3D();
                 }EndTextureMode();
 
-                Matrix lightViewProj = MatrixMultiply(lightView, lightProj);
+                shm.lightViewProj = MatrixMultiply(shm.lightView, shm.lightProj);
 
                 ClearBackground(GRAY);
 
-                SetShaderValueMatrix(localShadowShader, lightVPLoc, lightViewProj);
+                SetShaderValueMatrix(shm.localShadowShader, shm.lightVPLoc, shm.lightViewProj);
 
-                rlEnableShader(localShadowShader.id);
+                rlEnableShader(shm.localShadowShader.id);
                 int slot = 10; // Can be anything 0 to 15, but 0 will probably be taken up
                 rlActiveTextureSlot(10);
-                rlEnableTexture(shadowMapTexture.depth.id);
-                rlSetUniform(shadowMapLoc, &slot, SHADER_UNIFORM_INT, 1);
+                rlEnableTexture(shm.shadowMapTexture.depth.id);
+                rlSetUniform(shm.shadowMapLoc, &slot, SHADER_UNIFORM_INT, 1);
 
                 BeginMode3D(app.camera);
                 
                     scene__render(&app.scene,0);
-                    DrawCube(lightCam.position,2,2,2,YELLOW);
-                    DrawLine3D(lightCam.position,lightCam.target,GREEN);
+                    DrawCube(shm.lightCam.position,2,2,2,YELLOW);
+                    DrawLine3D(shm.lightCam.position,shm.lightCam.target,GREEN);
                     scene__render(&app.guides,1);
                     scene__render(&app.construction_hints,2);
 
@@ -481,7 +514,7 @@ int main(int argc, char *argv[]) {
                     }
                 EndMode3D();
 
-                DrawTextureRec(shadowMapTexture.depth, (Rectangle){ 0, 0, shadowMapTexture.depth.width, -shadowMapTexture.depth.height }, (Vector2){ 0, 0 }, WHITE);
+                DrawTextureRec(shm.shadowMapTexture.depth, (Rectangle){ 0, 0, -shm.shadowMapTexture.depth.width, -shm.shadowMapTexture.depth.height }, (Vector2){ 0, 0 }, WHITE);
                 
                 for(int i=0;i<=tools->last_tool_index;i++) {
                     char itext[20]; // Make sure the array is large enough to hold the converted string
@@ -581,7 +614,7 @@ int main(int argc, char *argv[]) {
 
 
                 // Draw the shadow map texture
-                DrawTextureRec(shadowMapTexture.depth, (Rectangle){ 0, 0, shadowMapTexture.depth.width, shadowMapTexture.depth.height }, (Vector2){ 100, 1000 }, WHITE);
+                DrawTextureRec(shm.shadowMapTexture.depth, (Rectangle){ 0, 0, shm.shadowMapTexture.depth.width, shm.shadowMapTexture.depth.height }, (Vector2){ 100, 1000 }, WHITE);
                 /// DrawFPS(10, 10);
 
             EndDrawing();
@@ -616,8 +649,8 @@ int main(int argc, char *argv[]) {
     vxdi_tools_map__deinit(tools);
 
     
-    UnloadShader(localShadowShader);
-    UnloadShadowmapRenderTexture(shadowMapTexture);
+    UnloadShader(shm.localShadowShader);
+    UnloadShadowmapRenderTexture(shm.shadowMapTexture);
     CloseWindow();
     /// scene__save_model(&app.scene,"temp.vxde");
 
