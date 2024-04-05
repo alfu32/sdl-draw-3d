@@ -452,6 +452,9 @@ int main(int argc, char *argv[]) {
                 app.scene.temp_filename
             );
             shadowmapper__orbit_control_lights(&shm,dt);
+            app.scene.light_direction.direction.x=shm.lightDir.x;
+            app.scene.light_direction.direction.y=shm.lightDir.y;
+            app.scene.light_direction.direction.z=shm.lightDir.z;
             
             BeginDrawing();
                 // Record the light matrices for future use!
@@ -621,7 +624,7 @@ int main(int argc, char *argv[]) {
                 // Draw the shadow map texture
                 DrawTextureRec(
                     shm.shadowMapTexture.depth,
-                    (Rectangle){ 0, 0, shm.shadowMapTexture.depth.width, shm.shadowMapTexture.depth.height },
+                    (Rectangle){ 0, 0, -shm.shadowMapTexture.depth.width, -shm.shadowMapTexture.depth.height },
                     (Vector2){ 120, 120 },
                     RED);
                 /// DrawFPS(10, 10);
