@@ -364,6 +364,14 @@ int main(int argc, char *argv[]) {
     unsigned char dbg_move_number=0;
 
     printf(" -- Starting Loop %d \n",window_should_close);
+
+
+    // Load ray tracing shader
+    Shader shader = LoadShader(0, "assets/shaders/raytracing.glsl");
+
+    // Create render texture
+    RenderTexture2D target = LoadRenderTexture(app.screenWidth, app.screenHeight);
+
     for (;!(WindowShouldClose() || window_should_close);) {
         float dt = GetFrameTime();
         if(IsKeyPressed(KEY_ESCAPE)){
@@ -455,6 +463,38 @@ int main(int argc, char *argv[]) {
             app.scene.light_direction.direction.x=shm.lightDir.x;
             app.scene.light_direction.direction.y=shm.lightDir.y;
             app.scene.light_direction.direction.z=shm.lightDir.z;
+
+
+        // Draw
+        BeginTextureMode(target);
+        BeginShaderMode(shader);
+        int nRaytracedVoxels = app.scene.numVoxels + app.construction_hints.numVoxels;
+        Vector3 cube_positions[nRaytracedVoxels];
+        Color cube_colors[nRaytracedVoxels];
+        for(int i=0;i<app.scene.numVoxels;i++){
+            voxel_t vx = app.scene.voxels[i];
+            cube_positions[i]=(Vector3){vx.position.x,vx.position.y,vx.position.z};
+            cube_colors[i]=(Color){vx.material_color.r,vx.material_color.g,vx.material_color.b,vx.material_color.a};
+        }
+        for(int i=0;i<app.construction_hints.numVoxels;i++){
+            voxel_t vx = app.scene.voxels[i];
+            cube_positions[app.scene.numVoxels+i]=(Vector3){vx.position.x,vx.position.y,vx.position.z};
+            cube_colors[app.scene.numVoxels+i]=(Color){vx.material_color.r,vx.material_color.g,vx.material_color.b,vx.material_color.a};
+        }
+        // Pass resolution to shader
+        SetShaderValue(shader, GetShaderLocation(shader, "resolution"), (float[2]){app.screenWidth, app.screenHeight}, SHADER_UNIFORM_VEC2);
+
+        // Pass cube data to shader
+        SetShaderValue(shader, GetShaderLocation(shader, "numCubes"), &nRaytracedVoxels, SHADER_UNIFORM_INT);
+        SetShaderValueV(shader, GetShaderLocation(shader, "cubePositions"), (float *)cube_positions, SHADER_UNIFORM_VEC3,nRaytracedVoxels);
+        SetShaderValueV(shader, GetShaderLocation(shader, "cubeColors"), (float *)cube_colors, SHADER_UNIFORM_VEC4,nRaytracedVoxels);
+        SetShaderValue(shader, GetShaderLocation(shader, "lightDirection"), &app.light_direction, SHADER_UNIFORM_VEC3);
+
+        // Draw full-screen quad
+        DrawRectangle(0, 0, app.screenWidth, app.screenHeight, RAYWHITE); // Placeholder for scene
+        
+        EndShaderMode();
+        EndTextureMode();
             
             BeginDrawing();
                 // Record the light matrices for future use!
@@ -516,6 +556,14 @@ int main(int argc, char *argv[]) {
                         DrawSphereEx(app.mouse_model.point,.1f,3,5,BLUE);
                     }
                 EndMode3D();
+
+                // Draw render texture to screen
+                DrawTextureRec(
+                    target.texture,
+                    (Rectangle){0, 0,app.screenWidth,app.screenHeight},
+                    (Vector2){ 672, 120 },
+                    (Color){127,127,127,127}
+                );
 
                 /// DrawTextureRec(
                 ///     shm.shadowMapTexture.depth, 
@@ -625,8 +673,8 @@ int main(int argc, char *argv[]) {
                 DrawTextureRec(
                     shm.shadowMapTexture.depth,
                     (Rectangle){ 0, 0, -shm.shadowMapTexture.depth.width, -shm.shadowMapTexture.depth.height },
-                    (Vector2){ 120, 120 },
-                    RED);
+                    (Vector2){ 120, 50 },
+                    (Color){255,255,255,127});
                 /// DrawFPS(10, 10);
 
             EndDrawing();

@@ -109,8 +109,8 @@ int vxdi_app_editor__setup(vxdi_app_editor_t *app,Vector3 light_direction){
         app->camera_mode_names[2]="FIRST_PERSON";
         app->camera_mode_names[3]="THIRD_PERSON";
 
-        app->screenWidth = 1280;
-        app->screenHeight = 800;
+        app->screenWidth = 640;
+        app->screenHeight = 480;
         app->light_direction = (Vector3){x:light_direction.x,y:light_direction.y,z:light_direction.z};
 
         app->scene=layer0;
