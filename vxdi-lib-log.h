@@ -37,8 +37,29 @@
         #define LOG_ERROR 1
     #endif
 
-    #define LOG_LEVEL_ALL(LEVEL,FMT,...) printf("%-*s [%ld]%s(%s):%d :" FMT "\n",10,LEVEL,time(NULL),__func__,__FILE__,__LINE__,  __VA_ARGS__);
-    #define LOG_LEVEL(LEVEL,message) printf("%-*s [%ld]%s(%s):%d : %s\n",10,LEVEL,time(NULL),__func__,__FILE__,__LINE__,message);
+
+    #ifdef _WIN64
+        // printf("Running on 64-bit Windows\n");
+        #define VXDI_LOG_FORMAT_0 "%-*s [%lld]%s(%s):%d :"
+        #define VXDI_LOG_FORMAT_1 "%-*s [%lld]%s(%s):%d : %s\n"
+    #elif _WIN32
+        // printf("Running on 32-bit Windows\n");
+        #define VXDI_LOG_FORMAT_0 "%-*s [%ld]%s(%s):%d :"
+        #define VXDI_LOG_FORMAT_1 "%-*s [%ld]%s(%s):%d : %s\n"
+    #elif __linux__
+        // printf("Running on Linux\n");
+        #define VXDI_LOG_FORMAT_0 "%-*s [%lld]%s(%s):%d :"
+        #define VXDI_LOG_FORMAT_1 "%-*s [%lld]%s(%s):%d : %s\n"
+    #else
+        // printf("Unknown platform\n");
+        #define VXDI_LOG_FORMAT_0 "%-*s [%ld]%s(%s):%d :"
+        #define VXDI_LOG_FORMAT_1 "%-*s [%ld]%s(%s):%d : %s\n"
+    #endif
+
+
+
+    #define LOG_LEVEL_ALL(LEVEL,FMT,...) printf(VXDI_LOG_FORMAT_0 FMT "\n",10,LEVEL,time(NULL),__func__,__FILE__,__LINE__,  __VA_ARGS__);
+    #define LOG_LEVEL(LEVEL,message) printf(VXDI_LOG_FORMAT_1,10,LEVEL,time(NULL),__func__,__FILE__,__LINE__,message);
 
     #define LOG_D(fmt,...) if(LOG_DEBUG)LOG_LEVEL_ALL("\033[36mDEBUG\033[0m",fmt,  __VA_ARGS__);
     #define LOG_D0(message) if(LOG_DEBUG)LOG_LEVEL("\033[36mDEBUG\033[0m",message);
