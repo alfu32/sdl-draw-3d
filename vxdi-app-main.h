@@ -417,7 +417,7 @@ int main(int argc, char *argv[]) {
                     DrawCubeWires(app.model_point_next_int, 1.0f, 1.0f, 1.0f, Fade(GREEN, 0.5f));
                     
                     DrawGridAt((Vector3){-0.5f,-0.5f,-0.5f},33, 1.0f); // Draw a grid
-                    DrawBoundingBox(
+                    VxdiDrawBoundingBox(
                         app.scene.bounds,
                         RED
                     );

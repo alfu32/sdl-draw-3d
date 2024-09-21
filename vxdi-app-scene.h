@@ -130,7 +130,7 @@ void bounding_box__add(BoundingBox *target, BoundingBox *source) {
     target->max.z = fmaxf(target->max.z, source->max.z);
 }
 
-void DrawBoundingBox(BoundingBox box,Color color) {
+void VxdiDrawBoundingBox(BoundingBox box,Color color) {
     Vector3 center=Vector3Scale(Vector3Add(box.max,box.min),0.5f);//(Vector3){(box.max.x+box.min.x)/2,(box.max.y+box.min.y)/2,(box.max.z+box.min.z)/2};
     Vector3 sz=Vector3Subtract(box.max,box.min);
     DrawCubeWiresV(center,sz,color);
