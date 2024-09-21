@@ -1,0 +1,2510 @@
+EXPORTS
+    BeginBlendMode @1
+    BeginDrawing @2
+    BeginMode2D @3
+    BeginMode3D @4
+    BeginScenePass @5
+    BeginScissorMode @6
+    BeginShaderMode @7
+    BeginShadowPass @8
+    BeginTextureMode @9
+    BeginVrStereoMode @10
+    CORE @11 DATA
+    CameraMoveForward @12
+    CameraMoveRight @13
+    CameraMoveToTarget @14
+    CameraMoveUp @15
+    CameraPitch @16
+    CameraRoll @17
+    CameraYaw @18
+    ChangeDirectory @19
+    CheckCollisionBoxSphere @20
+    CheckCollisionBoxes @21
+    CheckCollisionCircleRec @22
+    CheckCollisionCircles @23
+    CheckCollisionLines @24
+    CheckCollisionPointCircle @25
+    CheckCollisionPointLine @26
+    CheckCollisionPointPoly @27
+    CheckCollisionPointRec @28
+    CheckCollisionPointTriangle @29
+    CheckCollisionRecs @30
+    CheckCollisionSpheres @31
+    Clamp @32
+    ClearBackground @33
+    ClearWindowState @34
+    ClosePlatform @35
+    CloseWindow @36
+    CodepointToUTF8 @37
+    ColorAlpha @38
+    ColorAlphaBlend @39
+    ColorBrightness @40
+    ColorContrast @41
+    ColorFromHSV @42
+    ColorFromNormalized @43
+    ColorNormalize @44
+    ColorTint @45
+    ColorToHSV @46
+    ColorToInt @47
+    CompressData @48
+    DecodeDataBase64 @49
+    DecompressData @50
+    DirectoryExists @51
+    DisableCursor @52
+    DisableEventWaiting @53
+    DrawBillboard @54
+    DrawBillboardPro @55
+    DrawBillboardRec @56
+    DrawBoundingBox @57
+    DrawCapsule @58
+    DrawCapsuleWires @59
+    DrawCircle @60
+    DrawCircle3D @61
+    DrawCircleGradient @62
+    DrawCircleLines @63
+    DrawCircleLinesV @64
+    DrawCircleSector @65
+    DrawCircleSectorLines @66
+    DrawCircleV @67
+    DrawCube @68
+    DrawCubeV @69
+    DrawCubeWires @70
+    DrawCubeWiresV @71
+    DrawCylinder @72
+    DrawCylinderEx @73
+    DrawCylinderWires @74
+    DrawCylinderWiresEx @75
+    DrawEllipse @76
+    DrawEllipseLines @77
+    DrawFPS @78
+    DrawGrid @79
+    DrawGridAt @80
+    DrawLine @81
+    DrawLine3D @82
+    DrawLineBezier @83
+    DrawLineEx @84
+    DrawLineStrip @85
+    DrawLineV @86
+    DrawMesh @87
+    DrawMeshInstanced @88
+    DrawModel @89
+    DrawModelEx @90
+    DrawModelWires @91
+    DrawModelWiresEx @92
+    DrawPixel @93
+    DrawPixelV @94
+    DrawPlane @95
+    DrawPoint3D @96
+    DrawPoly @97
+    DrawPolyLines @98
+    DrawPolyLinesEx @99
+    DrawRay @100
+    DrawRectangle @101
+    DrawRectangleGradientEx @102
+    DrawRectangleGradientH @103
+    DrawRectangleGradientV @104
+    DrawRectangleLines @105
+    DrawRectangleLinesEx @106
+    DrawRectanglePro @107
+    DrawRectangleRec @108
+    DrawRectangleRounded @109
+    DrawRectangleRoundedLines @110
+    DrawRectangleV @111
+    DrawRing @112
+    DrawRingLines @113
+    DrawSphere @114
+    DrawSphereEx @115
+    DrawSphereWires @116
+    DrawSplineBasis @117
+    DrawSplineBezierCubic @118
+    DrawSplineBezierQuadratic @119
+    DrawSplineCatmullRom @120
+    DrawSplineLinear @121
+    DrawSplineSegmentBasis @122
+    DrawSplineSegmentBezierCubic @123
+    DrawSplineSegmentBezierQuadratic @124
+    DrawSplineSegmentCatmullRom @125
+    DrawSplineSegmentLinear @126
+    DrawText @127
+    DrawTextCodepoint @128
+    DrawTextCodepoints @129
+    DrawTextEx @130
+    DrawTextPro @131
+    DrawTexture @132
+    DrawTextureEx @133
+    DrawTextureNPatch @134
+    DrawTexturePro @135
+    DrawTextureRec @136
+    DrawTextureV @137
+    DrawTriangle @138
+    DrawTriangle3D @139
+    DrawTriangleFan @140
+    DrawTriangleLines @141
+    DrawTriangleStrip @142
+    DrawTriangleStrip3D @143
+    EnableCursor @144
+    EnableEventWaiting @145
+    EncodeDataBase64 @146
+    EndBlendMode @147
+    EndDrawing @148
+    EndMode2D @149
+    EndMode3D @150
+    EndScenePass @151
+    EndScissorMode @152
+    EndShaderMode @153
+    EndShadowPass @154
+    EndTextureMode @155
+    EndVrStereoMode @156
+    ExportAutomationEventList @157
+    ExportDataAsCode @158
+    ExportFontAsCode @159
+    ExportImage @160
+    ExportImageAsCode @161
+    ExportImageToMemory @162
+    ExportMesh @163
+    Fade @164
+    FileExists @165
+    FloatEquals @166
+    GLAD_GL_ARB_ES2_compatibility @167 DATA
+    GLAD_GL_ARB_ES3_1_compatibility @168 DATA
+    GLAD_GL_ARB_ES3_2_compatibility @169 DATA
+    GLAD_GL_ARB_ES3_compatibility @170 DATA
+    GLAD_GL_ARB_blend_func_extended @171 DATA
+    GLAD_GL_ARB_buffer_storage @172 DATA
+    GLAD_GL_ARB_clear_buffer_object @173 DATA
+    GLAD_GL_ARB_clear_texture @174 DATA
+    GLAD_GL_ARB_color_buffer_float @175 DATA
+    GLAD_GL_ARB_compatibility @176 DATA
+    GLAD_GL_ARB_compressed_texture_pixel_storage @177 DATA
+    GLAD_GL_ARB_compute_shader @178 DATA
+    GLAD_GL_ARB_compute_variable_group_size @179 DATA
+    GLAD_GL_ARB_copy_buffer @180 DATA
+    GLAD_GL_ARB_copy_image @181 DATA
+    GLAD_GL_ARB_debug_output @182 DATA
+    GLAD_GL_ARB_depth_buffer_float @183 DATA
+    GLAD_GL_ARB_depth_clamp @184 DATA
+    GLAD_GL_ARB_depth_texture @185 DATA
+    GLAD_GL_ARB_direct_state_access @186 DATA
+    GLAD_GL_ARB_draw_buffers @187 DATA
+    GLAD_GL_ARB_draw_buffers_blend @188 DATA
+    GLAD_GL_ARB_draw_elements_base_vertex @189 DATA
+    GLAD_GL_ARB_draw_indirect @190 DATA
+    GLAD_GL_ARB_draw_instanced @191 DATA
+    GLAD_GL_ARB_enhanced_layouts @192 DATA
+    GLAD_GL_ARB_explicit_attrib_location @193 DATA
+    GLAD_GL_ARB_explicit_uniform_location @194 DATA
+    GLAD_GL_ARB_fragment_coord_conventions @195 DATA
+    GLAD_GL_ARB_fragment_layer_viewport @196 DATA
+    GLAD_GL_ARB_fragment_program @197 DATA
+    GLAD_GL_ARB_fragment_program_shadow @198 DATA
+    GLAD_GL_ARB_fragment_shader @199 DATA
+    GLAD_GL_ARB_fragment_shader_interlock @200 DATA
+    GLAD_GL_ARB_framebuffer_no_attachments @201 DATA
+    GLAD_GL_ARB_framebuffer_object @202 DATA
+    GLAD_GL_ARB_framebuffer_sRGB @203 DATA
+    GLAD_GL_ARB_geometry_shader4 @204 DATA
+    GLAD_GL_ARB_get_program_binary @205 DATA
+    GLAD_GL_ARB_get_texture_sub_image @206 DATA
+    GLAD_GL_ARB_gl_spirv @207 DATA
+    GLAD_GL_ARB_gpu_shader5 @208 DATA
+    GLAD_GL_ARB_gpu_shader_fp64 @209 DATA
+    GLAD_GL_ARB_gpu_shader_int64 @210 DATA
+    GLAD_GL_ARB_half_float_pixel @211 DATA
+    GLAD_GL_ARB_half_float_vertex @212 DATA
+    GLAD_GL_ARB_instanced_arrays @213 DATA
+    GLAD_GL_ARB_internalformat_query @214 DATA
+    GLAD_GL_ARB_internalformat_query2 @215 DATA
+    GLAD_GL_ARB_map_buffer_range @216 DATA
+    GLAD_GL_ARB_multi_bind @217 DATA
+    GLAD_GL_ARB_multi_draw_indirect @218 DATA
+    GLAD_GL_ARB_multisample @219 DATA
+    GLAD_GL_ARB_multitexture @220 DATA
+    GLAD_GL_ARB_occlusion_query @221 DATA
+    GLAD_GL_ARB_occlusion_query2 @222 DATA
+    GLAD_GL_ARB_pipeline_statistics_query @223 DATA
+    GLAD_GL_ARB_query_buffer_object @224 DATA
+    GLAD_GL_ARB_sample_locations @225 DATA
+    GLAD_GL_ARB_sample_shading @226 DATA
+    GLAD_GL_ARB_seamless_cube_map @227 DATA
+    GLAD_GL_ARB_seamless_cubemap_per_texture @228 DATA
+    GLAD_GL_ARB_shader_atomic_counter_ops @229 DATA
+    GLAD_GL_ARB_shader_atomic_counters @230 DATA
+    GLAD_GL_ARB_shader_bit_encoding @231 DATA
+    GLAD_GL_ARB_shader_clock @232 DATA
+    GLAD_GL_ARB_shader_image_load_store @233 DATA
+    GLAD_GL_ARB_shader_image_size @234 DATA
+    GLAD_GL_ARB_shader_objects @235 DATA
+    GLAD_GL_ARB_shader_storage_buffer_object @236 DATA
+    GLAD_GL_ARB_shader_texture_lod @237 DATA
+    GLAD_GL_ARB_shading_language_100 @238 DATA
+    GLAD_GL_ARB_shading_language_420pack @239 DATA
+    GLAD_GL_ARB_shading_language_include @240 DATA
+    GLAD_GL_ARB_shading_language_packing @241 DATA
+    GLAD_GL_ARB_spirv_extensions @242 DATA
+    GLAD_GL_ARB_tessellation_shader @243 DATA
+    GLAD_GL_ARB_texture_border_clamp @244 DATA
+    GLAD_GL_ARB_texture_buffer_object_rgb32 @245 DATA
+    GLAD_GL_ARB_texture_compression @246 DATA
+    GLAD_GL_ARB_texture_cube_map @247 DATA
+    GLAD_GL_ARB_texture_cube_map_array @248 DATA
+    GLAD_GL_ARB_texture_env_add @249 DATA
+    GLAD_GL_ARB_texture_filter_anisotropic @250 DATA
+    GLAD_GL_ARB_texture_filter_minmax @251 DATA
+    GLAD_GL_ARB_texture_float @252 DATA
+    GLAD_GL_ARB_texture_mirror_clamp_to_edge @253 DATA
+    GLAD_GL_ARB_texture_mirrored_repeat @254 DATA
+    GLAD_GL_ARB_texture_multisample @255 DATA
+    GLAD_GL_ARB_texture_non_power_of_two @256 DATA
+    GLAD_GL_ARB_texture_rg @257 DATA
+    GLAD_GL_ARB_texture_storage @258 DATA
+    GLAD_GL_ARB_texture_swizzle @259 DATA
+    GLAD_GL_ARB_texture_view @260 DATA
+    GLAD_GL_ARB_timer_query @261 DATA
+    GLAD_GL_ARB_transpose_matrix @262 DATA
+    GLAD_GL_ARB_uniform_buffer_object @263 DATA
+    GLAD_GL_ARB_vertex_array_bgra @264 DATA
+    GLAD_GL_ARB_vertex_array_object @265 DATA
+    GLAD_GL_ARB_vertex_attrib_binding @266 DATA
+    GLAD_GL_ARB_vertex_buffer_object @267 DATA
+    GLAD_GL_ARB_vertex_program @268 DATA
+    GLAD_GL_ARB_vertex_shader @269 DATA
+    GLAD_GL_EXT_draw_instanced @270 DATA
+    GLAD_GL_EXT_fog_coord @271 DATA
+    GLAD_GL_EXT_framebuffer_blit @272 DATA
+    GLAD_GL_EXT_framebuffer_multisample @273 DATA
+    GLAD_GL_EXT_framebuffer_object @274 DATA
+    GLAD_GL_EXT_framebuffer_sRGB @275 DATA
+    GLAD_GL_EXT_texture_compression_s3tc @276 DATA
+    GLAD_GL_EXT_texture_filter_anisotropic @277 DATA
+    GLAD_GL_EXT_texture_mirror_clamp @278 DATA
+    GLAD_GL_KHR_texture_compression_astc_hdr @279 DATA
+    GLAD_GL_KHR_texture_compression_astc_ldr @280 DATA
+    GLAD_GL_OES_compressed_paletted_texture @281 DATA
+    GLAD_GL_OES_fixed_point @282 DATA
+    GLAD_GL_VERSION_1_0 @283 DATA
+    GLAD_GL_VERSION_1_1 @284 DATA
+    GLAD_GL_VERSION_1_2 @285 DATA
+    GLAD_GL_VERSION_1_3 @286 DATA
+    GLAD_GL_VERSION_1_4 @287 DATA
+    GLAD_GL_VERSION_1_5 @288 DATA
+    GLAD_GL_VERSION_2_0 @289 DATA
+    GLAD_GL_VERSION_2_1 @290 DATA
+    GLAD_GL_VERSION_3_0 @291 DATA
+    GLAD_GL_VERSION_3_1 @292 DATA
+    GLAD_GL_VERSION_3_2 @293 DATA
+    GLAD_GL_VERSION_3_3 @294 DATA
+    GLAD_GL_VERSION_4_0 @295 DATA
+    GLAD_GL_VERSION_4_1 @296 DATA
+    GLAD_GL_VERSION_4_2 @297 DATA
+    GLAD_GL_VERSION_4_3 @298 DATA
+    GenImageCellular @299
+    GenImageChecked @300
+    GenImageColor @301
+    GenImageFontAtlas @302
+    GenImageGradientLinear @303
+    GenImageGradientRadial @304
+    GenImageGradientSquare @305
+    GenImagePerlinNoise @306
+    GenImageText @307
+    GenImageWhiteNoise @308
+    GenMeshCone @309
+    GenMeshCube @310
+    GenMeshCubicmap @311
+    GenMeshCylinder @312
+    GenMeshHeightmap @313
+    GenMeshHemiSphere @314
+    GenMeshKnot @315
+    GenMeshPlane @316
+    GenMeshPoly @317
+    GenMeshSphere @318
+    GenMeshTangents @319
+    GenMeshTorus @320
+    GenTextureMipmaps @321
+    GetApplicationDirectory @322
+    GetCameraForward @323
+    GetCameraMatrix @324
+    GetCameraMatrix2D @325
+    GetCameraProjectionMatrix @326
+    GetCameraRight @327
+    GetCameraUp @328
+    GetCameraViewMatrix @329
+    GetCharPressed @330
+    GetClipboardText @331
+    GetCodepoint @332
+    GetCodepointCount @333
+    GetCodepointNext @334
+    GetCodepointPrevious @335
+    GetCollisionRec @336
+    GetColor @337
+    GetCurrentMonitor @338
+    GetDirectoryPath @339
+    GetFPS @340
+    GetFileExtension @341
+    GetFileLength @342
+    GetFileModTime @343
+    GetFileName @344
+    GetFileNameWithoutExt @345
+    GetFontDefault @346
+    GetFrameTime @347
+    GetGamepadAxisCount @348
+    GetGamepadAxisMovement @349
+    GetGamepadButtonPressed @350
+    GetGamepadName @351
+    GetGestureDetected @352
+    GetGestureDragAngle @353
+    GetGestureDragVector @354
+    GetGestureHoldDuration @355
+    GetGesturePinchAngle @356
+    GetGesturePinchVector @357
+    GetGlyphAtlasRec @358
+    GetGlyphIndex @359
+    GetGlyphInfo @360
+    GetImageAlphaBorder @361
+    GetImageColor @362
+    GetKeyPressed @363
+    GetMeshBoundingBox @364
+    GetModelBoundingBox @365
+    GetMonitorCount @366
+    GetMonitorHeight @367
+    GetMonitorName @368
+    GetMonitorPhysicalHeight @369
+    GetMonitorPhysicalWidth @370
+    GetMonitorPosition @371
+    GetMonitorRefreshRate @372
+    GetMonitorWidth @373
+    GetMouseDelta @374
+    GetMousePosition @375
+    GetMouseRay @376
+    GetMouseWheelMove @377
+    GetMouseWheelMoveV @378
+    GetMouseX @379
+    GetMouseY @380
+    GetPixelColor @381
+    GetPixelDataSize @382
+    GetPrevDirectoryPath @383
+    GetRandomValue @384
+    GetRayCollisionBox @385
+    GetRayCollisionMesh @386
+    GetRayCollisionQuad @387
+    GetRayCollisionSphere @388
+    GetRayCollisionTriangle @389
+    GetRenderHeight @390
+    GetRenderWidth @391
+    GetScreenHeight @392
+    GetScreenToWorld2D @393
+    GetScreenWidth @394
+    GetShaderLocation @395
+    GetShaderLocationAttrib @396
+    GetSplinePointBasis @397
+    GetSplinePointBezierCubic @398
+    GetSplinePointBezierQuad @399
+    GetSplinePointCatmullRom @400
+    GetSplinePointLinear @401
+    GetTime @402
+    GetTouchPointCount @403
+    GetTouchPointId @404
+    GetTouchPosition @405
+    GetTouchX @406
+    GetTouchY @407
+    GetWindowHandle @408
+    GetWindowPosition @409
+    GetWindowScaleDPI @410
+    GetWorkingDirectory @411
+    GetWorldToScreen @412
+    GetWorldToScreen2D @413
+    GetWorldToScreenEx @414
+    HideCursor @415
+    ImageAlphaClear @416
+    ImageAlphaCrop @417
+    ImageAlphaMask @418
+    ImageAlphaPremultiply @419
+    ImageBlurGaussian @420
+    ImageClearBackground @421
+    ImageColorBrightness @422
+    ImageColorContrast @423
+    ImageColorGrayscale @424
+    ImageColorInvert @425
+    ImageColorReplace @426
+    ImageColorTint @427
+    ImageCopy @428
+    ImageCrop @429
+    ImageDither @430
+    ImageDraw @431
+    ImageDrawCircle @432
+    ImageDrawCircleLines @433
+    ImageDrawCircleLinesV @434
+    ImageDrawCircleV @435
+    ImageDrawLine @436
+    ImageDrawLineV @437
+    ImageDrawPixel @438
+    ImageDrawPixelV @439
+    ImageDrawRectangle @440
+    ImageDrawRectangleLines @441
+    ImageDrawRectangleRec @442
+    ImageDrawRectangleV @443
+    ImageDrawText @444
+    ImageDrawTextEx @445
+    ImageFlipHorizontal @446
+    ImageFlipVertical @447
+    ImageFormat @448
+    ImageFromImage @449
+    ImageMipmaps @450
+    ImageResize @451
+    ImageResizeCanvas @452
+    ImageResizeNN @453
+    ImageRotate @454
+    ImageRotateCCW @455
+    ImageRotateCW @456
+    ImageText @457
+    ImageTextEx @458
+    ImageToPOT @459
+    InitPlatform @460
+    InitShadowMapping @461
+    InitWindow @462
+    IsCursorHidden @463
+    IsCursorOnScreen @464
+    IsFileDropped @465
+    IsFileExtension @466
+    IsFontReady @467
+    IsGamepadAvailable @468
+    IsGamepadButtonDown @469
+    IsGamepadButtonPressed @470
+    IsGamepadButtonReleased @471
+    IsGamepadButtonUp @472
+    IsGestureDetected @473
+    IsImageReady @474
+    IsKeyDown @475
+    IsKeyPressed @476
+    IsKeyPressedRepeat @477
+    IsKeyReleased @478
+    IsKeyUp @479
+    IsMaterialReady @480
+    IsModelAnimationValid @481
+    IsModelReady @482
+    IsMouseButtonDown @483
+    IsMouseButtonPressed @484
+    IsMouseButtonReleased @485
+    IsMouseButtonUp @486
+    IsPathFile @487
+    IsRenderTextureReady @488
+    IsShaderReady @489
+    IsTextureReady @490
+    IsWindowFocused @491
+    IsWindowFullscreen @492
+    IsWindowHidden @493
+    IsWindowMaximized @494
+    IsWindowMinimized @495
+    IsWindowReady @496
+    IsWindowResized @497
+    IsWindowState @498
+    Lerp @499
+    LoadAutomationEventList @500
+    LoadCodepoints @501
+    LoadDirectoryFiles @502
+    LoadDirectoryFilesEx @503
+    LoadDroppedFiles @504
+    LoadFileData @505
+    LoadFileText @506
+    LoadFont @507
+    LoadFontData @508
+    LoadFontDefault @509
+    LoadFontEx @510
+    LoadFontFromImage @511
+    LoadFontFromMemory @512
+    LoadImage @513
+    LoadImageAnim @514
+    LoadImageColors @515
+    LoadImageFromMemory @516
+    LoadImageFromScreen @517
+    LoadImageFromTexture @518
+    LoadImagePalette @519
+    LoadImageRaw @520
+    LoadImageSvg @521
+    LoadMaterialDefault @522
+    LoadMaterials @523
+    LoadModel @524
+    LoadModelAnimations @525
+    LoadModelFromMesh @526
+    LoadRandomSequence @527
+    LoadRenderTexture @528
+    LoadShader @529
+    LoadShaderFromMemory @530
+    LoadTexture @531
+    LoadTextureCubemap @532
+    LoadTextureFromImage @533
+    LoadUTF8 @534
+    LoadVrStereoConfig @535
+    MatrixAdd @536
+    MatrixDeterminant @537
+    MatrixFrustum @538
+    MatrixIdentity @539
+    MatrixInvert @540
+    MatrixLookAt @541
+    MatrixMultiply @542
+    MatrixOrtho @543
+    MatrixPerspective @544
+    MatrixRotate @545
+    MatrixRotateX @546
+    MatrixRotateXYZ @547
+    MatrixRotateY @548
+    MatrixRotateZ @549
+    MatrixRotateZYX @550
+    MatrixScale @551
+    MatrixSubtract @552
+    MatrixToFloatV @553
+    MatrixTrace @554
+    MatrixTranslate @555
+    MatrixTranspose @556
+    MaximizeWindow @557
+    MeasureText @558
+    MeasureTextEx @559
+    MemAlloc @560
+    MemFree @561
+    MemRealloc @562
+    MinimizeWindow @563
+    Normalize @564
+    OpenURL @565
+    PlayAutomationEvent @566
+    PollInputEvents @567
+    ProcessGestureEvent @568
+    QuaternionAdd @569
+    QuaternionAddValue @570
+    QuaternionDivide @571
+    QuaternionEquals @572
+    QuaternionFromAxisAngle @573
+    QuaternionFromEuler @574
+    QuaternionFromMatrix @575
+    QuaternionFromVector3ToVector3 @576
+    QuaternionIdentity @577
+    QuaternionInvert @578
+    QuaternionLength @579
+    QuaternionLerp @580
+    QuaternionMultiply @581
+    QuaternionNlerp @582
+    QuaternionNormalize @583
+    QuaternionScale @584
+    QuaternionSlerp @585
+    QuaternionSubtract @586
+    QuaternionSubtractValue @587
+    QuaternionToAxisAngle @588
+    QuaternionToEuler @589
+    QuaternionToMatrix @590
+    QuaternionTransform @591
+    RectangleContains @592
+    Remap @593
+    RenderModelWithShadows @594
+    RestoreWindow @595
+    SaveFileData @596
+    SaveFileText @597
+    SetAutomationEventBaseFrame @598
+    SetAutomationEventList @599
+    SetClipboardText @600
+    SetConfigFlags @601
+    SetExitKey @602
+    SetGamepadMappings @603
+    SetGesturesEnabled @604
+    SetLoadFileDataCallback @605
+    SetLoadFileTextCallback @606
+    SetMaterialTexture @607
+    SetModelMeshMaterial @608
+    SetMouseCursor @609
+    SetMouseOffset @610
+    SetMousePosition @611
+    SetMouseScale @612
+    SetPixelColor @613
+    SetRandomSeed @614
+    SetSaveFileDataCallback @615
+    SetSaveFileTextCallback @616
+    SetShaderValue @617
+    SetShaderValueMatrix @618
+    SetShaderValueTexture @619
+    SetShaderValueV @620
+    SetShapesTexture @621
+    SetTargetFPS @622
+    SetTextLineSpacing @623
+    SetTextureFilter @624
+    SetTextureWrap @625
+    SetTraceLogCallback @626
+    SetTraceLogLevel @627
+    SetWindowFocused @628
+    SetWindowIcon @629
+    SetWindowIcons @630
+    SetWindowMaxSize @631
+    SetWindowMinSize @632
+    SetWindowMonitor @633
+    SetWindowOpacity @634
+    SetWindowPosition @635
+    SetWindowSize @636
+    SetWindowState @637
+    SetWindowTitle @638
+    ShowCursor @639
+    SolidVertex @640 DATA
+    StartAutomationEventRecording @641
+    StopAutomationEventRecording @642
+    SwapScreenBuffer @643
+    TakeScreenshot @644
+    TextAppend @645
+    TextCopy @646
+    TextFindIndex @647
+    TextFormat @648
+    TextInsert @649
+    TextIsEqual @650
+    TextJoin @651
+    TextLength @652
+    TextReplace @653
+    TextSplit @654
+    TextSubtext @655
+    TextToInteger @656
+    TextToLower @657
+    TextToPascal @658
+    TextToUpper @659
+    ToggleBorderlessWindowed @660
+    ToggleFullscreen @661
+    TraceLog @662
+    UnloadAutomationEventList @663
+    UnloadCodepoints @664
+    UnloadDirectoryFiles @665
+    UnloadDroppedFiles @666
+    UnloadFileData @667
+    UnloadFileText @668
+    UnloadFont @669
+    UnloadFontData @670
+    UnloadFontDefault @671
+    UnloadImage @672
+    UnloadImageColors @673
+    UnloadImagePalette @674
+    UnloadMaterial @675
+    UnloadMesh @676
+    UnloadModel @677
+    UnloadModelAnimation @678
+    UnloadModelAnimations @679
+    UnloadRandomSequence @680
+    UnloadRenderTexture @681
+    UnloadShader @682
+    UnloadTexture @683
+    UnloadUTF8 @684
+    UnloadVrStereoConfig @685
+    UpdateCamera @686
+    UpdateCameraPro @687
+    UpdateGestures @688
+    UpdateMeshBuffer @689
+    UpdateModelAnimation @690
+    UpdateTexture @691
+    UpdateTextureRec @692
+    UploadMesh @693
+    Vector2Add @694
+    Vector2AddValue @695
+    Vector2Angle @696
+    Vector2Clamp @697
+    Vector2ClampValue @698
+    Vector2Distance @699
+    Vector2DistanceSqr @700
+    Vector2Divide @701
+    Vector2DotProduct @702
+    Vector2Equals @703
+    Vector2Invert @704
+    Vector2Length @705
+    Vector2LengthSqr @706
+    Vector2Lerp @707
+    Vector2LineAngle @708
+    Vector2MoveTowards @709
+    Vector2Multiply @710
+    Vector2Negate @711
+    Vector2Normalize @712
+    Vector2One @713
+    Vector2Reflect @714
+    Vector2Rotate @715
+    Vector2Scale @716
+    Vector2Subtract @717
+    Vector2SubtractValue @718
+    Vector2Transform @719
+    Vector2Zero @720
+    Vector3Add @721
+    Vector3AddValue @722
+    Vector3Angle @723
+    Vector3Barycenter @724
+    Vector3Clamp @725
+    Vector3ClampValue @726
+    Vector3CrossProduct @727
+    Vector3Distance @728
+    Vector3DistanceSqr @729
+    Vector3Divide @730
+    Vector3DotProduct @731
+    Vector3Equals @732
+    Vector3Floor @733
+    Vector3Invert @734
+    Vector3Length @735
+    Vector3LengthSqr @736
+    Vector3Lerp @737
+    Vector3Max @738
+    Vector3Min @739
+    Vector3Multiply @740
+    Vector3Negate @741
+    Vector3Normalize @742
+    Vector3One @743
+    Vector3OrthoNormalize @744
+    Vector3Perpendicular @745
+    Vector3Project @746
+    Vector3Reflect @747
+    Vector3Refract @748
+    Vector3Reject @749
+    Vector3RotateByAxisAngle @750
+    Vector3RotateByQuaternion @751
+    Vector3Round @752
+    Vector3Scale @753
+    Vector3Subtract @754
+    Vector3SubtractValue @755
+    Vector3ToFloatV @756
+    Vector3Transform @757
+    Vector3Unproject @758
+    Vector3Zero @759
+    Vox_FreeArrays @760
+    Vox_LoadFromMemory @761
+    WaitTime @762
+    WindowShouldClose @763
+    Wrap @764
+    _glfw @765 DATA
+    _glfwAllocGammaArrays @766
+    _glfwAllocJoystick @767
+    _glfwAllocMonitor @768
+    _glfwCenterCursorInContentArea @769
+    _glfwChooseFBConfig @770
+    _glfwChooseVideoMode @771
+    _glfwCompareVideoModes @772
+    _glfwConnectWin32 @773
+    _glfwCreateContextEGL @774
+    _glfwCreateContextOSMesa @775
+    _glfwCreateContextWGL @776
+    _glfwCreateCursorWin32 @777
+    _glfwCreateStandardCursorWin32 @778
+    _glfwCreateUTF8FromWideStringWin32 @779
+    _glfwCreateWideStringFromUTF8Win32 @780
+    _glfwCreateWindowSurfaceWin32 @781
+    _glfwCreateWindowWin32 @782
+    _glfwDefaultMappings @783 DATA
+    _glfwDestroyCursorWin32 @784
+    _glfwDestroyWindowWin32 @785
+    _glfwDetectJoystickConnectionWin32 @786
+    _glfwDetectJoystickDisconnectionWin32 @787
+    _glfwEncodeUTF8 @788
+    _glfwFocusWindowWin32 @789
+    _glfwFramebufferTransparentWin32 @790
+    _glfwFreeGammaArrays @791
+    _glfwFreeJoystick @792
+    _glfwFreeMonitor @793
+    _glfwFreeMonitorWin32 @794
+    _glfwGetClipboardStringWin32 @795
+    _glfwGetCursorPosWin32 @796
+    _glfwGetEGLNativeDisplayWin32 @797
+    _glfwGetEGLNativeWindowWin32 @798
+    _glfwGetEGLPlatformWin32 @799
+    _glfwGetFramebufferSizeWin32 @800
+    _glfwGetGammaRampWin32 @801
+    _glfwGetHMONITORContentScaleWin32 @802
+    _glfwGetKeyScancodeWin32 @803
+    _glfwGetMappingNameWin32 @804
+    _glfwGetMonitorContentScaleWin32 @805
+    _glfwGetMonitorPosWin32 @806
+    _glfwGetMonitorWorkareaWin32 @807
+    _glfwGetPhysicalDevicePresentationSupportWin32 @808
+    _glfwGetRequiredInstanceExtensionsWin32 @809
+    _glfwGetScancodeNameWin32 @810
+    _glfwGetVideoModeWin32 @811
+    _glfwGetVideoModesWin32 @812
+    _glfwGetVulkanResultString @813
+    _glfwGetWindowContentScaleWin32 @814
+    _glfwGetWindowFrameSizeWin32 @815
+    _glfwGetWindowOpacityWin32 @816
+    _glfwGetWindowPosWin32 @817
+    _glfwGetWindowSizeWin32 @818
+    _glfwHideWindowWin32 @819
+    _glfwIconifyWindowWin32 @820
+    _glfwInitEGL @821
+    _glfwInitGamepadMappings @822
+    _glfwInitJoysticksWin32 @823
+    _glfwInitOSMesa @824
+    _glfwInitVulkan @825
+    _glfwInitWGL @826
+    _glfwInitWin32 @827
+    _glfwInputChar @828
+    _glfwInputCursorEnter @829
+    _glfwInputCursorPos @830
+    _glfwInputDrop @831
+    _glfwInputError @832
+    _glfwInputErrorWin32 @833
+    _glfwInputFramebufferSize @834
+    _glfwInputJoystick @835
+    _glfwInputJoystickAxis @836
+    _glfwInputJoystickButton @837
+    _glfwInputJoystickHat @838
+    _glfwInputKey @839
+    _glfwInputMonitor @840
+    _glfwInputMonitorWindow @841
+    _glfwInputMouseClick @842
+    _glfwInputScroll @843
+    _glfwInputWindowCloseRequest @844
+    _glfwInputWindowContentScale @845
+    _glfwInputWindowDamage @846
+    _glfwInputWindowFocus @847
+    _glfwInputWindowIconify @848
+    _glfwInputWindowMaximize @849
+    _glfwInputWindowMonitor @850
+    _glfwInputWindowPos @851
+    _glfwInputWindowSize @852
+    _glfwIsValidContextConfig @853
+    _glfwIsWindows10BuildOrGreaterWin32 @854
+    _glfwIsWindowsVersionOrGreaterWin32 @855
+    _glfwMaximizeWindowWin32 @856
+    _glfwParseUriList @857
+    _glfwPlatformCreateMutex @858
+    _glfwPlatformCreateTls @859
+    _glfwPlatformDestroyMutex @860
+    _glfwPlatformDestroyTls @861
+    _glfwPlatformFreeModule @862
+    _glfwPlatformGetModuleSymbol @863
+    _glfwPlatformGetTimerFrequency @864
+    _glfwPlatformGetTimerValue @865
+    _glfwPlatformGetTls @866
+    _glfwPlatformInitTimer @867
+    _glfwPlatformLoadModule @868
+    _glfwPlatformLockMutex @869
+    _glfwPlatformSetTls @870
+    _glfwPlatformUnlockMutex @871
+    _glfwPollEventsWin32 @872
+    _glfwPollJoystickWin32 @873
+    _glfwPollMonitorsWin32 @874
+    _glfwPostEmptyEventWin32 @875
+    _glfwRawMouseMotionSupportedWin32 @876
+    _glfwRefreshContextAttribs @877
+    _glfwRequestWindowAttentionWin32 @878
+    _glfwRestoreVideoModeWin32 @879
+    _glfwRestoreWindowWin32 @880
+    _glfwSelectPlatform @881
+    _glfwSetClipboardStringWin32 @882
+    _glfwSetCursorModeWin32 @883
+    _glfwSetCursorPosWin32 @884
+    _glfwSetCursorWin32 @885
+    _glfwSetGammaRampWin32 @886
+    _glfwSetRawMouseMotionWin32 @887
+    _glfwSetVideoModeWin32 @888
+    _glfwSetWindowAspectRatioWin32 @889
+    _glfwSetWindowDecoratedWin32 @890
+    _glfwSetWindowFloatingWin32 @891
+    _glfwSetWindowIconWin32 @892
+    _glfwSetWindowMonitorWin32 @893
+    _glfwSetWindowMousePassthroughWin32 @894
+    _glfwSetWindowOpacityWin32 @895
+    _glfwSetWindowPosWin32 @896
+    _glfwSetWindowResizableWin32 @897
+    _glfwSetWindowSizeLimitsWin32 @898
+    _glfwSetWindowSizeWin32 @899
+    _glfwSetWindowTitleWin32 @900
+    _glfwShowWindowWin32 @901
+    _glfwSplitBPP @902
+    _glfwStringInExtensionString @903
+    _glfwTerminateEGL @904
+    _glfwTerminateJoysticksWin32 @905
+    _glfwTerminateOSMesa @906
+    _glfwTerminateVulkan @907
+    _glfwTerminateWGL @908
+    _glfwTerminateWin32 @909
+    _glfwUpdateGamepadGUIDWin32 @910
+    _glfwUpdateKeyNamesWin32 @911
+    _glfwWaitEventsTimeoutWin32 @912
+    _glfwWaitEventsWin32 @913
+    _glfwWindowFocusedWin32 @914
+    _glfwWindowHoveredWin32 @915
+    _glfwWindowIconifiedWin32 @916
+    _glfwWindowMaximizedWin32 @917
+    _glfwWindowVisibleWin32 @918
+    _glfw_calloc @919
+    _glfw_fmaxf @920
+    _glfw_fminf @921
+    _glfw_free @922
+    _glfw_max @923
+    _glfw_min @924
+    _glfw_realloc @925
+    _glfw_strdup @926
+    _m3d_getpr @927
+    _m3d_gettx @928
+    _m3d_inv @929
+    _m3d_mat @930
+    _m3d_mul @931
+    _m3d_safestr @932
+    _m3dstbi_zlib_decode_malloc_guesssize_headerflag @933
+    abs @934
+    add_to_map @935
+    cgltf_accessor_index @936
+    cgltf_accessor_read_float @937
+    cgltf_accessor_read_index @938
+    cgltf_accessor_read_uint @939
+    cgltf_accessor_unpack_floats @940
+    cgltf_accessor_unpack_indices @941
+    cgltf_animation_channel_index @942
+    cgltf_animation_index @943
+    cgltf_animation_sampler_index @944
+    cgltf_buffer_index @945
+    cgltf_buffer_view_data @946
+    cgltf_buffer_view_index @947
+    cgltf_calc_size @948
+    cgltf_camera_index @949
+    cgltf_component_size @950
+    cgltf_copy_extras_json @951
+    cgltf_decode_string @952
+    cgltf_decode_uri @953
+    cgltf_free @954
+    cgltf_image_index @955
+    cgltf_light_index @956
+    cgltf_load_buffer_base64 @957
+    cgltf_load_buffers @958
+    cgltf_material_index @959
+    cgltf_mesh_index @960
+    cgltf_node_index @961
+    cgltf_node_transform_local @962
+    cgltf_node_transform_world @963
+    cgltf_num_components @964
+    cgltf_parse @965
+    cgltf_parse_file @966
+    cgltf_sampler_index @967
+    cgltf_scene_index @968
+    cgltf_skin_index @969
+    cgltf_texture_index @970
+    cgltf_validate @971
+    depthShader @972 DATA
+    dynamic_fgets @973
+    ext_RoundButton @974
+    ext_SquareButton @975
+    fillColorCircle @976
+    fv @977 DATA
+    generic_tool_acquire @978
+    generic_tool_finish @979
+    get_control_keys @980
+    gifFrameCounter @981 DATA
+    gifRecording @982 DATA
+    gifState @983 DATA
+    gladLoadGL @984
+    gladLoadGLUserPtr @985
+    glad_glAccumxOES @986 DATA
+    glad_glActiveShaderProgram @987 DATA
+    glad_glActiveTexture @988 DATA
+    glad_glActiveTextureARB @989 DATA
+    glad_glAlphaFuncxOES @990 DATA
+    glad_glAttachObjectARB @991 DATA
+    glad_glAttachShader @992 DATA
+    glad_glBeginConditionalRender @993 DATA
+    glad_glBeginQuery @994 DATA
+    glad_glBeginQueryARB @995 DATA
+    glad_glBeginQueryIndexed @996 DATA
+    glad_glBeginTransformFeedback @997 DATA
+    glad_glBindAttribLocation @998 DATA
+    glad_glBindAttribLocationARB @999 DATA
+    glad_glBindBuffer @1000 DATA
+    glad_glBindBufferARB @1001 DATA
+    glad_glBindBufferBase @1002 DATA
+    glad_glBindBufferRange @1003 DATA
+    glad_glBindBuffersBase @1004 DATA
+    glad_glBindBuffersRange @1005 DATA
+    glad_glBindFragDataLocation @1006 DATA
+    glad_glBindFragDataLocationIndexed @1007 DATA
+    glad_glBindFramebuffer @1008 DATA
+    glad_glBindFramebufferEXT @1009 DATA
+    glad_glBindImageTexture @1010 DATA
+    glad_glBindImageTextures @1011 DATA
+    glad_glBindProgramARB @1012 DATA
+    glad_glBindProgramPipeline @1013 DATA
+    glad_glBindRenderbuffer @1014 DATA
+    glad_glBindRenderbufferEXT @1015 DATA
+    glad_glBindSampler @1016 DATA
+    glad_glBindSamplers @1017 DATA
+    glad_glBindTexture @1018 DATA
+    glad_glBindTextureUnit @1019 DATA
+    glad_glBindTextures @1020 DATA
+    glad_glBindTransformFeedback @1021 DATA
+    glad_glBindVertexArray @1022 DATA
+    glad_glBindVertexBuffer @1023 DATA
+    glad_glBindVertexBuffers @1024 DATA
+    glad_glBitmapxOES @1025 DATA
+    glad_glBlendColor @1026 DATA
+    glad_glBlendColorxOES @1027 DATA
+    glad_glBlendEquation @1028 DATA
+    glad_glBlendEquationSeparate @1029 DATA
+    glad_glBlendEquationSeparatei @1030 DATA
+    glad_glBlendEquationSeparateiARB @1031 DATA
+    glad_glBlendEquationi @1032 DATA
+    glad_glBlendEquationiARB @1033 DATA
+    glad_glBlendFunc @1034 DATA
+    glad_glBlendFuncSeparate @1035 DATA
+    glad_glBlendFuncSeparatei @1036 DATA
+    glad_glBlendFuncSeparateiARB @1037 DATA
+    glad_glBlendFunci @1038 DATA
+    glad_glBlendFunciARB @1039 DATA
+    glad_glBlitFramebuffer @1040 DATA
+    glad_glBlitFramebufferEXT @1041 DATA
+    glad_glBlitNamedFramebuffer @1042 DATA
+    glad_glBufferData @1043 DATA
+    glad_glBufferDataARB @1044 DATA
+    glad_glBufferStorage @1045 DATA
+    glad_glBufferSubData @1046 DATA
+    glad_glBufferSubDataARB @1047 DATA
+    glad_glCheckFramebufferStatus @1048 DATA
+    glad_glCheckFramebufferStatusEXT @1049 DATA
+    glad_glCheckNamedFramebufferStatus @1050 DATA
+    glad_glClampColor @1051 DATA
+    glad_glClampColorARB @1052 DATA
+    glad_glClear @1053 DATA
+    glad_glClearAccumxOES @1054 DATA
+    glad_glClearBufferData @1055 DATA
+    glad_glClearBufferSubData @1056 DATA
+    glad_glClearBufferfi @1057 DATA
+    glad_glClearBufferfv @1058 DATA
+    glad_glClearBufferiv @1059 DATA
+    glad_glClearBufferuiv @1060 DATA
+    glad_glClearColor @1061 DATA
+    glad_glClearColorxOES @1062 DATA
+    glad_glClearDepth @1063 DATA
+    glad_glClearDepthf @1064 DATA
+    glad_glClearDepthxOES @1065 DATA
+    glad_glClearNamedBufferData @1066 DATA
+    glad_glClearNamedBufferSubData @1067 DATA
+    glad_glClearNamedFramebufferfi @1068 DATA
+    glad_glClearNamedFramebufferfv @1069 DATA
+    glad_glClearNamedFramebufferiv @1070 DATA
+    glad_glClearNamedFramebufferuiv @1071 DATA
+    glad_glClearStencil @1072 DATA
+    glad_glClearTexImage @1073 DATA
+    glad_glClearTexSubImage @1074 DATA
+    glad_glClientActiveTextureARB @1075 DATA
+    glad_glClientWaitSync @1076 DATA
+    glad_glClipPlanexOES @1077 DATA
+    glad_glColor3xOES @1078 DATA
+    glad_glColor3xvOES @1079 DATA
+    glad_glColor4xOES @1080 DATA
+    glad_glColor4xvOES @1081 DATA
+    glad_glColorMask @1082 DATA
+    glad_glColorMaski @1083 DATA
+    glad_glCompileShader @1084 DATA
+    glad_glCompileShaderARB @1085 DATA
+    glad_glCompileShaderIncludeARB @1086 DATA
+    glad_glCompressedTexImage1D @1087 DATA
+    glad_glCompressedTexImage1DARB @1088 DATA
+    glad_glCompressedTexImage2D @1089 DATA
+    glad_glCompressedTexImage2DARB @1090 DATA
+    glad_glCompressedTexImage3D @1091 DATA
+    glad_glCompressedTexImage3DARB @1092 DATA
+    glad_glCompressedTexSubImage1D @1093 DATA
+    glad_glCompressedTexSubImage1DARB @1094 DATA
+    glad_glCompressedTexSubImage2D @1095 DATA
+    glad_glCompressedTexSubImage2DARB @1096 DATA
+    glad_glCompressedTexSubImage3D @1097 DATA
+    glad_glCompressedTexSubImage3DARB @1098 DATA
+    glad_glCompressedTextureSubImage1D @1099 DATA
+    glad_glCompressedTextureSubImage2D @1100 DATA
+    glad_glCompressedTextureSubImage3D @1101 DATA
+    glad_glConvolutionParameterxOES @1102 DATA
+    glad_glConvolutionParameterxvOES @1103 DATA
+    glad_glCopyBufferSubData @1104 DATA
+    glad_glCopyImageSubData @1105 DATA
+    glad_glCopyNamedBufferSubData @1106 DATA
+    glad_glCopyTexImage1D @1107 DATA
+    glad_glCopyTexImage2D @1108 DATA
+    glad_glCopyTexSubImage1D @1109 DATA
+    glad_glCopyTexSubImage2D @1110 DATA
+    glad_glCopyTexSubImage3D @1111 DATA
+    glad_glCopyTextureSubImage1D @1112 DATA
+    glad_glCopyTextureSubImage2D @1113 DATA
+    glad_glCopyTextureSubImage3D @1114 DATA
+    glad_glCreateBuffers @1115 DATA
+    glad_glCreateFramebuffers @1116 DATA
+    glad_glCreateProgram @1117 DATA
+    glad_glCreateProgramObjectARB @1118 DATA
+    glad_glCreateProgramPipelines @1119 DATA
+    glad_glCreateQueries @1120 DATA
+    glad_glCreateRenderbuffers @1121 DATA
+    glad_glCreateSamplers @1122 DATA
+    glad_glCreateShader @1123 DATA
+    glad_glCreateShaderObjectARB @1124 DATA
+    glad_glCreateShaderProgramv @1125 DATA
+    glad_glCreateTextures @1126 DATA
+    glad_glCreateTransformFeedbacks @1127 DATA
+    glad_glCreateVertexArrays @1128 DATA
+    glad_glCullFace @1129 DATA
+    glad_glDebugMessageCallback @1130 DATA
+    glad_glDebugMessageCallbackARB @1131 DATA
+    glad_glDebugMessageControl @1132 DATA
+    glad_glDebugMessageControlARB @1133 DATA
+    glad_glDebugMessageInsert @1134 DATA
+    glad_glDebugMessageInsertARB @1135 DATA
+    glad_glDeleteBuffers @1136 DATA
+    glad_glDeleteBuffersARB @1137 DATA
+    glad_glDeleteFramebuffers @1138 DATA
+    glad_glDeleteFramebuffersEXT @1139 DATA
+    glad_glDeleteNamedStringARB @1140 DATA
+    glad_glDeleteObjectARB @1141 DATA
+    glad_glDeleteProgram @1142 DATA
+    glad_glDeleteProgramPipelines @1143 DATA
+    glad_glDeleteProgramsARB @1144 DATA
+    glad_glDeleteQueries @1145 DATA
+    glad_glDeleteQueriesARB @1146 DATA
+    glad_glDeleteRenderbuffers @1147 DATA
+    glad_glDeleteRenderbuffersEXT @1148 DATA
+    glad_glDeleteSamplers @1149 DATA
+    glad_glDeleteShader @1150 DATA
+    glad_glDeleteSync @1151 DATA
+    glad_glDeleteTextures @1152 DATA
+    glad_glDeleteTransformFeedbacks @1153 DATA
+    glad_glDeleteVertexArrays @1154 DATA
+    glad_glDepthFunc @1155 DATA
+    glad_glDepthMask @1156 DATA
+    glad_glDepthRange @1157 DATA
+    glad_glDepthRangeArrayv @1158 DATA
+    glad_glDepthRangeIndexed @1159 DATA
+    glad_glDepthRangef @1160 DATA
+    glad_glDepthRangexOES @1161 DATA
+    glad_glDetachObjectARB @1162 DATA
+    glad_glDetachShader @1163 DATA
+    glad_glDisable @1164 DATA
+    glad_glDisableVertexArrayAttrib @1165 DATA
+    glad_glDisableVertexAttribArray @1166 DATA
+    glad_glDisableVertexAttribArrayARB @1167 DATA
+    glad_glDisablei @1168 DATA
+    glad_glDispatchCompute @1169 DATA
+    glad_glDispatchComputeGroupSizeARB @1170 DATA
+    glad_glDispatchComputeIndirect @1171 DATA
+    glad_glDrawArrays @1172 DATA
+    glad_glDrawArraysIndirect @1173 DATA
+    glad_glDrawArraysInstanced @1174 DATA
+    glad_glDrawArraysInstancedARB @1175 DATA
+    glad_glDrawArraysInstancedBaseInstance @1176 DATA
+    glad_glDrawArraysInstancedEXT @1177 DATA
+    glad_glDrawBuffer @1178 DATA
+    glad_glDrawBuffers @1179 DATA
+    glad_glDrawBuffersARB @1180 DATA
+    glad_glDrawElements @1181 DATA
+    glad_glDrawElementsBaseVertex @1182 DATA
+    glad_glDrawElementsIndirect @1183 DATA
+    glad_glDrawElementsInstanced @1184 DATA
+    glad_glDrawElementsInstancedARB @1185 DATA
+    glad_glDrawElementsInstancedBaseInstance @1186 DATA
+    glad_glDrawElementsInstancedBaseVertex @1187 DATA
+    glad_glDrawElementsInstancedBaseVertexBaseInstance @1188 DATA
+    glad_glDrawElementsInstancedEXT @1189 DATA
+    glad_glDrawRangeElements @1190 DATA
+    glad_glDrawRangeElementsBaseVertex @1191 DATA
+    glad_glDrawTransformFeedback @1192 DATA
+    glad_glDrawTransformFeedbackInstanced @1193 DATA
+    glad_glDrawTransformFeedbackStream @1194 DATA
+    glad_glDrawTransformFeedbackStreamInstanced @1195 DATA
+    glad_glEnable @1196 DATA
+    glad_glEnableVertexArrayAttrib @1197 DATA
+    glad_glEnableVertexAttribArray @1198 DATA
+    glad_glEnableVertexAttribArrayARB @1199 DATA
+    glad_glEnablei @1200 DATA
+    glad_glEndConditionalRender @1201 DATA
+    glad_glEndQuery @1202 DATA
+    glad_glEndQueryARB @1203 DATA
+    glad_glEndQueryIndexed @1204 DATA
+    glad_glEndTransformFeedback @1205 DATA
+    glad_glEvalCoord1xOES @1206 DATA
+    glad_glEvalCoord1xvOES @1207 DATA
+    glad_glEvalCoord2xOES @1208 DATA
+    glad_glEvalCoord2xvOES @1209 DATA
+    glad_glEvaluateDepthValuesARB @1210 DATA
+    glad_glFeedbackBufferxOES @1211 DATA
+    glad_glFenceSync @1212 DATA
+    glad_glFinish @1213 DATA
+    glad_glFlush @1214 DATA
+    glad_glFlushMappedBufferRange @1215 DATA
+    glad_glFlushMappedNamedBufferRange @1216 DATA
+    glad_glFogCoordPointerEXT @1217 DATA
+    glad_glFogCoorddEXT @1218 DATA
+    glad_glFogCoorddvEXT @1219 DATA
+    glad_glFogCoordfEXT @1220 DATA
+    glad_glFogCoordfvEXT @1221 DATA
+    glad_glFogxOES @1222 DATA
+    glad_glFogxvOES @1223 DATA
+    glad_glFramebufferParameteri @1224 DATA
+    glad_glFramebufferRenderbuffer @1225 DATA
+    glad_glFramebufferRenderbufferEXT @1226 DATA
+    glad_glFramebufferSampleLocationsfvARB @1227 DATA
+    glad_glFramebufferTexture @1228 DATA
+    glad_glFramebufferTexture1D @1229 DATA
+    glad_glFramebufferTexture1DEXT @1230 DATA
+    glad_glFramebufferTexture2D @1231 DATA
+    glad_glFramebufferTexture2DEXT @1232 DATA
+    glad_glFramebufferTexture3D @1233 DATA
+    glad_glFramebufferTexture3DEXT @1234 DATA
+    glad_glFramebufferTextureARB @1235 DATA
+    glad_glFramebufferTextureFaceARB @1236 DATA
+    glad_glFramebufferTextureLayer @1237 DATA
+    glad_glFramebufferTextureLayerARB @1238 DATA
+    glad_glFrontFace @1239 DATA
+    glad_glFrustumxOES @1240 DATA
+    glad_glGenBuffers @1241 DATA
+    glad_glGenBuffersARB @1242 DATA
+    glad_glGenFramebuffers @1243 DATA
+    glad_glGenFramebuffersEXT @1244 DATA
+    glad_glGenProgramPipelines @1245 DATA
+    glad_glGenProgramsARB @1246 DATA
+    glad_glGenQueries @1247 DATA
+    glad_glGenQueriesARB @1248 DATA
+    glad_glGenRenderbuffers @1249 DATA
+    glad_glGenRenderbuffersEXT @1250 DATA
+    glad_glGenSamplers @1251 DATA
+    glad_glGenTextures @1252 DATA
+    glad_glGenTransformFeedbacks @1253 DATA
+    glad_glGenVertexArrays @1254 DATA
+    glad_glGenerateMipmap @1255 DATA
+    glad_glGenerateMipmapEXT @1256 DATA
+    glad_glGenerateTextureMipmap @1257 DATA
+    glad_glGetActiveAtomicCounterBufferiv @1258 DATA
+    glad_glGetActiveAttrib @1259 DATA
+    glad_glGetActiveAttribARB @1260 DATA
+    glad_glGetActiveSubroutineName @1261 DATA
+    glad_glGetActiveSubroutineUniformName @1262 DATA
+    glad_glGetActiveSubroutineUniformiv @1263 DATA
+    glad_glGetActiveUniform @1264 DATA
+    glad_glGetActiveUniformARB @1265 DATA
+    glad_glGetActiveUniformBlockName @1266 DATA
+    glad_glGetActiveUniformBlockiv @1267 DATA
+    glad_glGetActiveUniformName @1268 DATA
+    glad_glGetActiveUniformsiv @1269 DATA
+    glad_glGetAttachedObjectsARB @1270 DATA
+    glad_glGetAttachedShaders @1271 DATA
+    glad_glGetAttribLocation @1272 DATA
+    glad_glGetAttribLocationARB @1273 DATA
+    glad_glGetBooleani_v @1274 DATA
+    glad_glGetBooleanv @1275 DATA
+    glad_glGetBufferParameteri64v @1276 DATA
+    glad_glGetBufferParameteriv @1277 DATA
+    glad_glGetBufferParameterivARB @1278 DATA
+    glad_glGetBufferPointerv @1279 DATA
+    glad_glGetBufferPointervARB @1280 DATA
+    glad_glGetBufferSubData @1281 DATA
+    glad_glGetBufferSubDataARB @1282 DATA
+    glad_glGetClipPlanexOES @1283 DATA
+    glad_glGetCompressedTexImage @1284 DATA
+    glad_glGetCompressedTexImageARB @1285 DATA
+    glad_glGetCompressedTextureImage @1286 DATA
+    glad_glGetCompressedTextureSubImage @1287 DATA
+    glad_glGetConvolutionParameterxvOES @1288 DATA
+    glad_glGetDebugMessageLog @1289 DATA
+    glad_glGetDebugMessageLogARB @1290 DATA
+    glad_glGetDoublei_v @1291 DATA
+    glad_glGetDoublev @1292 DATA
+    glad_glGetError @1293 DATA
+    glad_glGetFixedvOES @1294 DATA
+    glad_glGetFloati_v @1295 DATA
+    glad_glGetFloatv @1296 DATA
+    glad_glGetFragDataIndex @1297 DATA
+    glad_glGetFragDataLocation @1298 DATA
+    glad_glGetFramebufferAttachmentParameteriv @1299 DATA
+    glad_glGetFramebufferAttachmentParameterivEXT @1300 DATA
+    glad_glGetFramebufferParameteriv @1301 DATA
+    glad_glGetHandleARB @1302 DATA
+    glad_glGetHistogramParameterxvOES @1303 DATA
+    glad_glGetInfoLogARB @1304 DATA
+    glad_glGetInteger64i_v @1305 DATA
+    glad_glGetInteger64v @1306 DATA
+    glad_glGetIntegeri_v @1307 DATA
+    glad_glGetIntegerv @1308 DATA
+    glad_glGetInternalformati64v @1309 DATA
+    glad_glGetInternalformativ @1310 DATA
+    glad_glGetLightxOES @1311 DATA
+    glad_glGetMapxvOES @1312 DATA
+    glad_glGetMaterialxOES @1313 DATA
+    glad_glGetMultisamplefv @1314 DATA
+    glad_glGetNamedBufferParameteri64v @1315 DATA
+    glad_glGetNamedBufferParameteriv @1316 DATA
+    glad_glGetNamedBufferPointerv @1317 DATA
+    glad_glGetNamedBufferSubData @1318 DATA
+    glad_glGetNamedFramebufferAttachmentParameteriv @1319 DATA
+    glad_glGetNamedFramebufferParameteriv @1320 DATA
+    glad_glGetNamedRenderbufferParameteriv @1321 DATA
+    glad_glGetNamedStringARB @1322 DATA
+    glad_glGetNamedStringivARB @1323 DATA
+    glad_glGetObjectLabel @1324 DATA
+    glad_glGetObjectParameterfvARB @1325 DATA
+    glad_glGetObjectParameterivARB @1326 DATA
+    glad_glGetObjectPtrLabel @1327 DATA
+    glad_glGetPixelMapxv @1328 DATA
+    glad_glGetPointerv @1329 DATA
+    glad_glGetProgramBinary @1330 DATA
+    glad_glGetProgramEnvParameterdvARB @1331 DATA
+    glad_glGetProgramEnvParameterfvARB @1332 DATA
+    glad_glGetProgramInfoLog @1333 DATA
+    glad_glGetProgramInterfaceiv @1334 DATA
+    glad_glGetProgramLocalParameterdvARB @1335 DATA
+    glad_glGetProgramLocalParameterfvARB @1336 DATA
+    glad_glGetProgramPipelineInfoLog @1337 DATA
+    glad_glGetProgramPipelineiv @1338 DATA
+    glad_glGetProgramResourceIndex @1339 DATA
+    glad_glGetProgramResourceLocation @1340 DATA
+    glad_glGetProgramResourceLocationIndex @1341 DATA
+    glad_glGetProgramResourceName @1342 DATA
+    glad_glGetProgramResourceiv @1343 DATA
+    glad_glGetProgramStageiv @1344 DATA
+    glad_glGetProgramStringARB @1345 DATA
+    glad_glGetProgramiv @1346 DATA
+    glad_glGetProgramivARB @1347 DATA
+    glad_glGetQueryBufferObjecti64v @1348 DATA
+    glad_glGetQueryBufferObjectiv @1349 DATA
+    glad_glGetQueryBufferObjectui64v @1350 DATA
+    glad_glGetQueryBufferObjectuiv @1351 DATA
+    glad_glGetQueryIndexediv @1352 DATA
+    glad_glGetQueryObjecti64v @1353 DATA
+    glad_glGetQueryObjectiv @1354 DATA
+    glad_glGetQueryObjectivARB @1355 DATA
+    glad_glGetQueryObjectui64v @1356 DATA
+    glad_glGetQueryObjectuiv @1357 DATA
+    glad_glGetQueryObjectuivARB @1358 DATA
+    glad_glGetQueryiv @1359 DATA
+    glad_glGetQueryivARB @1360 DATA
+    glad_glGetRenderbufferParameteriv @1361 DATA
+    glad_glGetRenderbufferParameterivEXT @1362 DATA
+    glad_glGetSamplerParameterIiv @1363 DATA
+    glad_glGetSamplerParameterIuiv @1364 DATA
+    glad_glGetSamplerParameterfv @1365 DATA
+    glad_glGetSamplerParameteriv @1366 DATA
+    glad_glGetShaderInfoLog @1367 DATA
+    glad_glGetShaderPrecisionFormat @1368 DATA
+    glad_glGetShaderSource @1369 DATA
+    glad_glGetShaderSourceARB @1370 DATA
+    glad_glGetShaderiv @1371 DATA
+    glad_glGetString @1372 DATA
+    glad_glGetStringi @1373 DATA
+    glad_glGetSubroutineIndex @1374 DATA
+    glad_glGetSubroutineUniformLocation @1375 DATA
+    glad_glGetSynciv @1376 DATA
+    glad_glGetTexEnvxvOES @1377 DATA
+    glad_glGetTexGenxvOES @1378 DATA
+    glad_glGetTexImage @1379 DATA
+    glad_glGetTexLevelParameterfv @1380 DATA
+    glad_glGetTexLevelParameteriv @1381 DATA
+    glad_glGetTexLevelParameterxvOES @1382 DATA
+    glad_glGetTexParameterIiv @1383 DATA
+    glad_glGetTexParameterIuiv @1384 DATA
+    glad_glGetTexParameterfv @1385 DATA
+    glad_glGetTexParameteriv @1386 DATA
+    glad_glGetTexParameterxvOES @1387 DATA
+    glad_glGetTextureImage @1388 DATA
+    glad_glGetTextureLevelParameterfv @1389 DATA
+    glad_glGetTextureLevelParameteriv @1390 DATA
+    glad_glGetTextureParameterIiv @1391 DATA
+    glad_glGetTextureParameterIuiv @1392 DATA
+    glad_glGetTextureParameterfv @1393 DATA
+    glad_glGetTextureParameteriv @1394 DATA
+    glad_glGetTextureSubImage @1395 DATA
+    glad_glGetTransformFeedbackVarying @1396 DATA
+    glad_glGetTransformFeedbacki64_v @1397 DATA
+    glad_glGetTransformFeedbacki_v @1398 DATA
+    glad_glGetTransformFeedbackiv @1399 DATA
+    glad_glGetUniformBlockIndex @1400 DATA
+    glad_glGetUniformIndices @1401 DATA
+    glad_glGetUniformLocation @1402 DATA
+    glad_glGetUniformLocationARB @1403 DATA
+    glad_glGetUniformSubroutineuiv @1404 DATA
+    glad_glGetUniformdv @1405 DATA
+    glad_glGetUniformfv @1406 DATA
+    glad_glGetUniformfvARB @1407 DATA
+    glad_glGetUniformi64vARB @1408 DATA
+    glad_glGetUniformiv @1409 DATA
+    glad_glGetUniformivARB @1410 DATA
+    glad_glGetUniformui64vARB @1411 DATA
+    glad_glGetUniformuiv @1412 DATA
+    glad_glGetVertexArrayIndexed64iv @1413 DATA
+    glad_glGetVertexArrayIndexediv @1414 DATA
+    glad_glGetVertexArrayiv @1415 DATA
+    glad_glGetVertexAttribIiv @1416 DATA
+    glad_glGetVertexAttribIuiv @1417 DATA
+    glad_glGetVertexAttribLdv @1418 DATA
+    glad_glGetVertexAttribPointerv @1419 DATA
+    glad_glGetVertexAttribPointervARB @1420 DATA
+    glad_glGetVertexAttribdv @1421 DATA
+    glad_glGetVertexAttribdvARB @1422 DATA
+    glad_glGetVertexAttribfv @1423 DATA
+    glad_glGetVertexAttribfvARB @1424 DATA
+    glad_glGetVertexAttribiv @1425 DATA
+    glad_glGetVertexAttribivARB @1426 DATA
+    glad_glGetnUniformi64vARB @1427 DATA
+    glad_glGetnUniformui64vARB @1428 DATA
+    glad_glHint @1429 DATA
+    glad_glIndexxOES @1430 DATA
+    glad_glIndexxvOES @1431 DATA
+    glad_glInvalidateBufferData @1432 DATA
+    glad_glInvalidateBufferSubData @1433 DATA
+    glad_glInvalidateFramebuffer @1434 DATA
+    glad_glInvalidateNamedFramebufferData @1435 DATA
+    glad_glInvalidateNamedFramebufferSubData @1436 DATA
+    glad_glInvalidateSubFramebuffer @1437 DATA
+    glad_glInvalidateTexImage @1438 DATA
+    glad_glInvalidateTexSubImage @1439 DATA
+    glad_glIsBuffer @1440 DATA
+    glad_glIsBufferARB @1441 DATA
+    glad_glIsEnabled @1442 DATA
+    glad_glIsEnabledi @1443 DATA
+    glad_glIsFramebuffer @1444 DATA
+    glad_glIsFramebufferEXT @1445 DATA
+    glad_glIsNamedStringARB @1446 DATA
+    glad_glIsProgram @1447 DATA
+    glad_glIsProgramARB @1448 DATA
+    glad_glIsProgramPipeline @1449 DATA
+    glad_glIsQuery @1450 DATA
+    glad_glIsQueryARB @1451 DATA
+    glad_glIsRenderbuffer @1452 DATA
+    glad_glIsRenderbufferEXT @1453 DATA
+    glad_glIsSampler @1454 DATA
+    glad_glIsShader @1455 DATA
+    glad_glIsSync @1456 DATA
+    glad_glIsTexture @1457 DATA
+    glad_glIsTransformFeedback @1458 DATA
+    glad_glIsVertexArray @1459 DATA
+    glad_glLightModelxOES @1460 DATA
+    glad_glLightModelxvOES @1461 DATA
+    glad_glLightxOES @1462 DATA
+    glad_glLightxvOES @1463 DATA
+    glad_glLineWidth @1464 DATA
+    glad_glLineWidthxOES @1465 DATA
+    glad_glLinkProgram @1466 DATA
+    glad_glLinkProgramARB @1467 DATA
+    glad_glLoadMatrixxOES @1468 DATA
+    glad_glLoadTransposeMatrixdARB @1469 DATA
+    glad_glLoadTransposeMatrixfARB @1470 DATA
+    glad_glLoadTransposeMatrixxOES @1471 DATA
+    glad_glLogicOp @1472 DATA
+    glad_glMap1xOES @1473 DATA
+    glad_glMap2xOES @1474 DATA
+    glad_glMapBuffer @1475 DATA
+    glad_glMapBufferARB @1476 DATA
+    glad_glMapBufferRange @1477 DATA
+    glad_glMapGrid1xOES @1478 DATA
+    glad_glMapGrid2xOES @1479 DATA
+    glad_glMapNamedBuffer @1480 DATA
+    glad_glMapNamedBufferRange @1481 DATA
+    glad_glMaterialxOES @1482 DATA
+    glad_glMaterialxvOES @1483 DATA
+    glad_glMemoryBarrier @1484 DATA
+    glad_glMemoryBarrierByRegion @1485 DATA
+    glad_glMinSampleShading @1486 DATA
+    glad_glMinSampleShadingARB @1487 DATA
+    glad_glMultMatrixxOES @1488 DATA
+    glad_glMultTransposeMatrixdARB @1489 DATA
+    glad_glMultTransposeMatrixfARB @1490 DATA
+    glad_glMultTransposeMatrixxOES @1491 DATA
+    glad_glMultiDrawArrays @1492 DATA
+    glad_glMultiDrawArraysIndirect @1493 DATA
+    glad_glMultiDrawElements @1494 DATA
+    glad_glMultiDrawElementsBaseVertex @1495 DATA
+    glad_glMultiDrawElementsIndirect @1496 DATA
+    glad_glMultiTexCoord1dARB @1497 DATA
+    glad_glMultiTexCoord1dvARB @1498 DATA
+    glad_glMultiTexCoord1fARB @1499 DATA
+    glad_glMultiTexCoord1fvARB @1500 DATA
+    glad_glMultiTexCoord1iARB @1501 DATA
+    glad_glMultiTexCoord1ivARB @1502 DATA
+    glad_glMultiTexCoord1sARB @1503 DATA
+    glad_glMultiTexCoord1svARB @1504 DATA
+    glad_glMultiTexCoord1xOES @1505 DATA
+    glad_glMultiTexCoord1xvOES @1506 DATA
+    glad_glMultiTexCoord2dARB @1507 DATA
+    glad_glMultiTexCoord2dvARB @1508 DATA
+    glad_glMultiTexCoord2fARB @1509 DATA
+    glad_glMultiTexCoord2fvARB @1510 DATA
+    glad_glMultiTexCoord2iARB @1511 DATA
+    glad_glMultiTexCoord2ivARB @1512 DATA
+    glad_glMultiTexCoord2sARB @1513 DATA
+    glad_glMultiTexCoord2svARB @1514 DATA
+    glad_glMultiTexCoord2xOES @1515 DATA
+    glad_glMultiTexCoord2xvOES @1516 DATA
+    glad_glMultiTexCoord3dARB @1517 DATA
+    glad_glMultiTexCoord3dvARB @1518 DATA
+    glad_glMultiTexCoord3fARB @1519 DATA
+    glad_glMultiTexCoord3fvARB @1520 DATA
+    glad_glMultiTexCoord3iARB @1521 DATA
+    glad_glMultiTexCoord3ivARB @1522 DATA
+    glad_glMultiTexCoord3sARB @1523 DATA
+    glad_glMultiTexCoord3svARB @1524 DATA
+    glad_glMultiTexCoord3xOES @1525 DATA
+    glad_glMultiTexCoord3xvOES @1526 DATA
+    glad_glMultiTexCoord4dARB @1527 DATA
+    glad_glMultiTexCoord4dvARB @1528 DATA
+    glad_glMultiTexCoord4fARB @1529 DATA
+    glad_glMultiTexCoord4fvARB @1530 DATA
+    glad_glMultiTexCoord4iARB @1531 DATA
+    glad_glMultiTexCoord4ivARB @1532 DATA
+    glad_glMultiTexCoord4sARB @1533 DATA
+    glad_glMultiTexCoord4svARB @1534 DATA
+    glad_glMultiTexCoord4xOES @1535 DATA
+    glad_glMultiTexCoord4xvOES @1536 DATA
+    glad_glNamedBufferData @1537 DATA
+    glad_glNamedBufferStorage @1538 DATA
+    glad_glNamedBufferSubData @1539 DATA
+    glad_glNamedFramebufferDrawBuffer @1540 DATA
+    glad_glNamedFramebufferDrawBuffers @1541 DATA
+    glad_glNamedFramebufferParameteri @1542 DATA
+    glad_glNamedFramebufferReadBuffer @1543 DATA
+    glad_glNamedFramebufferRenderbuffer @1544 DATA
+    glad_glNamedFramebufferSampleLocationsfvARB @1545 DATA
+    glad_glNamedFramebufferTexture @1546 DATA
+    glad_glNamedFramebufferTextureLayer @1547 DATA
+    glad_glNamedRenderbufferStorage @1548 DATA
+    glad_glNamedRenderbufferStorageMultisample @1549 DATA
+    glad_glNamedStringARB @1550 DATA
+    glad_glNormal3xOES @1551 DATA
+    glad_glNormal3xvOES @1552 DATA
+    glad_glObjectLabel @1553 DATA
+    glad_glObjectPtrLabel @1554 DATA
+    glad_glOrthoxOES @1555 DATA
+    glad_glPassThroughxOES @1556 DATA
+    glad_glPatchParameterfv @1557 DATA
+    glad_glPatchParameteri @1558 DATA
+    glad_glPauseTransformFeedback @1559 DATA
+    glad_glPixelMapx @1560 DATA
+    glad_glPixelStoref @1561 DATA
+    glad_glPixelStorei @1562 DATA
+    glad_glPixelStorex @1563 DATA
+    glad_glPixelTransferxOES @1564 DATA
+    glad_glPixelZoomxOES @1565 DATA
+    glad_glPointParameterf @1566 DATA
+    glad_glPointParameterfv @1567 DATA
+    glad_glPointParameteri @1568 DATA
+    glad_glPointParameteriv @1569 DATA
+    glad_glPointParameterxvOES @1570 DATA
+    glad_glPointSize @1571 DATA
+    glad_glPointSizexOES @1572 DATA
+    glad_glPolygonMode @1573 DATA
+    glad_glPolygonOffset @1574 DATA
+    glad_glPolygonOffsetxOES @1575 DATA
+    glad_glPopDebugGroup @1576 DATA
+    glad_glPrimitiveBoundingBoxARB @1577 DATA
+    glad_glPrimitiveRestartIndex @1578 DATA
+    glad_glPrioritizeTexturesxOES @1579 DATA
+    glad_glProgramBinary @1580 DATA
+    glad_glProgramEnvParameter4dARB @1581 DATA
+    glad_glProgramEnvParameter4dvARB @1582 DATA
+    glad_glProgramEnvParameter4fARB @1583 DATA
+    glad_glProgramEnvParameter4fvARB @1584 DATA
+    glad_glProgramLocalParameter4dARB @1585 DATA
+    glad_glProgramLocalParameter4dvARB @1586 DATA
+    glad_glProgramLocalParameter4fARB @1587 DATA
+    glad_glProgramLocalParameter4fvARB @1588 DATA
+    glad_glProgramParameteri @1589 DATA
+    glad_glProgramParameteriARB @1590 DATA
+    glad_glProgramStringARB @1591 DATA
+    glad_glProgramUniform1d @1592 DATA
+    glad_glProgramUniform1dv @1593 DATA
+    glad_glProgramUniform1f @1594 DATA
+    glad_glProgramUniform1fv @1595 DATA
+    glad_glProgramUniform1i @1596 DATA
+    glad_glProgramUniform1i64ARB @1597 DATA
+    glad_glProgramUniform1i64vARB @1598 DATA
+    glad_glProgramUniform1iv @1599 DATA
+    glad_glProgramUniform1ui @1600 DATA
+    glad_glProgramUniform1ui64ARB @1601 DATA
+    glad_glProgramUniform1ui64vARB @1602 DATA
+    glad_glProgramUniform1uiv @1603 DATA
+    glad_glProgramUniform2d @1604 DATA
+    glad_glProgramUniform2dv @1605 DATA
+    glad_glProgramUniform2f @1606 DATA
+    glad_glProgramUniform2fv @1607 DATA
+    glad_glProgramUniform2i @1608 DATA
+    glad_glProgramUniform2i64ARB @1609 DATA
+    glad_glProgramUniform2i64vARB @1610 DATA
+    glad_glProgramUniform2iv @1611 DATA
+    glad_glProgramUniform2ui @1612 DATA
+    glad_glProgramUniform2ui64ARB @1613 DATA
+    glad_glProgramUniform2ui64vARB @1614 DATA
+    glad_glProgramUniform2uiv @1615 DATA
+    glad_glProgramUniform3d @1616 DATA
+    glad_glProgramUniform3dv @1617 DATA
+    glad_glProgramUniform3f @1618 DATA
+    glad_glProgramUniform3fv @1619 DATA
+    glad_glProgramUniform3i @1620 DATA
+    glad_glProgramUniform3i64ARB @1621 DATA
+    glad_glProgramUniform3i64vARB @1622 DATA
+    glad_glProgramUniform3iv @1623 DATA
+    glad_glProgramUniform3ui @1624 DATA
+    glad_glProgramUniform3ui64ARB @1625 DATA
+    glad_glProgramUniform3ui64vARB @1626 DATA
+    glad_glProgramUniform3uiv @1627 DATA
+    glad_glProgramUniform4d @1628 DATA
+    glad_glProgramUniform4dv @1629 DATA
+    glad_glProgramUniform4f @1630 DATA
+    glad_glProgramUniform4fv @1631 DATA
+    glad_glProgramUniform4i @1632 DATA
+    glad_glProgramUniform4i64ARB @1633 DATA
+    glad_glProgramUniform4i64vARB @1634 DATA
+    glad_glProgramUniform4iv @1635 DATA
+    glad_glProgramUniform4ui @1636 DATA
+    glad_glProgramUniform4ui64ARB @1637 DATA
+    glad_glProgramUniform4ui64vARB @1638 DATA
+    glad_glProgramUniform4uiv @1639 DATA
+    glad_glProgramUniformMatrix2dv @1640 DATA
+    glad_glProgramUniformMatrix2fv @1641 DATA
+    glad_glProgramUniformMatrix2x3dv @1642 DATA
+    glad_glProgramUniformMatrix2x3fv @1643 DATA
+    glad_glProgramUniformMatrix2x4dv @1644 DATA
+    glad_glProgramUniformMatrix2x4fv @1645 DATA
+    glad_glProgramUniformMatrix3dv @1646 DATA
+    glad_glProgramUniformMatrix3fv @1647 DATA
+    glad_glProgramUniformMatrix3x2dv @1648 DATA
+    glad_glProgramUniformMatrix3x2fv @1649 DATA
+    glad_glProgramUniformMatrix3x4dv @1650 DATA
+    glad_glProgramUniformMatrix3x4fv @1651 DATA
+    glad_glProgramUniformMatrix4dv @1652 DATA
+    glad_glProgramUniformMatrix4fv @1653 DATA
+    glad_glProgramUniformMatrix4x2dv @1654 DATA
+    glad_glProgramUniformMatrix4x2fv @1655 DATA
+    glad_glProgramUniformMatrix4x3dv @1656 DATA
+    glad_glProgramUniformMatrix4x3fv @1657 DATA
+    glad_glProvokingVertex @1658 DATA
+    glad_glPushDebugGroup @1659 DATA
+    glad_glQueryCounter @1660 DATA
+    glad_glRasterPos2xOES @1661 DATA
+    glad_glRasterPos2xvOES @1662 DATA
+    glad_glRasterPos3xOES @1663 DATA
+    glad_glRasterPos3xvOES @1664 DATA
+    glad_glRasterPos4xOES @1665 DATA
+    glad_glRasterPos4xvOES @1666 DATA
+    glad_glReadBuffer @1667 DATA
+    glad_glReadPixels @1668 DATA
+    glad_glRectxOES @1669 DATA
+    glad_glRectxvOES @1670 DATA
+    glad_glReleaseShaderCompiler @1671 DATA
+    glad_glRenderbufferStorage @1672 DATA
+    glad_glRenderbufferStorageEXT @1673 DATA
+    glad_glRenderbufferStorageMultisample @1674 DATA
+    glad_glRenderbufferStorageMultisampleEXT @1675 DATA
+    glad_glResumeTransformFeedback @1676 DATA
+    glad_glRotatexOES @1677 DATA
+    glad_glSampleCoverage @1678 DATA
+    glad_glSampleCoverageARB @1679 DATA
+    glad_glSampleMaski @1680 DATA
+    glad_glSamplerParameterIiv @1681 DATA
+    glad_glSamplerParameterIuiv @1682 DATA
+    glad_glSamplerParameterf @1683 DATA
+    glad_glSamplerParameterfv @1684 DATA
+    glad_glSamplerParameteri @1685 DATA
+    glad_glSamplerParameteriv @1686 DATA
+    glad_glScalexOES @1687 DATA
+    glad_glScissor @1688 DATA
+    glad_glScissorArrayv @1689 DATA
+    glad_glScissorIndexed @1690 DATA
+    glad_glScissorIndexedv @1691 DATA
+    glad_glShaderBinary @1692 DATA
+    glad_glShaderSource @1693 DATA
+    glad_glShaderSourceARB @1694 DATA
+    glad_glShaderStorageBlockBinding @1695 DATA
+    glad_glSpecializeShaderARB @1696 DATA
+    glad_glStencilFunc @1697 DATA
+    glad_glStencilFuncSeparate @1698 DATA
+    glad_glStencilMask @1699 DATA
+    glad_glStencilMaskSeparate @1700 DATA
+    glad_glStencilOp @1701 DATA
+    glad_glStencilOpSeparate @1702 DATA
+    glad_glTexBuffer @1703 DATA
+    glad_glTexBufferRange @1704 DATA
+    glad_glTexCoord1xOES @1705 DATA
+    glad_glTexCoord1xvOES @1706 DATA
+    glad_glTexCoord2xOES @1707 DATA
+    glad_glTexCoord2xvOES @1708 DATA
+    glad_glTexCoord3xOES @1709 DATA
+    glad_glTexCoord3xvOES @1710 DATA
+    glad_glTexCoord4xOES @1711 DATA
+    glad_glTexCoord4xvOES @1712 DATA
+    glad_glTexEnvxOES @1713 DATA
+    glad_glTexEnvxvOES @1714 DATA
+    glad_glTexGenxOES @1715 DATA
+    glad_glTexGenxvOES @1716 DATA
+    glad_glTexImage1D @1717 DATA
+    glad_glTexImage2D @1718 DATA
+    glad_glTexImage2DMultisample @1719 DATA
+    glad_glTexImage3D @1720 DATA
+    glad_glTexImage3DMultisample @1721 DATA
+    glad_glTexParameterIiv @1722 DATA
+    glad_glTexParameterIuiv @1723 DATA
+    glad_glTexParameterf @1724 DATA
+    glad_glTexParameterfv @1725 DATA
+    glad_glTexParameteri @1726 DATA
+    glad_glTexParameteriv @1727 DATA
+    glad_glTexParameterxOES @1728 DATA
+    glad_glTexParameterxvOES @1729 DATA
+    glad_glTexStorage1D @1730 DATA
+    glad_glTexStorage2D @1731 DATA
+    glad_glTexStorage2DMultisample @1732 DATA
+    glad_glTexStorage3D @1733 DATA
+    glad_glTexStorage3DMultisample @1734 DATA
+    glad_glTexSubImage1D @1735 DATA
+    glad_glTexSubImage2D @1736 DATA
+    glad_glTexSubImage3D @1737 DATA
+    glad_glTextureBuffer @1738 DATA
+    glad_glTextureBufferRange @1739 DATA
+    glad_glTextureParameterIiv @1740 DATA
+    glad_glTextureParameterIuiv @1741 DATA
+    glad_glTextureParameterf @1742 DATA
+    glad_glTextureParameterfv @1743 DATA
+    glad_glTextureParameteri @1744 DATA
+    glad_glTextureParameteriv @1745 DATA
+    glad_glTextureStorage1D @1746 DATA
+    glad_glTextureStorage2D @1747 DATA
+    glad_glTextureStorage2DMultisample @1748 DATA
+    glad_glTextureStorage3D @1749 DATA
+    glad_glTextureStorage3DMultisample @1750 DATA
+    glad_glTextureSubImage1D @1751 DATA
+    glad_glTextureSubImage2D @1752 DATA
+    glad_glTextureSubImage3D @1753 DATA
+    glad_glTextureView @1754 DATA
+    glad_glTransformFeedbackBufferBase @1755 DATA
+    glad_glTransformFeedbackBufferRange @1756 DATA
+    glad_glTransformFeedbackVaryings @1757 DATA
+    glad_glTranslatexOES @1758 DATA
+    glad_glUniform1d @1759 DATA
+    glad_glUniform1dv @1760 DATA
+    glad_glUniform1f @1761 DATA
+    glad_glUniform1fARB @1762 DATA
+    glad_glUniform1fv @1763 DATA
+    glad_glUniform1fvARB @1764 DATA
+    glad_glUniform1i @1765 DATA
+    glad_glUniform1i64ARB @1766 DATA
+    glad_glUniform1i64vARB @1767 DATA
+    glad_glUniform1iARB @1768 DATA
+    glad_glUniform1iv @1769 DATA
+    glad_glUniform1ivARB @1770 DATA
+    glad_glUniform1ui @1771 DATA
+    glad_glUniform1ui64ARB @1772 DATA
+    glad_glUniform1ui64vARB @1773 DATA
+    glad_glUniform1uiv @1774 DATA
+    glad_glUniform2d @1775 DATA
+    glad_glUniform2dv @1776 DATA
+    glad_glUniform2f @1777 DATA
+    glad_glUniform2fARB @1778 DATA
+    glad_glUniform2fv @1779 DATA
+    glad_glUniform2fvARB @1780 DATA
+    glad_glUniform2i @1781 DATA
+    glad_glUniform2i64ARB @1782 DATA
+    glad_glUniform2i64vARB @1783 DATA
+    glad_glUniform2iARB @1784 DATA
+    glad_glUniform2iv @1785 DATA
+    glad_glUniform2ivARB @1786 DATA
+    glad_glUniform2ui @1787 DATA
+    glad_glUniform2ui64ARB @1788 DATA
+    glad_glUniform2ui64vARB @1789 DATA
+    glad_glUniform2uiv @1790 DATA
+    glad_glUniform3d @1791 DATA
+    glad_glUniform3dv @1792 DATA
+    glad_glUniform3f @1793 DATA
+    glad_glUniform3fARB @1794 DATA
+    glad_glUniform3fv @1795 DATA
+    glad_glUniform3fvARB @1796 DATA
+    glad_glUniform3i @1797 DATA
+    glad_glUniform3i64ARB @1798 DATA
+    glad_glUniform3i64vARB @1799 DATA
+    glad_glUniform3iARB @1800 DATA
+    glad_glUniform3iv @1801 DATA
+    glad_glUniform3ivARB @1802 DATA
+    glad_glUniform3ui @1803 DATA
+    glad_glUniform3ui64ARB @1804 DATA
+    glad_glUniform3ui64vARB @1805 DATA
+    glad_glUniform3uiv @1806 DATA
+    glad_glUniform4d @1807 DATA
+    glad_glUniform4dv @1808 DATA
+    glad_glUniform4f @1809 DATA
+    glad_glUniform4fARB @1810 DATA
+    glad_glUniform4fv @1811 DATA
+    glad_glUniform4fvARB @1812 DATA
+    glad_glUniform4i @1813 DATA
+    glad_glUniform4i64ARB @1814 DATA
+    glad_glUniform4i64vARB @1815 DATA
+    glad_glUniform4iARB @1816 DATA
+    glad_glUniform4iv @1817 DATA
+    glad_glUniform4ivARB @1818 DATA
+    glad_glUniform4ui @1819 DATA
+    glad_glUniform4ui64ARB @1820 DATA
+    glad_glUniform4ui64vARB @1821 DATA
+    glad_glUniform4uiv @1822 DATA
+    glad_glUniformBlockBinding @1823 DATA
+    glad_glUniformMatrix2dv @1824 DATA
+    glad_glUniformMatrix2fv @1825 DATA
+    glad_glUniformMatrix2fvARB @1826 DATA
+    glad_glUniformMatrix2x3dv @1827 DATA
+    glad_glUniformMatrix2x3fv @1828 DATA
+    glad_glUniformMatrix2x4dv @1829 DATA
+    glad_glUniformMatrix2x4fv @1830 DATA
+    glad_glUniformMatrix3dv @1831 DATA
+    glad_glUniformMatrix3fv @1832 DATA
+    glad_glUniformMatrix3fvARB @1833 DATA
+    glad_glUniformMatrix3x2dv @1834 DATA
+    glad_glUniformMatrix3x2fv @1835 DATA
+    glad_glUniformMatrix3x4dv @1836 DATA
+    glad_glUniformMatrix3x4fv @1837 DATA
+    glad_glUniformMatrix4dv @1838 DATA
+    glad_glUniformMatrix4fv @1839 DATA
+    glad_glUniformMatrix4fvARB @1840 DATA
+    glad_glUniformMatrix4x2dv @1841 DATA
+    glad_glUniformMatrix4x2fv @1842 DATA
+    glad_glUniformMatrix4x3dv @1843 DATA
+    glad_glUniformMatrix4x3fv @1844 DATA
+    glad_glUniformSubroutinesuiv @1845 DATA
+    glad_glUnmapBuffer @1846 DATA
+    glad_glUnmapBufferARB @1847 DATA
+    glad_glUnmapNamedBuffer @1848 DATA
+    glad_glUseProgram @1849 DATA
+    glad_glUseProgramObjectARB @1850 DATA
+    glad_glUseProgramStages @1851 DATA
+    glad_glValidateProgram @1852 DATA
+    glad_glValidateProgramARB @1853 DATA
+    glad_glValidateProgramPipeline @1854 DATA
+    glad_glVertex2xOES @1855 DATA
+    glad_glVertex2xvOES @1856 DATA
+    glad_glVertex3xOES @1857 DATA
+    glad_glVertex3xvOES @1858 DATA
+    glad_glVertex4xOES @1859 DATA
+    glad_glVertex4xvOES @1860 DATA
+    glad_glVertexArrayAttribBinding @1861 DATA
+    glad_glVertexArrayAttribFormat @1862 DATA
+    glad_glVertexArrayAttribIFormat @1863 DATA
+    glad_glVertexArrayAttribLFormat @1864 DATA
+    glad_glVertexArrayBindingDivisor @1865 DATA
+    glad_glVertexArrayElementBuffer @1866 DATA
+    glad_glVertexArrayVertexBuffer @1867 DATA
+    glad_glVertexArrayVertexBuffers @1868 DATA
+    glad_glVertexAttrib1d @1869 DATA
+    glad_glVertexAttrib1dARB @1870 DATA
+    glad_glVertexAttrib1dv @1871 DATA
+    glad_glVertexAttrib1dvARB @1872 DATA
+    glad_glVertexAttrib1f @1873 DATA
+    glad_glVertexAttrib1fARB @1874 DATA
+    glad_glVertexAttrib1fv @1875 DATA
+    glad_glVertexAttrib1fvARB @1876 DATA
+    glad_glVertexAttrib1s @1877 DATA
+    glad_glVertexAttrib1sARB @1878 DATA
+    glad_glVertexAttrib1sv @1879 DATA
+    glad_glVertexAttrib1svARB @1880 DATA
+    glad_glVertexAttrib2d @1881 DATA
+    glad_glVertexAttrib2dARB @1882 DATA
+    glad_glVertexAttrib2dv @1883 DATA
+    glad_glVertexAttrib2dvARB @1884 DATA
+    glad_glVertexAttrib2f @1885 DATA
+    glad_glVertexAttrib2fARB @1886 DATA
+    glad_glVertexAttrib2fv @1887 DATA
+    glad_glVertexAttrib2fvARB @1888 DATA
+    glad_glVertexAttrib2s @1889 DATA
+    glad_glVertexAttrib2sARB @1890 DATA
+    glad_glVertexAttrib2sv @1891 DATA
+    glad_glVertexAttrib2svARB @1892 DATA
+    glad_glVertexAttrib3d @1893 DATA
+    glad_glVertexAttrib3dARB @1894 DATA
+    glad_glVertexAttrib3dv @1895 DATA
+    glad_glVertexAttrib3dvARB @1896 DATA
+    glad_glVertexAttrib3f @1897 DATA
+    glad_glVertexAttrib3fARB @1898 DATA
+    glad_glVertexAttrib3fv @1899 DATA
+    glad_glVertexAttrib3fvARB @1900 DATA
+    glad_glVertexAttrib3s @1901 DATA
+    glad_glVertexAttrib3sARB @1902 DATA
+    glad_glVertexAttrib3sv @1903 DATA
+    glad_glVertexAttrib3svARB @1904 DATA
+    glad_glVertexAttrib4Nbv @1905 DATA
+    glad_glVertexAttrib4NbvARB @1906 DATA
+    glad_glVertexAttrib4Niv @1907 DATA
+    glad_glVertexAttrib4NivARB @1908 DATA
+    glad_glVertexAttrib4Nsv @1909 DATA
+    glad_glVertexAttrib4NsvARB @1910 DATA
+    glad_glVertexAttrib4Nub @1911 DATA
+    glad_glVertexAttrib4NubARB @1912 DATA
+    glad_glVertexAttrib4Nubv @1913 DATA
+    glad_glVertexAttrib4NubvARB @1914 DATA
+    glad_glVertexAttrib4Nuiv @1915 DATA
+    glad_glVertexAttrib4NuivARB @1916 DATA
+    glad_glVertexAttrib4Nusv @1917 DATA
+    glad_glVertexAttrib4NusvARB @1918 DATA
+    glad_glVertexAttrib4bv @1919 DATA
+    glad_glVertexAttrib4bvARB @1920 DATA
+    glad_glVertexAttrib4d @1921 DATA
+    glad_glVertexAttrib4dARB @1922 DATA
+    glad_glVertexAttrib4dv @1923 DATA
+    glad_glVertexAttrib4dvARB @1924 DATA
+    glad_glVertexAttrib4f @1925 DATA
+    glad_glVertexAttrib4fARB @1926 DATA
+    glad_glVertexAttrib4fv @1927 DATA
+    glad_glVertexAttrib4fvARB @1928 DATA
+    glad_glVertexAttrib4iv @1929 DATA
+    glad_glVertexAttrib4ivARB @1930 DATA
+    glad_glVertexAttrib4s @1931 DATA
+    glad_glVertexAttrib4sARB @1932 DATA
+    glad_glVertexAttrib4sv @1933 DATA
+    glad_glVertexAttrib4svARB @1934 DATA
+    glad_glVertexAttrib4ubv @1935 DATA
+    glad_glVertexAttrib4ubvARB @1936 DATA
+    glad_glVertexAttrib4uiv @1937 DATA
+    glad_glVertexAttrib4uivARB @1938 DATA
+    glad_glVertexAttrib4usv @1939 DATA
+    glad_glVertexAttrib4usvARB @1940 DATA
+    glad_glVertexAttribBinding @1941 DATA
+    glad_glVertexAttribDivisor @1942 DATA
+    glad_glVertexAttribDivisorARB @1943 DATA
+    glad_glVertexAttribFormat @1944 DATA
+    glad_glVertexAttribI1i @1945 DATA
+    glad_glVertexAttribI1iv @1946 DATA
+    glad_glVertexAttribI1ui @1947 DATA
+    glad_glVertexAttribI1uiv @1948 DATA
+    glad_glVertexAttribI2i @1949 DATA
+    glad_glVertexAttribI2iv @1950 DATA
+    glad_glVertexAttribI2ui @1951 DATA
+    glad_glVertexAttribI2uiv @1952 DATA
+    glad_glVertexAttribI3i @1953 DATA
+    glad_glVertexAttribI3iv @1954 DATA
+    glad_glVertexAttribI3ui @1955 DATA
+    glad_glVertexAttribI3uiv @1956 DATA
+    glad_glVertexAttribI4bv @1957 DATA
+    glad_glVertexAttribI4i @1958 DATA
+    glad_glVertexAttribI4iv @1959 DATA
+    glad_glVertexAttribI4sv @1960 DATA
+    glad_glVertexAttribI4ubv @1961 DATA
+    glad_glVertexAttribI4ui @1962 DATA
+    glad_glVertexAttribI4uiv @1963 DATA
+    glad_glVertexAttribI4usv @1964 DATA
+    glad_glVertexAttribIFormat @1965 DATA
+    glad_glVertexAttribIPointer @1966 DATA
+    glad_glVertexAttribL1d @1967 DATA
+    glad_glVertexAttribL1dv @1968 DATA
+    glad_glVertexAttribL2d @1969 DATA
+    glad_glVertexAttribL2dv @1970 DATA
+    glad_glVertexAttribL3d @1971 DATA
+    glad_glVertexAttribL3dv @1972 DATA
+    glad_glVertexAttribL4d @1973 DATA
+    glad_glVertexAttribL4dv @1974 DATA
+    glad_glVertexAttribLFormat @1975 DATA
+    glad_glVertexAttribLPointer @1976 DATA
+    glad_glVertexAttribP1ui @1977 DATA
+    glad_glVertexAttribP1uiv @1978 DATA
+    glad_glVertexAttribP2ui @1979 DATA
+    glad_glVertexAttribP2uiv @1980 DATA
+    glad_glVertexAttribP3ui @1981 DATA
+    glad_glVertexAttribP3uiv @1982 DATA
+    glad_glVertexAttribP4ui @1983 DATA
+    glad_glVertexAttribP4uiv @1984 DATA
+    glad_glVertexAttribPointer @1985 DATA
+    glad_glVertexAttribPointerARB @1986 DATA
+    glad_glVertexBindingDivisor @1987 DATA
+    glad_glViewport @1988 DATA
+    glad_glViewportArrayv @1989 DATA
+    glad_glViewportIndexedf @1990 DATA
+    glad_glViewportIndexedfv @1991 DATA
+    glad_glWaitSync @1992 DATA
+    glfwCreateCursor @1993
+    glfwCreateStandardCursor @1994
+    glfwCreateWindow @1995
+    glfwCreateWindowSurface @1996
+    glfwDefaultWindowHints @1997
+    glfwDestroyCursor @1998
+    glfwDestroyWindow @1999
+    glfwExtensionSupported @2000
+    glfwFocusWindow @2001
+    glfwGetClipboardString @2002
+    glfwGetCurrentContext @2003
+    glfwGetCursorPos @2004
+    glfwGetEGLContext @2005
+    glfwGetEGLDisplay @2006
+    glfwGetEGLSurface @2007
+    glfwGetError @2008
+    glfwGetFramebufferSize @2009
+    glfwGetGamepadName @2010
+    glfwGetGamepadState @2011
+    glfwGetGammaRamp @2012
+    glfwGetInputMode @2013
+    glfwGetInstanceProcAddress @2014
+    glfwGetJoystickAxes @2015
+    glfwGetJoystickButtons @2016
+    glfwGetJoystickGUID @2017
+    glfwGetJoystickHats @2018
+    glfwGetJoystickName @2019
+    glfwGetJoystickUserPointer @2020
+    glfwGetKey @2021
+    glfwGetKeyName @2022
+    glfwGetKeyScancode @2023
+    glfwGetMonitorContentScale @2024
+    glfwGetMonitorName @2025
+    glfwGetMonitorPhysicalSize @2026
+    glfwGetMonitorPos @2027
+    glfwGetMonitorUserPointer @2028
+    glfwGetMonitorWorkarea @2029
+    glfwGetMonitors @2030
+    glfwGetMouseButton @2031
+    glfwGetOSMesaColorBuffer @2032
+    glfwGetOSMesaContext @2033
+    glfwGetOSMesaDepthBuffer @2034
+    glfwGetPhysicalDevicePresentationSupport @2035
+    glfwGetPlatform @2036
+    glfwGetPrimaryMonitor @2037
+    glfwGetProcAddress @2038
+    glfwGetRequiredInstanceExtensions @2039
+    glfwGetTime @2040
+    glfwGetTimerFrequency @2041
+    glfwGetTimerValue @2042
+    glfwGetVersion @2043
+    glfwGetVersionString @2044
+    glfwGetVideoMode @2045
+    glfwGetVideoModes @2046
+    glfwGetWGLContext @2047
+    glfwGetWin32Adapter @2048
+    glfwGetWin32Monitor @2049
+    glfwGetWin32Window @2050
+    glfwGetWindowAttrib @2051
+    glfwGetWindowContentScale @2052
+    glfwGetWindowFrameSize @2053
+    glfwGetWindowMonitor @2054
+    glfwGetWindowOpacity @2055
+    glfwGetWindowPos @2056
+    glfwGetWindowSize @2057
+    glfwGetWindowUserPointer @2058
+    glfwHideWindow @2059
+    glfwIconifyWindow @2060
+    glfwInit @2061
+    glfwInitAllocator @2062
+    glfwInitHint @2063
+    glfwInitVulkanLoader @2064
+    glfwJoystickIsGamepad @2065
+    glfwJoystickPresent @2066
+    glfwMakeContextCurrent @2067
+    glfwMaximizeWindow @2068
+    glfwPlatformSupported @2069
+    glfwPollEvents @2070
+    glfwPostEmptyEvent @2071
+    glfwRawMouseMotionSupported @2072
+    glfwRequestWindowAttention @2073
+    glfwRestoreWindow @2074
+    glfwSetCharCallback @2075
+    glfwSetCharModsCallback @2076
+    glfwSetClipboardString @2077
+    glfwSetCursor @2078
+    glfwSetCursorEnterCallback @2079
+    glfwSetCursorPos @2080
+    glfwSetCursorPosCallback @2081
+    glfwSetDropCallback @2082
+    glfwSetErrorCallback @2083
+    glfwSetFramebufferSizeCallback @2084
+    glfwSetGamma @2085
+    glfwSetGammaRamp @2086
+    glfwSetInputMode @2087
+    glfwSetJoystickCallback @2088
+    glfwSetJoystickUserPointer @2089
+    glfwSetKeyCallback @2090
+    glfwSetMonitorCallback @2091
+    glfwSetMonitorUserPointer @2092
+    glfwSetMouseButtonCallback @2093
+    glfwSetScrollCallback @2094
+    glfwSetTime @2095
+    glfwSetWindowAspectRatio @2096
+    glfwSetWindowAttrib @2097
+    glfwSetWindowCloseCallback @2098
+    glfwSetWindowContentScaleCallback @2099
+    glfwSetWindowFocusCallback @2100
+    glfwSetWindowIcon @2101
+    glfwSetWindowIconifyCallback @2102
+    glfwSetWindowMaximizeCallback @2103
+    glfwSetWindowMonitor @2104
+    glfwSetWindowOpacity @2105
+    glfwSetWindowPos @2106
+    glfwSetWindowPosCallback @2107
+    glfwSetWindowRefreshCallback @2108
+    glfwSetWindowShouldClose @2109
+    glfwSetWindowSize @2110
+    glfwSetWindowSizeCallback @2111
+    glfwSetWindowSizeLimits @2112
+    glfwSetWindowTitle @2113
+    glfwSetWindowUserPointer @2114
+    glfwShowWindow @2115
+    glfwSwapBuffers @2116
+    glfwSwapInterval @2117
+    glfwTerminate @2118
+    glfwUpdateGamepadMappings @2119
+    glfwVulkanSupported @2120
+    glfwWaitEvents @2121
+    glfwWaitEventsTimeout @2122
+    glfwWindowHint @2123
+    glfwWindowHintString @2124
+    glfwWindowShouldClose @2125
+    help_tool_acquire @2126
+    help_tool_finish @2127
+    kMAX_POINT @2128 DATA
+    kVOXEL_NONE @2129 DATA
+    kZERO_POINT @2130 DATA
+    lightDirection @2131 DATA
+    lightProjection @2132 DATA
+    lightView @2133 DATA
+    line_tool_acquire @2134
+    line_tool_finish @2135
+    m3d_frame @2136
+    m3d_free @2137
+    m3d_freehook @2138
+    m3d_load @2139
+    m3d_loaderhook @2140
+    m3d_pose @2141
+    main @2142
+    max @2143
+    min @2144
+    msf_gif_alpha_threshold @2145 DATA
+    msf_gif_begin @2146
+    msf_gif_begin_to_file @2147
+    msf_gif_bgra_flag @2148 DATA
+    msf_gif_end @2149
+    msf_gif_end_to_file @2150
+    msf_gif_frame @2151
+    msf_gif_frame_to_file @2152
+    msf_gif_free @2153
+    multistep_tool__deinit @2154
+    multistep_tool__init @2155
+    multistep_tool__receive_moving_point @2156
+    multistep_tool__receive_point @2157
+    multistep_tool__reset @2158
+    orbit__control_camera @2159
+    orbit_init @2160
+    par_shapes__compute_welded_normals @2161
+    par_shapes__connect @2162
+    par_shapes_clone @2163
+    par_shapes_compute_aabb @2164
+    par_shapes_compute_normals @2165
+    par_shapes_create_cone @2166
+    par_shapes_create_cube @2167
+    par_shapes_create_cylinder @2168
+    par_shapes_create_disk @2169
+    par_shapes_create_dodecahedron @2170
+    par_shapes_create_empty @2171
+    par_shapes_create_hemisphere @2172
+    par_shapes_create_icosahedron @2173
+    par_shapes_create_klein_bottle @2174
+    par_shapes_create_lsystem @2175
+    par_shapes_create_octahedron @2176
+    par_shapes_create_parametric @2177
+    par_shapes_create_parametric_disk @2178
+    par_shapes_create_parametric_sphere @2179
+    par_shapes_create_plane @2180
+    par_shapes_create_rock @2181
+    par_shapes_create_subdivided_sphere @2182
+    par_shapes_create_tetrahedron @2183
+    par_shapes_create_torus @2184
+    par_shapes_create_trefoil_knot @2185
+    par_shapes_export @2186
+    par_shapes_free_mesh @2187
+    par_shapes_invert @2188
+    par_shapes_merge @2189
+    par_shapes_merge_and_free @2190
+    par_shapes_remove_degenerate @2191
+    par_shapes_rotate @2192
+    par_shapes_scale @2193
+    par_shapes_set_epsilon_degenerate_sphere @2194
+    par_shapes_set_epsilon_welded_normals @2195
+    par_shapes_translate @2196
+    par_shapes_unweld @2197
+    par_shapes_weld @2198
+    plate_tool_acquire @2199
+    plate_tool_finish @2200
+    qoi_decode @2201
+    qoi_encode @2202
+    qoi_read @2203
+    qoi_write @2204
+    rasterizeHollowCube @2205
+    rasterizeLine @2206
+    rasterizePlane @2207
+    rasterizeSolidCube @2208
+    rasterizeStructureCube @2209
+    raylib_version @2210 DATA
+    rlActiveDrawBuffers @2211
+    rlActiveTextureSlot @2212
+    rlBegin @2213
+    rlBindImageTexture @2214
+    rlBindShaderBuffer @2215
+    rlBlitFramebuffer @2216
+    rlCheckErrors @2217
+    rlCheckRenderBatchLimit @2218
+    rlClearColor @2219
+    rlClearScreenBuffers @2220
+    rlColor3f @2221
+    rlColor4f @2222
+    rlColor4ub @2223
+    rlCompileShader @2224
+    rlComputeShaderDispatch @2225
+    rlCopyShaderBuffer @2226
+    rlCubemapParameters @2227
+    rlDisableBackfaceCulling @2228
+    rlDisableColorBlend @2229
+    rlDisableDepthMask @2230
+    rlDisableDepthTest @2231
+    rlDisableFramebuffer @2232
+    rlDisableScissorTest @2233
+    rlDisableShader @2234
+    rlDisableSmoothLines @2235
+    rlDisableStereoRender @2236
+    rlDisableTexture @2237
+    rlDisableTextureCubemap @2238
+    rlDisableVertexArray @2239
+    rlDisableVertexAttribute @2240
+    rlDisableVertexBuffer @2241
+    rlDisableVertexBufferElement @2242
+    rlDisableWireMode @2243
+    rlDrawRenderBatch @2244
+    rlDrawRenderBatchActive @2245
+    rlDrawVertexArray @2246
+    rlDrawVertexArrayElements @2247
+    rlDrawVertexArrayElementsInstanced @2248
+    rlDrawVertexArrayInstanced @2249
+    rlEnableBackfaceCulling @2250
+    rlEnableColorBlend @2251
+    rlEnableDepthMask @2252
+    rlEnableDepthTest @2253
+    rlEnableFramebuffer @2254
+    rlEnablePointMode @2255
+    rlEnableScissorTest @2256
+    rlEnableShader @2257
+    rlEnableSmoothLines @2258
+    rlEnableStereoRender @2259
+    rlEnableTexture @2260
+    rlEnableTextureCubemap @2261
+    rlEnableVertexArray @2262
+    rlEnableVertexAttribute @2263
+    rlEnableVertexBuffer @2264
+    rlEnableVertexBufferElement @2265
+    rlEnableWireMode @2266
+    rlEnd @2267
+    rlFramebufferAttach @2268
+    rlFramebufferComplete @2269
+    rlFrustum @2270
+    rlGenTextureMipmaps @2271
+    rlGetFramebufferHeight @2272
+    rlGetFramebufferWidth @2273
+    rlGetGlTextureFormats @2274
+    rlGetLineWidth @2275
+    rlGetLocationAttrib @2276
+    rlGetLocationUniform @2277
+    rlGetMatrixModelview @2278
+    rlGetMatrixProjection @2279
+    rlGetMatrixProjectionStereo @2280
+    rlGetMatrixTransform @2281
+    rlGetMatrixViewOffsetStereo @2282
+    rlGetPixelFormatName @2283
+    rlGetShaderBufferSize @2284
+    rlGetShaderIdDefault @2285
+    rlGetShaderLocsDefault @2286
+    rlGetTextureIdDefault @2287
+    rlGetVersion @2288
+    rlIsStereoRenderEnabled @2289
+    rlLoadComputeShaderProgram @2290
+    rlLoadDrawCube @2291
+    rlLoadDrawQuad @2292
+    rlLoadExtensions @2293
+    rlLoadFramebuffer @2294
+    rlLoadIdentity @2295
+    rlLoadRenderBatch @2296
+    rlLoadShaderBuffer @2297
+    rlLoadShaderCode @2298
+    rlLoadShaderProgram @2299
+    rlLoadTexture @2300
+    rlLoadTextureCubemap @2301
+    rlLoadTextureDepth @2302
+    rlLoadVertexArray @2303
+    rlLoadVertexBuffer @2304
+    rlLoadVertexBufferElement @2305
+    rlMatrixMode @2306
+    rlMultMatrixf @2307
+    rlNormal3f @2308
+    rlOrtho @2309
+    rlPopMatrix @2310
+    rlPushMatrix @2311
+    rlReadScreenPixels @2312
+    rlReadShaderBuffer @2313
+    rlReadTexturePixels @2314
+    rlRotatef @2315
+    rlScalef @2316
+    rlScissor @2317
+    rlSetBlendFactors @2318
+    rlSetBlendFactorsSeparate @2319
+    rlSetBlendMode @2320
+    rlSetCullFace @2321
+    rlSetFramebufferHeight @2322
+    rlSetFramebufferWidth @2323
+    rlSetLineWidth @2324
+    rlSetMatrixModelview @2325
+    rlSetMatrixProjection @2326
+    rlSetMatrixProjectionStereo @2327
+    rlSetMatrixViewOffsetStereo @2328
+    rlSetRenderBatchActive @2329
+    rlSetShader @2330
+    rlSetTexture @2331
+    rlSetUniform @2332
+    rlSetUniformMatrix @2333
+    rlSetUniformSampler @2334
+    rlSetVertexAttribute @2335
+    rlSetVertexAttributeDefault @2336
+    rlSetVertexAttributeDivisor @2337
+    rlTexCoord2f @2338
+    rlTextureParameters @2339
+    rlTranslatef @2340
+    rlUnloadFramebuffer @2341
+    rlUnloadRenderBatch @2342
+    rlUnloadShaderBuffer @2343
+    rlUnloadShaderProgram @2344
+    rlUnloadTexture @2345
+    rlUnloadVertexArray @2346
+    rlUnloadVertexBuffer @2347
+    rlUpdateShaderBuffer @2348
+    rlUpdateTexture @2349
+    rlUpdateVertexBuffer @2350
+    rlUpdateVertexBufferElements @2351
+    rlVertex2f @2352
+    rlVertex2i @2353
+    rlVertex3f @2354
+    rlViewport @2355
+    rl_load_dds_from_memory @2356
+    rlglClose @2357
+    rlglInit @2358
+    rprand_get_value @2359
+    rprand_load_sequence @2360
+    rprand_set_seed @2361
+    rprand_unload_sequence @2362
+    scene__add_voxel @2363
+    scene__clear @2364
+    scene__get_intersections @2365
+    scene__get_shadows @2366
+    scene__init @2367
+    scene__load_model @2368
+    scene__ray_intersect_point @2369
+    scene__remove_voxel @2370
+    scene__render @2371
+    scene__render_voxel @2372
+    scene__save_model @2373
+    scene__voxel_at_position @2374
+    sdefl_bound @2375
+    sdeflate @2376
+    select_tool_acquire @2377
+    select_tool_finish @2378
+    shadowCamera @2379 DATA
+    shadowMap @2380 DATA
+    shadowMapHeight @2381 DATA
+    shadowMapWidth @2382 DATA
+    shadowShader @2383 DATA
+    shell_tool_acquire @2384
+    shell_tool_finish @2385
+    sinflate @2386
+    stb_perlin_fbm_noise3 @2387
+    stb_perlin_noise3 @2388
+    stb_perlin_noise3_internal @2389
+    stb_perlin_noise3_seed @2390
+    stb_perlin_noise3_wrap_nonpow2 @2391
+    stb_perlin_ridge_noise3 @2392
+    stb_perlin_turbulence_noise3 @2393
+    stbi_convert_iphone_png_to_rgb @2394
+    stbi_failure_reason @2395
+    stbi_flip_vertically_on_write @2396
+    stbi_hdr_to_ldr_gamma @2397
+    stbi_hdr_to_ldr_scale @2398
+    stbi_image_free @2399
+    stbi_info @2400
+    stbi_info_from_callbacks @2401
+    stbi_info_from_file @2402
+    stbi_info_from_memory @2403
+    stbi_is_16_bit @2404
+    stbi_is_16_bit_from_callbacks @2405
+    stbi_is_16_bit_from_file @2406
+    stbi_is_16_bit_from_memory @2407
+    stbi_is_hdr @2408
+    stbi_is_hdr_from_callbacks @2409
+    stbi_is_hdr_from_file @2410
+    stbi_is_hdr_from_memory @2411
+    stbi_ldr_to_hdr_gamma @2412
+    stbi_ldr_to_hdr_scale @2413
+    stbi_load @2414
+    stbi_load_16 @2415
+    stbi_load_16_from_callbacks @2416
+    stbi_load_16_from_memory @2417
+    stbi_load_from_callbacks @2418
+    stbi_load_from_file @2419
+    stbi_load_from_file_16 @2420
+    stbi_load_from_memory @2421
+    stbi_load_gif_from_memory @2422
+    stbi_loadf @2423
+    stbi_loadf_from_callbacks @2424
+    stbi_loadf_from_file @2425
+    stbi_loadf_from_memory @2426
+    stbi_set_flip_vertically_on_load @2427
+    stbi_set_unpremultiply_on_load @2428
+    stbi_write_bmp @2429
+    stbi_write_bmp_to_func @2430
+    stbi_write_force_png_filter @2431 DATA
+    stbi_write_hdr @2432
+    stbi_write_hdr_to_func @2433
+    stbi_write_jpg @2434
+    stbi_write_jpg_to_func @2435
+    stbi_write_png @2436
+    stbi_write_png_compression_level @2437 DATA
+    stbi_write_png_to_func @2438
+    stbi_write_png_to_mem @2439
+    stbi_write_tga @2440
+    stbi_write_tga_to_func @2441
+    stbi_write_tga_with_rle @2442 DATA
+    stbi_zlib_compress @2443
+    stbi_zlib_decode_buffer @2444
+    stbi_zlib_decode_malloc @2445
+    stbi_zlib_decode_malloc_guesssize @2446
+    stbi_zlib_decode_malloc_guesssize_headerflag @2447
+    stbi_zlib_decode_noheader_buffer @2448
+    stbi_zlib_decode_noheader_malloc @2449
+    stbir__s16_32768 @2450 DATA
+    stbir__s32_32768 @2451 DATA
+    stbir_build_samplers @2452
+    stbir_build_samplers_with_splits @2453
+    stbir_free_samplers @2454
+    stbir_resize @2455
+    stbir_resize_extended @2456
+    stbir_resize_extended_split @2457
+    stbir_resize_float_linear @2458
+    stbir_resize_init @2459
+    stbir_resize_uint8_linear @2460
+    stbir_resize_uint8_srgb @2461
+    stbir_set_buffer_ptrs @2462
+    stbir_set_datatypes @2463
+    stbir_set_edgemodes @2464
+    stbir_set_filter_callbacks @2465
+    stbir_set_filters @2466
+    stbir_set_input_subrect @2467
+    stbir_set_non_pm_alpha_speed_over_quality @2468
+    stbir_set_output_pixel_subrect @2469
+    stbir_set_pixel_callbacks @2470
+    stbir_set_pixel_layouts @2471
+    stbir_set_pixel_subrect @2472
+    stbir_set_user_data @2473
+    stbrp_init_target @2474
+    stbrp_pack_rects @2475
+    stbrp_setup_allow_out_of_mem @2476
+    stbrp_setup_heuristic @2477
+    structure_tool_acquire @2478
+    structure_tool_finish @2479
+    swap @2480
+    texShapes @2481 DATA
+    texShapesRec @2482 DATA
+    tinyobj_attrib_free @2483
+    tinyobj_attrib_init @2484
+    tinyobj_materials_free @2485
+    tinyobj_parse_mtl_file @2486
+    tinyobj_parse_obj @2487
+    tinyobj_shapes_free @2488
+    volume_tool_acquire @2489
+    volume_tool_finish @2490
+    voxel__draw_plane @2491
+    voxel__draw_shaded @2492
+    voxel__get_bounding_box @2493
+    voxel_tool_acquire @2494
+    voxel_tool_finish @2495
+    vsxdi_shadowmap_test_main @2496
+    vxdi_app_editor__InputMathExpr @2497
+    vxdi_app_editor__get_current @2498
+    vxdi_app_editor__setup @2499
+    vxdi_app_editor__update @2500
+    vxdi_tools_map__add @2501
+    vxdi_tools_map__deinit @2502
+    vxdi_tools_map__init @2503
+    vxdi_tools_map__next @2504
+    vxdi_tools_map__remove @2505
+    vxdi_tools_map__select @2506
+    vxdi_tools_map_test @2507
+    zsdeflate @2508
+    zsinflate @2509
