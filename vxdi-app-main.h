@@ -469,6 +469,32 @@ int main(int argc, char *argv[]) {
                     vxdi_tools_map__select(tools,i);
                 }
             }
+            static const char* MODES_text[] = {
+                    "REPLACE",
+                    "FILL",
+                    "COLORIZE"
+            };
+            static vxdi_editor_mode_e MODES_values[3] = {
+                    VXDI_EDITOR_MODE_OVERWRITE,
+                    VXDI_EDITOR_MODE_PRESERVE,
+                    VXDI_EDITOR_MODE_REPLACE
+            };
+
+            for(int i=0;i<3;i++) {
+                char itext[20]; // Make sure the array is large enough to hold the converted string
+                sprintf(itext, "m%d", i);
+                Vector2 a={app.screenWidth-150,32+64*i};
+                Rectangle r={a.x,a.y,62,62};
+                DrawRectangleRec(r,(Color){200,200,200,255});
+                DrawText(itext,r.x+50,r.y+16,14,BLACK);
+                DrawText(MODES_text[i],r.x+6,r.y+46,14,BLACK);
+                if(app.scene.editor_mode==MODES_values[i]){
+                    DrawRectangle(a.x,a.y,6,62,(Color){96,160,160,255});
+                }
+                if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && RectangleContains(r,app.current_mouse_position)) {
+                    app.scene.editor_mode=MODES_values[i];
+                }
+            }
 
 
 

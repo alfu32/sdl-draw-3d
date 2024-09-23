@@ -9,6 +9,8 @@
 #include "vxdi-lib-log.h"
 
 
+
+
 typedef struct vxdi_app_editor_s {
 
     Color current_color;//=GREEN;
@@ -45,6 +47,7 @@ typedef struct vxdi_app_editor_s {
     collision_t mouse_model;
     Vector3 model_point_int;
     Vector3 model_point_next_int;
+
 
 } vxdi_app_editor_t;
 
@@ -130,6 +133,7 @@ int vxdi_app_editor__setup(vxdi_app_editor_t *app,Vector3 light_direction){
     app->camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
     app->camera.fovy = 45.0f;                                // Camera field-of-view Y
     app->camera.projection = CAMERA_PERSPECTIVE;             // Camera projection type
+
     LOG_D0("fillColorCircle");
     fillColorCircle(app->colors);
     LOG_D0("return");
