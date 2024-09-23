@@ -111,6 +111,24 @@ void line_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3
         rasterizeLine(tool->inputs[0],point,&(app->scene),app->current_color,app->current_color_index,scene__add_voxel);
     }
 }
+void circle_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
+    printf("aquire: line tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    if(tool->last_input_index==0){
+        scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
+    } else if(tool->last_input_index==1){
+        rasterizeCircle(tool->inputs[0],point,&(app->construction_hints),app->current_color,app->current_color_index,scene__add_voxel);
+    }
+}
+void circle_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
+    printf("finish line tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    if(IsKeyDown(KEY_LEFT_ALT)){
+        printf("line tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        rasterizeCircle(tool->inputs[0],point,&(app->scene),app->current_color,app->current_color_index,scene__remove_voxel);
+    } else {
+        printf("line tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        rasterizeCircle(tool->inputs[0],point,&(app->scene),app->current_color,app->current_color_index,scene__add_voxel);
+    }
+}
 void structure_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
     printf("aquire: structure tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
     if(tool->last_input_index==0){
@@ -169,6 +187,44 @@ void volume_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vecto
     }
     
 }
+void sphere_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
+    printf("aquire: structure tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    if(tool->last_input_index==0){
+        scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
+    } else if(tool->last_input_index==1){
+        rasterizeSphere(tool->inputs[0],point,&(app->construction_hints),app->current_color,app->current_color_index,scene__add_voxel);
+    }
+}
+void sphere_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
+    printf("finish sphere tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    if(IsKeyDown(KEY_LEFT_ALT)){
+        printf("sphere tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        rasterizeSphere(tool->inputs[0],tool->inputs[1],&(app->scene),app->current_color,app->current_color_index,scene__remove_voxel);
+    } else {
+        printf("sphere tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        rasterizeSphere(tool->inputs[0],tool->inputs[1],&(app->scene),app->current_color,app->current_color_index,scene__add_voxel);
+    }
+    rasterizeSphere(tool->inputs[0],point,&(app->scene),app->current_color,app->current_color_index,IsKeyPressed(KEY_LEFT_ALT)?scene__remove_voxel:scene__add_voxel);
+}
+void sphere_cloud_tool_acquire(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
+    printf("aquire: cloud tool : got point number [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    if(tool->last_input_index==0){
+        scene__add_voxel(&(app->construction_hints),point,app->current_color,app->current_color_index);
+    } else if(tool->last_input_index==1){
+        rasterizeSphereCloud_fibbonacci(tool->inputs[0],point,&(app->construction_hints),app->current_color,app->current_color_index,scene__add_voxel);
+    }
+}
+void sphere_cloud_tool_finish(vxdi_multistep_tool_t* tool,vxdi_app_editor_t* app,Vector3 point){
+    printf("finish structure tool : got last point [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+    if(IsKeyDown(KEY_LEFT_ALT)){
+        printf("cloud tool : removing [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        rasterizeSphereCloud_fibbonacci(tool->inputs[0],tool->inputs[1],&(app->scene),app->current_color,app->current_color_index,scene__remove_voxel);
+    } else {
+        printf("cloud tool : adding [%lu/%lu]\n",tool->last_input_index,tool->num_inputs);
+        rasterizeSphereCloud_fibbonacci(tool->inputs[0],tool->inputs[1],&(app->scene),app->current_color,app->current_color_index,scene__add_voxel);
+    }
+    rasterizeSphereCloud_fibbonacci(tool->inputs[0],point,&(app->scene),app->current_color,app->current_color_index,IsKeyPressed(KEY_LEFT_ALT)?scene__remove_voxel:scene__add_voxel);
+}
 
 
 int main(int argc, char *argv[]) {
@@ -201,14 +257,26 @@ int main(int argc, char *argv[]) {
     multistep_tool__init(&line_tool,2,line_tool_acquire,line_tool_finish);
     vxdi_tools_map__add(tools,"line",&line_tool);
 
+
+    vxdi_multistep_tool_t circle_tool;
+    multistep_tool__init(&circle_tool,2,circle_tool_acquire,circle_tool_finish);
+    vxdi_tools_map__add(tools,"circle",&circle_tool);
+
     vxdi_multistep_tool_t volume_tool;
     multistep_tool__init(&volume_tool,2,volume_tool_acquire,volume_tool_finish);
     vxdi_tools_map__add(tools,"volume",&volume_tool);
 
-    printf(" -- plate_tool\n");
     vxdi_multistep_tool_t plate_tool;
     multistep_tool__init(&plate_tool,3,plate_tool_acquire,plate_tool_finish);
     vxdi_tools_map__add(tools,"plane",&plate_tool);
+
+    vxdi_multistep_tool_t sphere_tool;
+    multistep_tool__init(&sphere_tool,2,sphere_tool_acquire,sphere_tool_finish);
+    vxdi_tools_map__add(tools,"sphere",&sphere_tool);
+
+    vxdi_multistep_tool_t sphere_cloud_tool;
+    multistep_tool__init(&sphere_cloud_tool,2,sphere_cloud_tool_acquire,sphere_cloud_tool_finish);
+    vxdi_tools_map__add(tools,"cloud",&sphere_cloud_tool);
 
     vxdi_multistep_tool_t help_tool;
     multistep_tool__init(&help_tool,1,help_tool_acquire,help_tool_finish);
