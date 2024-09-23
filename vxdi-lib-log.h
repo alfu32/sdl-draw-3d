@@ -48,8 +48,8 @@
         #define VXDI_LOG_FORMAT_1 "%-*s [%ld]%s(%s):%d : %s\n"
     #elif __linux__
         // printf("Running on Linux\n");
-        #define VXDI_LOG_FORMAT_0 "%-*s [%lld]%s(%s):%d :"
-        #define VXDI_LOG_FORMAT_1 "%-*s [%lld]%s(%s):%d : %s\n"
+        #define VXDI_LOG_FORMAT_0 "%-*s [%ld]%s(%s):%d :"
+        #define VXDI_LOG_FORMAT_1 "%-*s [%ld]%s(%s):%d : %s\n"
     #else
         // printf("Unknown platform\n");
         #define VXDI_LOG_FORMAT_0 "%-*s [%ld]%s(%s):%d :"
