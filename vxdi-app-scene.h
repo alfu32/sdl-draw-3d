@@ -8,6 +8,7 @@
 #include "vxdi-lib-general.h"
 #include "vxdi-app-light.h"
 #include "vxdi-lib-log.h"
+#include "vxdi-lib-hashmap.h"
 //#include "raylib/examples/https://raw.githubusercontent.com/raysan5/raylib/master/examples/shaders/rlights.h"
 
 // Define maximum number of voxels in the scene
@@ -30,6 +31,7 @@ typedef struct {
     vxdi_light_t light_direction;
     const char* temp_filename;
     vxdi_editor_mode_e editor_mode;
+    hash_map_t* index;
 } scene_t;
 
 void scene__init(scene_t *scene,char is_persisted,Vector3 light_direction) {
@@ -49,6 +51,7 @@ void scene__init(scene_t *scene,char is_persisted,Vector3 light_direction) {
     scene->colormap[7]=PINK;
     scene->colormap[8]=BLACK;
     scene->editor_mode = VXDI_EDITOR_MODE__ADD_OR_REPLACE;
+    scene->index = hash_map__create(32);
 }
 
 void scene__save_model(scene_t* scene, const char* filename) {
@@ -98,10 +101,23 @@ void scene__load_model(scene_t* scene, const char* filename) {
     }
 
     fclose(file); // Close the file
+
+    /// for (int i = 0; i < scene->numVoxels; i++) {
+    ///     // Convert to string
+    ///     Vector3 voxel = scene->voxels[i].position;
+    ///     char voxel_id[32];
+    ///     vector3__voxel_id(&voxel, voxel_id);
+    ///     hash_map__add(scene->index,voxel_id,&voxel);
+    ///     printf("added voxel %s to index",voxel_id);
+    /// }
 }
 
 
 int scene__voxel_at_position(const scene_t *scene, Vector3 position) {
+    /// char pos_id[32];
+    /// vector3__voxel_id(&position, pos_id);
+    /// return hash_map__index_of_element(scene->index,pos_id);
+
     for (int i = 0; i < scene->numVoxels; i++) {
         if (Vector3DistanceSqr(scene->voxels[i].position,position)<0.75) {
             return i; // Voxel exists
@@ -124,6 +140,9 @@ error_id scene__add_voxel(scene_t *scene, Vector3 position, Color material,unsig
             }else {
                 voxel_t newVoxel = {position.x, position.y, position.z, mat_id,material};
                 scene->voxels[scene->numVoxels++] = newVoxel;
+                /// char voxel_id[32];
+                /// vector3__voxel_id(&position, voxel_id);
+                /// hash_map__add(scene->index,voxel_id,&position);
             }
             break;
         case VXDI_EDITOR_MODE__REPLACE:
@@ -138,6 +157,9 @@ error_id scene__add_voxel(scene_t *scene, Vector3 position, Color material,unsig
             if(index_of_voxel==-1){
                 voxel_t newVoxel = {position.x, position.y, position.z, mat_id,material};
                 scene->voxels[scene->numVoxels++] = newVoxel;
+                /// char voxel_id[32];
+                /// vector3__voxel_id(&position, voxel_id);
+                /// hash_map__add(scene->index,voxel_id,&position);
             }
             break;
     }
@@ -146,20 +168,29 @@ error_id scene__add_voxel(scene_t *scene, Vector3 position, Color material,unsig
 }
 
 error_id scene__remove_voxel(scene_t *scene, Vector3 position, Color material,unsigned int mat_id) {
-    for (int i = 0; i < scene->numVoxels; i++) {
-        float dist = Vector3DistanceSqr(scene->voxels[i].position,position);
-        // printf("voxel %d is at %3.2f\n",i,dist);
-        if ( dist<0.75) {
-            // Move the last voxel to the current position and decrease count
-            scene->voxels[i] = scene->voxels[--scene->numVoxels];
-            return 0; // Success
-        }
+    int index_of_voxel=scene__voxel_at_position(scene,position);
+    if(index_of_voxel>-1){
+        scene->voxels[index_of_voxel] = scene->voxels[--scene->numVoxels];
+        if(scene->is_persisted){scene__save_model(scene,scene->temp_filename);}
     }
-    if(scene->is_persisted){scene__save_model(scene,scene->temp_filename);}
-    return -1; // Error: Voxel not found
+    /// char voxel_id[32];
+    /// vector3__voxel_id(&position, voxel_id);
+    /// hash_map__remove(scene->index,voxel_id)
+    /// /// for (int i = 0; i < scene->numVoxels; i++) {
+    /// ///     float dist = Vector3DistanceSqr(scene->voxels[i].position,position);
+    /// ///     // printf("voxel %d is at %3.2f\n",i,dist);
+    /// ///     if ( dist<0.75) {
+    /// ///         // Move the last voxel to the current position and decrease count
+    /// ///         scene->voxels[i] = scene->voxels[--scene->numVoxels];
+    /// ///         return 0; // Success
+    /// ///     }
+    /// /// }
+    
+    return 0; // Error: Voxel not found
 }
 
 int scene__clear(scene_t* self){
+    hash_map__clear(self->index);
     self->numVoxels=0;
     return 0;
 }

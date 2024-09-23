@@ -14,6 +14,7 @@ typedef struct voxel_s {
     Vector3 position;       // Position of the left bottom front vertex
     unsigned int material_id; // Material ID for future use
     Color material_color; // Material ID for future use
+    char id[32];
 } voxel_t;
 
 typedef enum collision_hit_ {
@@ -45,6 +46,16 @@ BoundingBox voxel__get_bounding_box(voxel_t* self){
         (Vector3){self->position.x-0.5f,self->position.y-0.5f,self->position.z-0.5f},
         (Vector3){self->position.x+0.5f,self->position.y+0.5f,self->position.z+0.5f}
     };
+}
+
+void vector3__voxel_id(const Vector3* self, char output[32]) {
+    snprintf(output, 32, "%9d,%9d,%9d", (int)(self->x), (int)(self->y), (int)(self->z));
+}
+
+voxel_t voxel__create(Vector3 position,unsigned int material_id,Color material_color){
+    voxel_t v = {position,material_id,material_color};
+    vector3__voxel_id(&position,v.id);
+    return v;
 }
 
 // Function to draw a shaded voxel based on directional light
