@@ -16,9 +16,9 @@
 
 
 typedef enum vxdi_editor_modes_ {
-    VXDI_EDITOR_MODE_OVERWRITE=0x1a00,
-    VXDI_EDITOR_MODE_PRESERVE,
-    VXDI_EDITOR_MODE_REPLACE
+    VXDI_EDITOR_MODE__ADD_OR_REPLACE=0x1a00,
+    VXDI_EDITOR_MODE__ADD,
+    VXDI_EDITOR_MODE__REPLACE
 } vxdi_editor_mode_e;
 
 // Structure to represent the scene
@@ -48,7 +48,7 @@ void scene__init(scene_t *scene,char is_persisted,Vector3 light_direction) {
     scene->colormap[6]=MAGENTA;
     scene->colormap[7]=PINK;
     scene->colormap[8]=BLACK;
-    scene->editor_mode = VXDI_EDITOR_MODE_OVERWRITE;
+    scene->editor_mode = VXDI_EDITOR_MODE__ADD_OR_REPLACE;
 }
 
 void scene__save_model(scene_t* scene, const char* filename) {
@@ -104,39 +104,38 @@ void scene__load_model(scene_t* scene, const char* filename) {
 int scene__voxel_at_position(const scene_t *scene, Vector3 position) {
     for (int i = 0; i < scene->numVoxels; i++) {
         if (Vector3DistanceSqr(scene->voxels[i].position,position)<0.75) {
-            return 1; // Voxel exists
+            return i; // Voxel exists
         }
     }
-    return 0; // Voxel does not exist
+    return -1; // Voxel does not exist
 }
 
 error_id scene__add_voxel(scene_t *scene, Vector3 position, Color material,unsigned int mat_id) {
     if (scene->numVoxels >= MAX_VOXELS) {
         return -1; // Error: Scene is full
     }
+    int index_of_voxel=scene__voxel_at_position(scene,position);
     switch (scene->editor_mode) {
-        case VXDI_EDITOR_MODE_OVERWRITE:
-            printf("add mode VXDI_EDITOR_MODE_OVERWRITE \n");
-            if(scene__voxel_at_position(scene,position)){
-                voxel_t newVoxel = {position.x, position.y, position.z, mat_id,material};
-                scene->voxels[scene->numVoxels++].material_color=material;
-                scene->voxels[scene->numVoxels++].material_id=mat_id;
+        case VXDI_EDITOR_MODE__ADD_OR_REPLACE:
+            LOG_D("add mode VXDI_EDITOR_MODE__ADD_OR_REPLACE [%d] \n",index_of_voxel);
+            if(index_of_voxel>-1){
+                scene->voxels[index_of_voxel].material_color=material;
+                scene->voxels[index_of_voxel].material_id=mat_id;
             }else {
                 voxel_t newVoxel = {position.x, position.y, position.z, mat_id,material};
                 scene->voxels[scene->numVoxels++] = newVoxel;
             }
             break;
-        case VXDI_EDITOR_MODE_REPLACE:
-            printf("add mode VXDI_EDITOR_MODE_REPLACE \n");
-            if(scene__voxel_at_position(scene,position)){
-                voxel_t newVoxel = {position.x, position.y, position.z, mat_id,material};
-                scene->voxels[scene->numVoxels++].material_color=material;
-                scene->voxels[scene->numVoxels++].material_id=mat_id;
+        case VXDI_EDITOR_MODE__REPLACE:
+            LOG_D("add mode VXDI_EDITOR_MODE__REPLACE [%d] \n",index_of_voxel);
+            if(index_of_voxel>-1){
+                scene->voxels[index_of_voxel].material_color=material;
+                scene->voxels[index_of_voxel].material_id=mat_id;
             }
-        case VXDI_EDITOR_MODE_PRESERVE:
-        default:
-            printf("add mode VXDI_EDITOR_MODE_PRESERVE \n");
-            if(!scene__voxel_at_position(scene,position)){
+            break;
+        case VXDI_EDITOR_MODE__ADD:
+            LOG_D("add mode VXDI_EDITOR_MODE__ADD [%d] \n",index_of_voxel);
+            if(index_of_voxel==-1){
                 voxel_t newVoxel = {position.x, position.y, position.z, mat_id,material};
                 scene->voxels[scene->numVoxels++] = newVoxel;
             }
@@ -165,9 +164,13 @@ int scene__clear(scene_t* self){
     return 0;
 }
 
-
-
 int scene__render_voxel(scene_t *scene,voxel_t* voxel) {
+    return 0; 
+}
+
+int scene__set_mode(scene_t *scene,vxdi_editor_mode_e mode) {
+    scene->editor_mode = mode;
+    printf("scene mode changed to {%x} \n",mode);
     return 0; 
 }
 

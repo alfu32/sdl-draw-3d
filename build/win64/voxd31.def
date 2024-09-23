@@ -2378,143 +2378,144 @@ EXPORTS
     scene__render @2377
     scene__render_voxel @2378
     scene__save_model @2379
-    scene__voxel_at_position @2380
-    sdefl_bound @2381
-    sdeflate @2382
-    select_tool_acquire @2383
-    select_tool_finish @2384
-    shadowCamera @2385 DATA
-    shadowMap @2386 DATA
-    shadowMapHeight @2387 DATA
-    shadowMapWidth @2388 DATA
-    shadowShader @2389 DATA
-    shell_tool_acquire @2390
-    shell_tool_finish @2391
-    sinflate @2392
-    sphere_cloud_tool_acquire @2393
-    sphere_cloud_tool_finish @2394
-    sphere_tool_acquire @2395
-    sphere_tool_finish @2396
-    stb_perlin_fbm_noise3 @2397
-    stb_perlin_noise3 @2398
-    stb_perlin_noise3_internal @2399
-    stb_perlin_noise3_seed @2400
-    stb_perlin_noise3_wrap_nonpow2 @2401
-    stb_perlin_ridge_noise3 @2402
-    stb_perlin_turbulence_noise3 @2403
-    stbi_convert_iphone_png_to_rgb @2404
-    stbi_failure_reason @2405
-    stbi_flip_vertically_on_write @2406
-    stbi_hdr_to_ldr_gamma @2407
-    stbi_hdr_to_ldr_scale @2408
-    stbi_image_free @2409
-    stbi_info @2410
-    stbi_info_from_callbacks @2411
-    stbi_info_from_file @2412
-    stbi_info_from_memory @2413
-    stbi_is_16_bit @2414
-    stbi_is_16_bit_from_callbacks @2415
-    stbi_is_16_bit_from_file @2416
-    stbi_is_16_bit_from_memory @2417
-    stbi_is_hdr @2418
-    stbi_is_hdr_from_callbacks @2419
-    stbi_is_hdr_from_file @2420
-    stbi_is_hdr_from_memory @2421
-    stbi_ldr_to_hdr_gamma @2422
-    stbi_ldr_to_hdr_scale @2423
-    stbi_load @2424
-    stbi_load_16 @2425
-    stbi_load_16_from_callbacks @2426
-    stbi_load_16_from_memory @2427
-    stbi_load_from_callbacks @2428
-    stbi_load_from_file @2429
-    stbi_load_from_file_16 @2430
-    stbi_load_from_memory @2431
-    stbi_load_gif_from_memory @2432
-    stbi_loadf @2433
-    stbi_loadf_from_callbacks @2434
-    stbi_loadf_from_file @2435
-    stbi_loadf_from_memory @2436
-    stbi_set_flip_vertically_on_load @2437
-    stbi_set_unpremultiply_on_load @2438
-    stbi_write_bmp @2439
-    stbi_write_bmp_to_func @2440
-    stbi_write_force_png_filter @2441 DATA
-    stbi_write_hdr @2442
-    stbi_write_hdr_to_func @2443
-    stbi_write_jpg @2444
-    stbi_write_jpg_to_func @2445
-    stbi_write_png @2446
-    stbi_write_png_compression_level @2447 DATA
-    stbi_write_png_to_func @2448
-    stbi_write_png_to_mem @2449
-    stbi_write_tga @2450
-    stbi_write_tga_to_func @2451
-    stbi_write_tga_with_rle @2452 DATA
-    stbi_zlib_compress @2453
-    stbi_zlib_decode_buffer @2454
-    stbi_zlib_decode_malloc @2455
-    stbi_zlib_decode_malloc_guesssize @2456
-    stbi_zlib_decode_malloc_guesssize_headerflag @2457
-    stbi_zlib_decode_noheader_buffer @2458
-    stbi_zlib_decode_noheader_malloc @2459
-    stbir__s16_32768 @2460 DATA
-    stbir__s32_32768 @2461 DATA
-    stbir_build_samplers @2462
-    stbir_build_samplers_with_splits @2463
-    stbir_free_samplers @2464
-    stbir_resize @2465
-    stbir_resize_extended @2466
-    stbir_resize_extended_split @2467
-    stbir_resize_float_linear @2468
-    stbir_resize_init @2469
-    stbir_resize_uint8_linear @2470
-    stbir_resize_uint8_srgb @2471
-    stbir_set_buffer_ptrs @2472
-    stbir_set_datatypes @2473
-    stbir_set_edgemodes @2474
-    stbir_set_filter_callbacks @2475
-    stbir_set_filters @2476
-    stbir_set_input_subrect @2477
-    stbir_set_non_pm_alpha_speed_over_quality @2478
-    stbir_set_output_pixel_subrect @2479
-    stbir_set_pixel_callbacks @2480
-    stbir_set_pixel_layouts @2481
-    stbir_set_pixel_subrect @2482
-    stbir_set_user_data @2483
-    stbrp_init_target @2484
-    stbrp_pack_rects @2485
-    stbrp_setup_allow_out_of_mem @2486
-    stbrp_setup_heuristic @2487
-    structure_tool_acquire @2488
-    structure_tool_finish @2489
-    swap @2490
-    texShapes @2491 DATA
-    texShapesRec @2492 DATA
-    tinyobj_attrib_free @2493
-    tinyobj_attrib_init @2494
-    tinyobj_materials_free @2495
-    tinyobj_parse_mtl_file @2496
-    tinyobj_parse_obj @2497
-    tinyobj_shapes_free @2498
-    volume_tool_acquire @2499
-    volume_tool_finish @2500
-    voxel__draw_plane @2501
-    voxel__draw_shaded @2502
-    voxel__get_bounding_box @2503
-    voxel_tool_acquire @2504
-    voxel_tool_finish @2505
-    vsxdi_shadowmap_test_main @2506
-    vxdi_app_editor__InputMathExpr @2507
-    vxdi_app_editor__get_current @2508
-    vxdi_app_editor__setup @2509
-    vxdi_app_editor__update @2510
-    vxdi_tools_map__add @2511
-    vxdi_tools_map__deinit @2512
-    vxdi_tools_map__init @2513
-    vxdi_tools_map__next @2514
-    vxdi_tools_map__remove @2515
-    vxdi_tools_map__select @2516
-    vxdi_tools_map_test @2517
-    zsdeflate @2518
-    zsinflate @2519
+    scene__set_mode @2380
+    scene__voxel_at_position @2381
+    sdefl_bound @2382
+    sdeflate @2383
+    select_tool_acquire @2384
+    select_tool_finish @2385
+    shadowCamera @2386 DATA
+    shadowMap @2387 DATA
+    shadowMapHeight @2388 DATA
+    shadowMapWidth @2389 DATA
+    shadowShader @2390 DATA
+    shell_tool_acquire @2391
+    shell_tool_finish @2392
+    sinflate @2393
+    sphere_cloud_tool_acquire @2394
+    sphere_cloud_tool_finish @2395
+    sphere_tool_acquire @2396
+    sphere_tool_finish @2397
+    stb_perlin_fbm_noise3 @2398
+    stb_perlin_noise3 @2399
+    stb_perlin_noise3_internal @2400
+    stb_perlin_noise3_seed @2401
+    stb_perlin_noise3_wrap_nonpow2 @2402
+    stb_perlin_ridge_noise3 @2403
+    stb_perlin_turbulence_noise3 @2404
+    stbi_convert_iphone_png_to_rgb @2405
+    stbi_failure_reason @2406
+    stbi_flip_vertically_on_write @2407
+    stbi_hdr_to_ldr_gamma @2408
+    stbi_hdr_to_ldr_scale @2409
+    stbi_image_free @2410
+    stbi_info @2411
+    stbi_info_from_callbacks @2412
+    stbi_info_from_file @2413
+    stbi_info_from_memory @2414
+    stbi_is_16_bit @2415
+    stbi_is_16_bit_from_callbacks @2416
+    stbi_is_16_bit_from_file @2417
+    stbi_is_16_bit_from_memory @2418
+    stbi_is_hdr @2419
+    stbi_is_hdr_from_callbacks @2420
+    stbi_is_hdr_from_file @2421
+    stbi_is_hdr_from_memory @2422
+    stbi_ldr_to_hdr_gamma @2423
+    stbi_ldr_to_hdr_scale @2424
+    stbi_load @2425
+    stbi_load_16 @2426
+    stbi_load_16_from_callbacks @2427
+    stbi_load_16_from_memory @2428
+    stbi_load_from_callbacks @2429
+    stbi_load_from_file @2430
+    stbi_load_from_file_16 @2431
+    stbi_load_from_memory @2432
+    stbi_load_gif_from_memory @2433
+    stbi_loadf @2434
+    stbi_loadf_from_callbacks @2435
+    stbi_loadf_from_file @2436
+    stbi_loadf_from_memory @2437
+    stbi_set_flip_vertically_on_load @2438
+    stbi_set_unpremultiply_on_load @2439
+    stbi_write_bmp @2440
+    stbi_write_bmp_to_func @2441
+    stbi_write_force_png_filter @2442 DATA
+    stbi_write_hdr @2443
+    stbi_write_hdr_to_func @2444
+    stbi_write_jpg @2445
+    stbi_write_jpg_to_func @2446
+    stbi_write_png @2447
+    stbi_write_png_compression_level @2448 DATA
+    stbi_write_png_to_func @2449
+    stbi_write_png_to_mem @2450
+    stbi_write_tga @2451
+    stbi_write_tga_to_func @2452
+    stbi_write_tga_with_rle @2453 DATA
+    stbi_zlib_compress @2454
+    stbi_zlib_decode_buffer @2455
+    stbi_zlib_decode_malloc @2456
+    stbi_zlib_decode_malloc_guesssize @2457
+    stbi_zlib_decode_malloc_guesssize_headerflag @2458
+    stbi_zlib_decode_noheader_buffer @2459
+    stbi_zlib_decode_noheader_malloc @2460
+    stbir__s16_32768 @2461 DATA
+    stbir__s32_32768 @2462 DATA
+    stbir_build_samplers @2463
+    stbir_build_samplers_with_splits @2464
+    stbir_free_samplers @2465
+    stbir_resize @2466
+    stbir_resize_extended @2467
+    stbir_resize_extended_split @2468
+    stbir_resize_float_linear @2469
+    stbir_resize_init @2470
+    stbir_resize_uint8_linear @2471
+    stbir_resize_uint8_srgb @2472
+    stbir_set_buffer_ptrs @2473
+    stbir_set_datatypes @2474
+    stbir_set_edgemodes @2475
+    stbir_set_filter_callbacks @2476
+    stbir_set_filters @2477
+    stbir_set_input_subrect @2478
+    stbir_set_non_pm_alpha_speed_over_quality @2479
+    stbir_set_output_pixel_subrect @2480
+    stbir_set_pixel_callbacks @2481
+    stbir_set_pixel_layouts @2482
+    stbir_set_pixel_subrect @2483
+    stbir_set_user_data @2484
+    stbrp_init_target @2485
+    stbrp_pack_rects @2486
+    stbrp_setup_allow_out_of_mem @2487
+    stbrp_setup_heuristic @2488
+    structure_tool_acquire @2489
+    structure_tool_finish @2490
+    swap @2491
+    texShapes @2492 DATA
+    texShapesRec @2493 DATA
+    tinyobj_attrib_free @2494
+    tinyobj_attrib_init @2495
+    tinyobj_materials_free @2496
+    tinyobj_parse_mtl_file @2497
+    tinyobj_parse_obj @2498
+    tinyobj_shapes_free @2499
+    volume_tool_acquire @2500
+    volume_tool_finish @2501
+    voxel__draw_plane @2502
+    voxel__draw_shaded @2503
+    voxel__get_bounding_box @2504
+    voxel_tool_acquire @2505
+    voxel_tool_finish @2506
+    vsxdi_shadowmap_test_main @2507
+    vxdi_app_editor__InputMathExpr @2508
+    vxdi_app_editor__get_current @2509
+    vxdi_app_editor__setup @2510
+    vxdi_app_editor__update @2511
+    vxdi_tools_map__add @2512
+    vxdi_tools_map__deinit @2513
+    vxdi_tools_map__init @2514
+    vxdi_tools_map__next @2515
+    vxdi_tools_map__remove @2516
+    vxdi_tools_map__select @2517
+    vxdi_tools_map_test @2518
+    zsdeflate @2519
+    zsinflate @2520
