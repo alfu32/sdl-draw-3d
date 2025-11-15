@@ -207,8 +207,8 @@ int shadowmapper__init(shadowmapper_t* sm,Vector3 initLightDir) {
 
     sm->cameraSpeed = 0.05f;
     
-    sm->localShadowShader = LoadShader(TextFormat("assets/shaders/shadowmap.%d.vs", GLSL_VERSION),
-                                     TextFormat("assets/shaders/shadowmap.%d.fs", GLSL_VERSION));
+    sm->localShadowShader = LoadShader(TextFormat("assets/shaders/shadowmap.%d.vs.glsl", GLSL_VERSION),
+                                     TextFormat("assets/shaders/shadowmap.%d.fs.glsl", GLSL_VERSION));
     sm->localShadowShader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(sm->localShadowShader, "viewPos");
     sm->lightDir = Vector3Normalize(initLightDir);
     sm->lightColor = WHITE;
@@ -365,14 +365,29 @@ int main(int argc, char *argv[]) {
 
     printf(" -- Starting Loop %d \n",window_should_close);
 
+    
 
-    // Load ray tracing shader
-    Shader shader = LoadShader(0, "assets/shaders/raytracing.glsl");
 
-    // Create render texture
-    RenderTexture2D target = LoadRenderTexture(app.screenWidth, app.screenHeight);
+
+            
+    // Setup shadow mapping
+    // Create depth texture
+    RenderTexture2D depthTexture = LoadRenderTexture(app.screenWidth/2, app.screenHeight/2);
+    SetTextureFilter(depthTexture.texture, TEXTURE_FILTER_BILINEAR);
+
+
+    int lightViewMatrixLoc, lightProjMatrixLoc, depthTextureLoc; // Define locations for shader variables
+
+    // Compile shaders
+    Shader shader = LoadShader("assets/shaders/shadow_mapping.vs.glsl", "assets/shaders/shadow_mapping.vs.glsl");
+
+    // Get shader uniform locations
+    lightViewMatrixLoc = GetShaderLocation(shader, "lightView");
+    lightProjMatrixLoc = GetShaderLocation(shader, "lightProjection");
+    depthTextureLoc = GetShaderLocation(shader, "shadowMap");
 
     for (;!(WindowShouldClose() || window_should_close);) {
+
         float dt = GetFrameTime();
         if(IsKeyPressed(KEY_ESCAPE)){
             // do nothing
@@ -450,84 +465,60 @@ int main(int argc, char *argv[]) {
 
             orbit__control_camera(&orbiter);
 
-            snprintf(status,1024,"voxels: %d/10000 mode : %s[%d/%d] %lu, text %s file %s",
+            snprintf(status,1024,"voxels: %d/10000 mode : %s[%d/%d] %lu, text %s file %s;%d",
                 app.scene.numVoxels,
                 tools->tools_names[tools->current_tool_index],
                 tools->current_tool_index,
                 tools->last_tool_index,
                 tools->tools[tools->current_tool_index]->last_input_index,
                 app.text_buffer,
-                app.scene.temp_filename
+                app.scene.temp_filename,
+                shader.id
             );
             shadowmapper__orbit_control_lights(&shm,dt);
             app.scene.light_direction.direction.x=shm.lightDir.x;
             app.scene.light_direction.direction.y=shm.lightDir.y;
             app.scene.light_direction.direction.z=shm.lightDir.z;
 
+            // Calculate light's view matrix
+            Matrix lightViewMatrix = MatrixLookAt(shm.lightCam.position, shm.lightCam.target, shm.lightCam.up);
 
-        // Draw
-        BeginTextureMode(target);
-        BeginShaderMode(shader);
-        int nRaytracedVoxels = app.scene.numVoxels + app.construction_hints.numVoxels;
-        Vector3 cube_positions[nRaytracedVoxels];
-        Color cube_colors[nRaytracedVoxels];
-        for(int i=0;i<app.scene.numVoxels;i++){
-            voxel_t vx = app.scene.voxels[i];
-            cube_positions[i]=(Vector3){vx.position.x,vx.position.y,vx.position.z};
-            cube_colors[i]=(Color){vx.material_color.r,vx.material_color.g,vx.material_color.b,vx.material_color.a};
-        }
-        for(int i=0;i<app.construction_hints.numVoxels;i++){
-            voxel_t vx = app.scene.voxels[i];
-            cube_positions[app.scene.numVoxels+i]=(Vector3){vx.position.x,vx.position.y,vx.position.z};
-            cube_colors[app.scene.numVoxels+i]=(Color){vx.material_color.r,vx.material_color.g,vx.material_color.b,vx.material_color.a};
-        }
-        // Pass resolution to shader
-        SetShaderValue(shader, GetShaderLocation(shader, "resolution"), (float[2]){app.screenWidth, app.screenHeight}, SHADER_UNIFORM_VEC2);
+            // Calculate light's orthographic projection matrix
+            float size = 10.0f; // Adjust this value based on your scene size
+            Matrix lightProjMatrix = MatrixOrtho(-size, size, -size, size, -size, size);
 
-        // Pass cube data to shader
-        SetShaderValue(shader, GetShaderLocation(shader, "numCubes"), &nRaytracedVoxels, SHADER_UNIFORM_INT);
-        SetShaderValueV(shader, GetShaderLocation(shader, "cubePositions"), (float *)cube_positions, SHADER_UNIFORM_VEC3,nRaytracedVoxels);
-        SetShaderValueV(shader, GetShaderLocation(shader, "cubeColors"), (float *)cube_colors, SHADER_UNIFORM_VEC4,nRaytracedVoxels);
-        SetShaderValue(shader, GetShaderLocation(shader, "lightDirection"), &app.light_direction, SHADER_UNIFORM_VEC3);
 
-        // Draw full-screen quad
-        DrawRectangle(0, 0, app.screenWidth, app.screenHeight, RAYWHITE); // Placeholder for scene
-        
-        EndShaderMode();
-        EndTextureMode();
-            
+            // Get shader uniform locations
+            lightViewMatrixLoc = GetShaderLocation(shader, "lightView");
+            lightProjMatrixLoc = GetShaderLocation(shader, "lightProjection");
+                // Render depth map from light's perspective
+                BeginTextureMode(depthTexture);
+                    BeginMode3D(shm.lightCam);
+                    
+                    ClearBackground(RAYWHITE); // Clear depth buffer
+                    // Render scene geometry
+                    //DrawSceneDepth();
+                    
+                    scene__render(&app.scene,0);
+                    
+                    EndMode3D();
+                EndTextureMode();
+
             BeginDrawing();
-                // Record the light matrices for future use!
-                BeginTextureMode(shm.shadowMapTexture);{
-                    ClearBackground((Color){0,0,0,255});
-                    BeginMode3D(shm.lightCam);{
-                        shm.lightView = rlGetMatrixModelview();
-                        shm.lightProj = rlGetMatrixProjection();
-                        // shm.lightView = GetCameraMatrix(shm.lightCam);
-                        // shm.lightProj = GetCameraMatrix(app.camera);
-                        scene__render(&app.scene,0);
-                        scene__render(&app.guides,1);
-                        scene__render(&app.construction_hints,2);
-                    }EndMode3D();
-                }EndTextureMode();
-
-                shm.lightViewProj = MatrixMultiply(shm.lightView, shm.lightProj);
-
-                ClearBackground(GRAY);
-
-                SetShaderValueMatrix(shm.localShadowShader, shm.lightVPLoc, shm.lightViewProj);
-
-                rlEnableShader(shm.localShadowShader.id);
-                int slot = 10; // Can be anything 0 to 15, but 0 will probably be taken up
-                rlActiveTextureSlot(10);
-                rlEnableTexture(shm.shadowMapTexture.depth.id);
-                rlSetUniform(shm.shadowMapLoc, &slot, SHADER_UNIFORM_INT, 1);
+            // Pass depth texture to shader
+            SetShaderValueTexture(shader, depthTextureLoc, depthTexture.texture);
 
                 BeginMode3D(app.camera);
+                    ClearBackground(RAYWHITE); // Clear depth buffer
+                    // Set shader for shadow mapping
+                    rlSetShader(shader.id,NULL);
+                    // Pass light's view and projection matrices to shader
+                    SetShaderValueMatrix(shader, lightViewMatrixLoc, lightViewMatrix);
+                    SetShaderValueMatrix(shader, lightProjMatrixLoc, lightProjMatrix);
+                    // Pass depth texture to shader
+                    SetShaderValueTexture(shader, depthTextureLoc, depthTexture.texture);
                 
                     scene__render(&app.scene,0);
-                    DrawCube(shm.lightCam.position,2,2,2,YELLOW);
-                    DrawLine3D(shm.lightCam.position,shm.lightCam.target,GREEN);
                     scene__render(&app.guides,1);
                     scene__render(&app.construction_hints,2);
 
@@ -556,21 +547,6 @@ int main(int argc, char *argv[]) {
                         DrawSphereEx(app.mouse_model.point,.1f,3,5,BLUE);
                     }
                 EndMode3D();
-
-                // Draw render texture to screen
-                DrawTextureRec(
-                    target.texture,
-                    (Rectangle){0, 0,app.screenWidth,app.screenHeight},
-                    (Vector2){ 672, 120 },
-                    (Color){127,127,127,127}
-                );
-
-                /// DrawTextureRec(
-                ///     shm.shadowMapTexture.depth, 
-                ///     (Rectangle){ 0, 0, -shm.shadowMapTexture.depth.width, -shm.shadowMapTexture.depth.height },
-                ///     (Vector2){ 120, 20 },
-                ///     WHITE
-                /// );
                 
                 for(int i=0;i<=tools->last_tool_index;i++) {
                     char itext[20]; // Make sure the array is large enough to hold the converted string
@@ -667,15 +643,12 @@ int main(int argc, char *argv[]) {
                 char coords[12];
                 snprintf(coords,12,"%3d %3d %3d",(int)app.model_point_int.x,(int)app.model_point_int.y,(int)app.model_point_int.z);
                 DrawText(coords, app.current_mouse_position.x+10, app.current_mouse_position.y-10, 20, BLACK);
-
-
-                // Draw the shadow map texture
                 DrawTextureRec(
-                    shm.shadowMapTexture.depth,
-                    (Rectangle){ 0, 0, -shm.shadowMapTexture.depth.width, -shm.shadowMapTexture.depth.height },
-                    (Vector2){ 120, 50 },
-                    (Color){255,255,255,127});
-                /// DrawFPS(10, 10);
+                    depthTexture.depth,
+                    (Rectangle){0,0,app.screenWidth/2,app.screenHeight/2},
+                    (Vector2){120,32},
+                    (Color){127,127,127,127}
+                );
 
             EndDrawing();
 
@@ -703,6 +676,7 @@ int main(int argc, char *argv[]) {
             DrawText("- Right Click to Remove Voxels" , left, row+=20, 10, DARKGRAY);
             DrawText("- Z to zoom to (0, 0, 0)"     , left, row+=20, 10, DARKGRAY);
         }
+        
     }
     // De-Initialization
     //--------------------------------------------------------------------------------------
@@ -711,6 +685,8 @@ int main(int argc, char *argv[]) {
     
     UnloadShader(shm.localShadowShader);
     UnloadShadowmapRenderTexture(shm.shadowMapTexture);
+    UnloadShader(depthShader);
+    UnloadShadowmapRenderTexture(shadowMap);
     CloseWindow();
     /// scene__save_model(&app.scene,"temp.vxde");
 
